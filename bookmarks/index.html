@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-us">
+
+<head>
+    <meta charset="utf-8" />
+    <title>My Bookmarks</title>
+    <link rel="stylesheet" href="css/bookmarks.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-12">
+                <h1>My Bookmarks</h1>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-md-12">
+                <div id="msg" class="message error"></div>
+            </div>
+        </div>
+    </div>
+    <div class="container outer">
+        <div class="row tabs_row">
+            <div class="col-12 flex_full_width">
+                <div class="left_div">
+                    <button type="button" id="lefttab">&lt;</button>
+                </div>
+                <div class="right_div">
+                    <button type="button" id="righttab">&gt;</button>
+                    <button type="button" id="tabcommands">&#8230;</button>
+                </div>
+                <div class="middle_div" id="tabs_panel">
+                    <ul id="tabs">
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row flex_row">
+            <!-- <div class="col-md-3 scrollV" id="folders-parent"></div> -->
+            <div class="col-md-9 scrollV bookmarks">
+                <ul id="bookmarks-parent"></ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Context Menu - Tabs -->
+    <div id="tabsCommandMenu" class="context_menu" style="display: none">
+        <div class="menu_wrapper">
+            <button command="tab_add" role="menuitem"> Add Tab </button>
+            <button command="bookmark_add" role="menuitem"> Add Bookmark </button>
+            <hr aria-hidden="true">
+            <button command="tab_rename" role="menuitem"> Rename Selected Tab </button>
+            <button command="tab_remove" role="menuitem"> Remove Selected Tab </button>
+            <hr aria-hidden="true">
+            <button command="tab_move_left" role="menuitem"> Move Selected Tab Left &lt; </button>
+            <button command="tab_move_right" role="menuitem"> Move Selected Tab Right &gt; </button>
+            <hr aria-hidden="true">
+            <button command="export" role="menuitem"> Export Data to a File </button>
+            <button command="import" role="menuitem"> Import Data from a File </button>
+            <hr aria-hidden="true">
+            <button command="clear" role="menuitem"> Delete All Bookmarks and Tabs </button>
+        </div>
+    </div>
+    <!-- END: Context Menu - Tabs -->
+
+    <!-- Context Menu - Bookmarks -->
+    <div id="bookmarksCommandMenu" class="context_menu" style="display: none">
+        <div class="menu_wrapper">
+            <button command="bookmark_edit" role="menuitem"> Edit Bookmark </button>
+            <hr aria-hidden="true">
+            <button command="bookmark_add_child" role="menuitem"> Add Child </button>
+            <button command="bookmark_add_sibling" role="menuitem"> Add Sibling </button>
+            <hr aria-hidden="true">
+            <button command="bookmark_delete" role="menuitem"> Delete Bookmark </button>
+        </div>
+    </div>
+    <!-- END: Context Menu - Bookmarks -->
+
+    <!-- Overlay -->
+    <div id="dialog_overlay"></div>
+    <!-- Dialog - Edit Tab -->
+    <div id="dialog_tab_edit" class="dialog_box">
+        <div class="dialog_content">
+            <input type="hidden" id="dialog_tab_id" />
+            <div class="dialog_title">Add Tab</div>
+            <div class="message error">Failed to Load</div>
+            <div>
+                <label for="dialog_tab_edit_title">Title</label><br />
+                <input type="text" id="dialog_tab_edit_title"></input>
+            </div>
+            <button class="button_save" type="button" command="tab_save">Save</button>
+            <button class="button_cancel" type="button">Cancel</button>
+        </div>
+    </div>
+    <!-- END: Dialog - Edit Tab -->
+
+    <!-- Dialog - Edit Bookmark -->
+    <div id="dialog_bookmark_edit" class="dialog_box">
+        <div class="dialog_content">
+            <input type="hidden" id="dialog_bookmark_id" />
+            <input type="hidden" id="dialog_bookmark_tab_id" />
+            <input type="hidden" id="dialog_bookmark_parent_id" />
+            <div class="dialog_title">Add Bookmark</div>
+            <div class="message error">Failed to Load</div>
+            <div>
+                <label for="dialog_bookmark_edit_title">Title</label><br />
+                <input type="text" id="dialog_bookmark_edit_title"></input>
+            </div>
+            <div>
+                <label for="dialog_bookmark_edit_url">URL</label><br />
+                <input type="text" id="dialog_bookmark_edit_url"></input>
+            </div>
+            <div>
+                <label for="dialog_bookmark_edit_notes">Notes</label><br />
+                <textarea id="dialog_bookmark_edit_notes"></textarea>
+            </div>
+            <div>
+                <input type="checkbox" id="dialog_bookmark_edit_target" />
+                <label for="dialog_bookmark_edit_target"> Open in new tab</label>
+            </div>
+            <div id="dialog_bookmark_edit_showadvanced">
+                <a onclick="dialogBookmarkShowAdvanced();">Show Advanced</a>
+            </div>
+            <div id="dialog_bookmark_edit_advanced" style="display:none;">
+                <div>
+                    <label for="dialog_bookmark_edit_tab">Tab</label><br />
+                    <select id="dialog_bookmark_edit_tab" onchange="dialogBookmarkTabListChanged();"></select>
+                </div>
+                <div>
+                    <label for="dialog_bookmark_edit_parent">Parent Bookmark</label><br />
+                    <select id="dialog_bookmark_edit_parent" onchange="dialogBookmarkParentListChanged();"></select>
+                </div>
+            </div>
+            <button class="button_save" type="button" command="bookmark_save">Save</button>
+            <button class="button_cancel" type="button">Cancel</button>
+        </div>
+    </div>
+    <!-- END: Dialog - Edit Bookmark -->
+
+    <script src="js/myDragMove.js"></script>
+    <script src="js/bookmarks.js"></script>
+</body>
+
+</html>
