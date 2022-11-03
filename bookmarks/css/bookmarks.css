@@ -97,6 +97,15 @@ h1 {
     max-width: 80%;
 }
 
+.dialog_title {
+    /* background-color: rgb(26, 115, 232, 33); */
+    background-image: linear-gradient(135deg, #B4C5E4, rgb(26, 115, 232, 33));
+    color: white;
+    font-size: larger;
+    padding: 6px;
+    text-align: center;
+}
+
 .flex_full_width {
     flex: 0 0 100%;
 }

@@ -168,8 +168,6 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
         else {
             if (!parent_elem_ul) {
                 parent_elem_ul = document.createElement("ul");
-                // parent_elem_ul.addEventListener("drop", bookmarkDrop);
-                // parent_elem_ul.addEventListener("dragover", bookmarkAllowDrop);
                 parent_elem.appendChild(parent_elem_ul);
             }
 
@@ -736,6 +734,11 @@ function dialogsInit() {
 
     for (const dialog of DIALOGS) {
         dialog.addEventListener("mousedown", function (e) {
+            console.log("mousedown - startMoving");
+            console.dir(e.target.type);
+            const eTagName = e.target.tagName.toUpperCase();
+            if (eTagName == "INPUT" || eTagName == "SELECT" || eTagName == "BUTTON" || eTagName == "TEXTAREA" || eTagName == "A" || eTagName == "LABEL")
+                return;
             myDragMove.startMoving(this, "dialog_overlay", e);
         });
         dialog.addEventListener("mouseup", function (e) {
@@ -922,7 +925,11 @@ function dialogsSave(e) {
 }
 
 function dialogsGetMessageBox(dialogbox_element) {
-    const msgBox = dialogbox_element.closest(".dialog_content").getElementsByClassName("message")[0];
+    //const msgBox = dialogbox_element.closest(".dialog_content").getElementsByClassName("message")[0];
+    const msgBox = dialogbox_element.getElementsByClassName("message")[0];
+
+    console.dir(msgBox);
+
 
     if (msgBox)
         msgBox.style.display = "none";
@@ -944,7 +951,8 @@ function dialogsShowEditBookmark(id, parent_id = "") {
     const bookmark_notes_elem = document.getElementById("dialog_bookmark_edit_notes");
 
 
-    const msgBox = dialogsGetMessageBox(title);
+    // const msgBox = dialogsGetMessageBox(title);
+    const msgBox = dialogsGetMessageBox(DIALOG_BOOKMARK);
 
     console.dir({
         DIALOG_OVERLAY: DIALOG_OVERLAY,
@@ -1017,7 +1025,7 @@ function dialogsShowEditTab(id) {
     const title_textbox = document.getElementById("dialog_tab_edit_title");
     const tab_id_elem = document.getElementById("dialog_tab_id");
 
-    const msgBox = dialogsGetMessageBox(title);
+    const msgBox = dialogsGetMessageBox(DIALOG_TAB);
 
     if (!DIALOG_OVERLAY || !DIALOG_TAB || !title || !title_textbox || !msgBox || !tab_id_elem) {
         console.error("ERROR: dialogsShowEditTab - Failed to get required document elements")
