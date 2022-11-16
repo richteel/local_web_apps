@@ -70,7 +70,7 @@ h1 {
     padding-bottom: 5px;
     padding-left: 1.5em;
     /* text-indent: 1em; */
-    white-space: pre;
+    white-space: pre-wrap;
 }
 
 .bookmark_outer {
