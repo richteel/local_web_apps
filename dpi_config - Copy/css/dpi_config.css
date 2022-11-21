@@ -1,0 +1,138 @@
+:root {
+    --tab_area_bgcolor: #F5F5DC;
+    --tab_area_color: black;
+    --tab_selected_bgcolor: rgba(119, 132, 114, 0.2);
+    --tab_selected_color: white;
+}
+
+button {
+    background-color: lightgray;
+    border: 1px solid rgb(107, 107, 107);
+    border-radius: 10px !important;
+    font-size: 12px !important;
+    font-weight: bolder;
+    min-width: 40px;
+    max-height: 32px;
+    padding: 6px 5px;
+}
+
+button:disabled {
+    opacity: 0.4;
+}
+
+label {
+    display: inline !important;
+}
+
+table {
+    border-collapse: collapse;
+    vertical-align: middle;
+}
+
+th, td {
+    border: 1px solid darkgrey;
+    padding: 0.2em 1em;
+}
+
+th {
+    background-color: silver;
+    text-align: center !important;
+}
+
+.altNyble {
+    background-color: antiquewhite;
+}
+
+.space_top {
+    margin-top: 1em;
+}
+
+.tabs_row {
+    background-image: linear-gradient(90deg, #B4C5E4, #778472);
+    border-radius: 10px 10px 0 0;
+    display: -webkit-box;
+    max-height: 42px;
+    vertical-align: middle;
+}
+
+.tabs_row .left_div {
+    float: left;
+    padding: 6px;
+}
+
+.tabs_row .middle_div {
+    box-sizing: border-box;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.tabs_row .middle_div ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tabs_row .middle_div li {
+    background-color: #002f51;
+    border: 1px solid #9b9b9b;
+    border-bottom: none;
+    border-radius: 10px 10px 0 0;
+    color: #eeeeee;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 6px;
+    padding: 5px 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.tabs_row .middle_div li.selected {
+    background-color: var(--tab_area_bgcolor);
+    color: var(--tab_area_color);
+    border-bottom: 1px solid var(--tab_area_bgcolor);
+}
+
+.tabs_row .middle_div li a {
+    padding: 0 10px;
+}
+
+.tabs_row .right_div {
+    float: right;
+    padding: 6px;
+}
+
+.totalCellLabel {
+    font-weight: bold;
+    text-align: right;
+}
+
+.worksheet {
+    background-color: var(--tab_area_bgcolor);
+    color: var(--tab_area_color);
+    padding-bottom: 25px;
+    padding-top: 25px;
+    width: 100%;
+}
+
+.flex_row {
+    display: flex;
+    min-height: 50vh;
+}
+
+.scrollV {
+    display: flex;
+    flex-direction: column;
+    height: 75vh !important;
+    overflow-y: scroll;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    width: 100%;
+}
+
+.worksheet {
+    display: none;
+}
+
+.worksheet.selected {
+    display: block;
+}

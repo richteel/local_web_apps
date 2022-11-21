@@ -166,6 +166,7 @@ h1 {
 .tabs_row .middle_div li.selected {
     background-color: var(--bookmark_area_bgcolor);
     color: var(--bookmark_area_color);
+    border-bottom: 1px solid var(--bookmark_area_bgcolor);
 }
 
 .tabs_row .middle_div li a {

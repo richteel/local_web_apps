@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-us">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Raspberry Pi Display Parallel Interface (DPI) Configuration</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="stylesheet" href="css/dpi_config.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/data.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Raspberry Pi Display Parallel Interface (DPI) Configuration</h1>
+                <p>
+                    This is a tool to help determine some parameters when setting up a display using the GPIO Pins on
+                    Raspberry
+                    Pi Boards.
+                </p>
+                <p>REFERENCES:</p>
+                <ul>
+                    <li><a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#parallel-display-interface-dpi"
+                            target="_blank">Documentation on Raspberry Pi site</a></li>
+                    <li><a href="https://github.com/raspberrypi/documentation/blob/develop/documentation/asciidoc/computers/raspberry-pi/display-parallel-interface.adoc"
+                            target="_blank">Raspberry Pi documentation source on GitHub</a></li>
+                    <li><a href="https://learn.adafruit.com/adafruit-dpi-display-kippah-ttl-tft"
+                            target="_blank">Adafruit
+                            documentation</a> (These instructions may be outdated as the support is currently in
+                        Raspbian.
+                        Good
+                        information to help pull this all together.)</li>
+                </ul>
+                <p>
+                    A note about the references. I had noticed that the examples have a few bit that are incorrect as
+                    they are not documented and assumed to be ignored. When I searched to see if there was something
+                    that I missed regarding bit 15, I found that the user, aBUGSworstnightmare, found the same thing
+                    in the documentation but it has not been addressed. <i>(See aBUGSworstnightmare's post on 29 Aug
+                        2021 7:59 am at
+                        <a href="https://forums.raspberrypi.com/viewtopic.php?t=317566"
+                            target="_blank">https://forums.raspberrypi.com/viewtopic.php?t=317566</a>.)</i>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <p>
+                    The following tools allow you to determine what to add/modify in your Raspberry Pi's
+                    /boot/config.txt file.
+                </p>
+            </div>
+        </div>
+
+        <div class="container outer">
+            <div class="row tabs_row">
+                <div class="col-12 flex_full_width">
+                    <div class="left_div">
+                        <button type="button" id="lefttab">&lt;</button>
+                    </div>
+                    <div class="right_div">
+                        <button type="button" id="righttab">&gt;</button>
+                    </div>
+                    <div class="middle_div" id="tabs_panel">
+                        <ul id="tabs">
+                            <li id="gpio">GPIO Assignment</li>
+                            <li id="color">Color Order</li>
+                            <li id="dpi_output_format">dpi_output_format</li>
+                            <li id="other">Other Settings</li>
+                            <li id="timing">Timings</li>
+                            <li id="config">/boot/config.txt</li>
+                            <li id="wiring">Wiring</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="row flex_row" id="worksheets">
+                <div id="gpio_div" class="col-md-12 worksheet">
+                    <h2>GPIO Assignment</h2>
+                    <p>Select the operating mode. <i>Color bits &amp; GPIO pins</i></p>
+                    <table>
+                        <tr>
+                            <th>Mode</th>
+                            <th>RGB Bits</th>
+                            <th>GPIO Pins</th>
+                            <th>output_format</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="gpio_1" name="gpio_mode" value="1">
+                                <label for="gpio_1">1</label>
+                            </td>
+                            <td>&nbsp;</td>
+                            <td>&nbsp;</td>
+                            <td>DPI_OUTPUT_FORMAT_9BIT_666</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="gpio_2" name="gpio_mode" value="2">
+                                <label for="gpio_2">2</label>
+                            </td>
+                            <td>565</td>
+                            <td>GPIO4-19</td>
+                            <td>DPI_OUTPUT_FORMAT_16BIT_565_CFG1</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="gpio_3" name="gpio_mode" value="3">
+                                <label for="gpio_3">3</label>
+                            </td>
+                            <td>565</td>
+                            <td>GPIO4-8, 12-17, 20-24</td>
+                            <td>DPI_OUTPUT_FORMAT_16BIT_565_CFG2</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="gpio_4" name="gpio_mode" value="4">
+                                <label for="gpio_4">4</label>
+                            </td>
+                            <td>565</td>
+                            <td>GPIO5-9, 12-17, 21-25</td>
+                            <td>DPI_OUTPUT_FORMAT_16BIT_565_CFG3</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="gpio_5" name="gpio_mode" value="5">
+                                <label for="gpio_5">5</label>
+                            </td>
+                            <td>666</td>
+                            <td>GPIO4-21</td>
+                            <td>DPI_OUTPUT_FORMAT_18BIT_666_CFG1</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="gpio_6" name="gpio_mode" value="6">
+                                <label for="gpio_6">6</label>
+                            </td>
+                            <td>666</td>
+                            <td>GPIO4-9, 12-17, 20-25</td>
+                            <td>DPI_OUTPUT_FORMAT_18BIT_666_CFG2</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="gpio_7" name="gpio_mode" value="7">
+                                <label for="gpio_7">7</label>
+                            </td>
+                            <td>888</td>
+                            <td>GPIO4-27</td>
+                            <td>DPI_OUTPUT_FORMAT_24BIT_888</td>
+                        </tr>
+                    </table>
+                    <br />
+                    <button id="clear_gpio" disabled="true">Clear Selection</button>
+                </div>
+
+                <div id="color_div" class="col-md-12 worksheet">
+                    <h2>Color Order</h2>
+                    <p>Select the color order.</p>
+                    <table>
+                        <tr>
+                            <th>Order</th>
+                            <th>Color Order</th>
+                            <th>rgb_order</th>
+                            <th>GPIO Color 1</th>
+                            <th>GPIO Color 2</th>
+                            <th>GPIO Color 3</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="color_1" name="color_order" value="1">
+                                <label for="color_1">1</label>
+                            </td>
+                            <td>RGB</td>
+                            <td>DPI_RGB_ORDER_RGB</td>
+                            <td id="color_1_1"></td>
+                            <td id="color_1_2"></td>
+                            <td id="color_1_3"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="color_2" name="color_order" value="2">
+                                <label for="color_2">2</label>
+                            </td>
+                            <td>BGR</td>
+                            <td>DPI_RGB_ORDER_BGR</td>
+                            <td id="color_2_1"></td>
+                            <td id="color_2_2"></td>
+                            <td id="color_2_3"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="color_3" name="color_order" value="3">
+                                <label for="color_3">3</label>
+                            </td>
+                            <td>GRB</td>
+                            <td>DPI_RGB_ORDER_GRB</td>
+                            <td id="color_3_1"></td>
+                            <td id="color_3_2"></td>
+                            <td id="color_3_3"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="radio" id="color_4" name="color_order" value="4">
+                                <label for="color_4">4</label>
+                            </td>
+                            <td>BRG</td>
+                            <td>DPI_RGB_ORDER_BRG</td>
+                            <td id="color_4_1"></td>
+                            <td id="color_4_2"></td>
+                            <td id="color_4_3"></td>
+                        </tr>
+                    </table>
+                    <br />
+                    <button id="clear_color" disabled="true">Clear Selection</button>
+                </div>
+
+                <div id="dpi_output_format_div" class="col-md-12 worksheet">
+                    <h2>dpi_output_format</h2>
+                    <table>
+                        <tr>
+                            <th>Item</th>
+                            <th>Value</th>
+                            <th>Shift</th>
+                            <th>Bit Mask</th>
+                            <th>Dec Value</th>
+                            <th>Hex Value</th>
+                        </tr>
+                        <tr>
+                            <td><label for="output_format">output_format</label></td>
+                            <td>
+                                <select id="output_format">
+                                    <option value="0">0: Not Set</option>
+                                    <option value="1">1: Unknown</option>
+                                    <option value="2">2: 565 GPIO4-19</option>
+                                    <option value="3">3: 565 GPIO4-8, 12-17, 20-24</option>
+                                    <option value="4">4: 565 GPIO5-9, 12-17, 21-25</option>
+                                    <option value="5">5: 666 GPIO4-21</option>
+                                    <option value="6">6: 666 GPIO4-9, 12-17, 20-25</option>
+                                    <option value="7">7: 888 GPIO4-27</option>
+                                </select>
+                            </td>
+                            <td>0</td>
+                            <td>15 (0xf)</td>
+                            <td id="output_format_dec"></td>
+                            <td id="output_format_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="rgb_order">rgb_order</label></td>
+                            <td>
+                                <select id="rgb_order">
+                                    <option value="0">0: Not Set</option>
+                                    <option value="1">1: RGB</option>
+                                    <option value="2">2: BGR</option>
+                                    <option value="3">3: GRB</option>
+                                    <option value="4">4: BRG</option>
+                                </select>
+                            </td>
+                            <td>4</td>
+                            <td>15 (0xf)</td>
+                            <td id="rgb_order_dec"></td>
+                            <td id="rgb_order_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="output_enable_mode">output_enable_mode</label></td>
+                            <td>
+                                <select id="output_enable_mode">
+                                    <option value="0">0: DPI_OUTPUT_ENABLE_MODE_DATA_VALID</option>
+                                    <option value="1">1: DPI_OUTPUT_ENABLE_MODE_COMBINED_SYNCS</option>
+                                </select>
+                            </td>
+                            <td>8</td>
+                            <td>1 (0x1)</td>
+                            <td id="output_enable_mode_dec"></td>
+                            <td id="output_enable_mode_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="invert_pixel_clock">invert_pixel_clock</label></td>
+                            <td>
+                                <select id="invert_pixel_clock">
+                                    <option value="0">0: RGB Data changes on rising edge and is stable at falling edge
+                                    </option>
+                                    <option value="1">1: RGB Data changes on falling edge and is stable at rising edge.
+                                    </option>
+                                </select>
+                            </td>
+                            <td>9</td>
+                            <td>1 (0x1)</td>
+                            <td id="invert_pixel_clock_dec"></td>
+                            <td id="invert_pixel_clock_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="unk1">ignore/undocumented</label></td>
+                            <td>
+                                <select id="unk1">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>10</td>
+                            <td>1 (0x1)</td>
+                            <td id="unk1_dec"></td>
+                            <td id="unk1_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="unk2">ignore/undocumented</label></td>
+                            <td>
+                                <select id="unk2">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>11</td>
+                            <td>1 (0x1)</td>
+                            <td id="unk2_dec"></td>
+                            <td id="unk2_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="hsync_disable">hsync_disable</label></td>
+                            <td>
+                                <select id="hsync_disable">
+                                    <option value="0">0: Enabled</option>
+                                    <option value="1">1: Disabled</option>
+                                </select>
+                            </td>
+                            <td>12</td>
+                            <td>1 (0x1)</td>
+                            <td id="hsync_disable_dec"></td>
+                            <td id="hsync_disable_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="vsync_disable">vsync_disable</label></td>
+                            <td>
+                                <select id="vsync_disable">
+                                    <option value="0">0: Enabled</option>
+                                    <option value="1">1: Disabled</option>
+                                </select>
+                            </td>
+                            <td>13</td>
+                            <td>1 (0x1)</td>
+                            <td id="vsync_disable_dec"></td>
+                            <td id="vsync_disable_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="output_enable_disable">output_enable_disable</label></td>
+                            <td>
+                                <select id="output_enable_disable">
+                                    <option value="0">0: Enabled</option>
+                                    <option value="1">1: Disabled</option>
+                                </select>
+                            </td>
+                            <td>14</td>
+                            <td>1 (0x1)</td>
+                            <td id="output_enable_disable_dec"></td>
+                            <td id="output_enable_disable_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="unk3">ignore/undocumented</label></td>
+                            <td>
+                                <select id="unk3">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>15</td>
+                            <td>1 (0x1)</td>
+                            <td id="unk3_dec"></td>
+                            <td id="unk3_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="hsync_polarity">hsync_polarity</label></td>
+                            <td>
+                                <select id="hsync_polarity">
+                                    <option value="0">0: DPI_PHASE_POSEDGE</option>
+                                    <option value="1">1: DPI_PHASE_NEGEDGE</option>
+                                </select>
+                            </td>
+                            <td>16</td>
+                            <td>1 (0x1)</td>
+                            <td id="hsync_polarity_dec"></td>
+                            <td id="hsync_polarity_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="vsync_polarity">vsync_polarity</label></td>
+                            <td>
+                                <select id="vsync_polarity">
+                                    <option value="0">0: DPI_PHASE_POSEDGE</option>
+                                    <option value="1">1: DPI_PHASE_NEGEDGE</option>
+                                </select>
+                            </td>
+                            <td>17</td>
+                            <td>1 (0x1)</td>
+                            <td id="vsync_polarity_dec"></td>
+                            <td id="vsync_polarity_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="output_enable_polarity">output_enable_polarity</label></td>
+                            <td>
+                                <select id="output_enable_polarity">
+                                    <option value="0">0: DPI_PHASE_POSEDGE</option>
+                                    <option value="1">1: DPI_PHASE_NEGEDGE</option>
+                                </select>
+                            </td>
+                            <td>18</td>
+                            <td>1 (0x1)</td>
+                            <td id="output_enable_polarity_dec"></td>
+                            <td id="output_enable_polarity_hex"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="unk4">ignore/undocumented</label></td>
+                            <td>
+                                <select id="unk4">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>19</td>
+                            <td>1 (0x1)</td>
+                            <td id="unk4_dec"></td>
+                            <td id="unk4_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="hsync_phase">hsync_phase</label></td>
+                            <td>
+                                <select id="hsync_phase">
+                                    <option value="0">0: default for HDMI mode</option>
+                                    <option value="1">1: inverted</option>
+                                </select>
+                            </td>
+                            <td>20</td>
+                            <td>1 (0x1)</td>
+                            <td id="hsync_phase_dec"></td>
+                            <td id="hsync_phase_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="vsync_phase">vsync_phase</label></td>
+                            <td>
+                                <select id="vsync_phase">
+                                    <option value="0">0: default for HDMI mode</option>
+                                    <option value="1">1: inverted</option>
+                                </select>
+                            </td>
+                            <td>21</td>
+                            <td>1 (0x1)</td>
+                            <td id="vsync_phase_dec"></td>
+                            <td id="vsync_phase_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="output_enable_phase">output_enable_phase</label></td>
+                            <td>
+                                <select id="output_enable_phase">
+                                    <option value="0">0: default for HDMI mode</option>
+                                    <option value="1">1: inverted</option>
+                                </select>
+                            </td>
+                            <td>22</td>
+                            <td>1 (0x1)</td>
+                            <td id="output_enable_phase_dec"></td>
+                            <td id="output_enable_phase_hex"></td>
+                        </tr>
+                        <tr class="altNyble">
+                            <td><label for="unk5">ignore/undocumented</label></td>
+                            <td>
+                                <select id="unk5">
+                                    <option value="0">0</option>
+                                    <option value="1">1</option>
+                                </select>
+                            </td>
+                            <td>23</td>
+                            <td>1 (0x1)</td>
+                            <td id="unk5_dec"></td>
+                            <td id="unk5_hex"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                &nbsp<br />
+                                The following are calculated from the selections above. If you edit or enter the value
+                                here, the selections above will change to the entered value.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="totalCellLabel">dpi_output_format (Decimal)</td>
+                            <td colspan="4">
+                                <input type="text" id="dpi_output_format_dec" pattern="^\d+$" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="totalCellLabel">dpi_output_format (Hexidecimal)</td>
+                            <td colspan="4">
+                                <input type="text" id="dpi_output_format_hex" />
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <button id="clear_form" disabled="true">Clear Selections</button>
+                </div>
+
+                <div id="other_div" class="col-md-12 worksheet">
+                    <h2>Other Settings</h2>
+                    <table>
+                        <tr>
+                            <th>Item</th>
+                            <th>Description</th>
+                            <th>Value</th>
+                            <th>Notes</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td>
+                                <label for="other_interface">Video Interface</label>
+                            </td>
+                            <td>
+                                <select id="other_interface">
+                                    <option value="hdmi">HDMI</option>
+                                    <option value="composite">Composite</option>
+                                    <option value="lcd">LCD</option>
+                                    <option value="gpio">GPIO</option>
+                                </select>
+                            </td>
+                            <td>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_i2c">dtparam=i2c_arm</label>
+                            </td>
+                            <td>
+                                <label for="other_i2c">I2C Interface</label>
+                            </td>
+                            <td>
+                                <select id="other_i2c">
+                                    <option value="on">on</option>
+                                    <option value="off">off</option>
+                                </select>
+                            </td>
+                            <td>
+                                Must be disabled if using Display Parallel Interface (DPI).
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_spi">dtparam=spi</label>
+                            </td>
+                            <td>
+                                <label for="other_spi">SPI Interface</label>
+                            </td>
+                            <td>
+                                <select id="other_spi">
+                                    <option value="on">on</option>
+                                    <option value="off">off</option>
+                                </select>
+                            </td>
+                            <td>
+                                Must be disabled if using Display Parallel Interface (DPI).
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_overlay">dtoverlay</label>
+                            </td>
+                            <td>
+                                <label for="other_overlay">Device Tree OverLay</label>
+                            </td>
+                            <td>
+                                <input type="text" id="other_overlay" />
+                            </td>
+                            <td>
+                                dpi24 may be used for 24bit video via GPIO
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_overscan_left">overscan_left</label>
+                            </td>
+                            <td>
+                                <label for="other_overscan_left">Overscan Left</label>
+                            </td>
+                            <td>
+                                <input type="text" id="other_overscan_left" /><br />
+                                Valid Ranges: Any negative or positive integer
+                            </td>
+                            <td>
+                                Set if the screen is cut off on the left to move it to the right.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_overscan_right">overscan_right</label>
+                            </td>
+                            <td>
+                                <label for="other_overscan_right">Overscan Right</label>
+                            </td>
+                            <td>
+                                <input type="text" id="other_overscan_right" /><br />
+                                Valid Ranges: Any negative or positive integer
+                            </td>
+                            <td>
+                                Set if the screen is cut off on the right to move it to the left.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_overscan_top">overscan_top</label>
+                            </td>
+                            <td>
+                                <label for="other_overscan_top">Overscan Top</label>
+                            </td>
+                            <td>
+                                <input type="text" id="other_overscan_top" /><br />
+                                Valid Ranges: Any negative or positive integer
+                            </td>
+                            <td>
+                                Set if the screen is cut off on the top to move it down.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_overscan_bottom">overscan_bottom</label>
+                            </td>
+                            <td>
+                                <label for="other_overscan_bottom">Overscan Bottom</label>
+                            </td>
+                            <td>
+                                <input type="text" id="other_overscan_bottom" /><br />
+                                Valid Ranges: Any negative or positive integer
+                            </td>
+                            <td>
+                                Set if the screen is cut off on the bottom to move it up.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_framebuffer_width">framebuffer_width</label>
+                            </td>
+                            <td>
+                                <label for="other_framebuffer_width">Frame Buffer Width</label>
+                            </td>
+                            <td>
+                                <input type="text" id="other_framebuffer_width" /><br />
+                                Valid Ranges: 1 to 4096
+                            </td>
+                            <td>
+                                Should be set to the actual screen with in pixels.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_framebuffer_height">framebuffer_height</label>
+                            </td>
+                            <td>
+                                <label for="other_framebuffer_height">Frame Buffer Height</label>
+                            </td>
+                            <td>
+                                <input type="text" id="other_framebuffer_height" /><br />
+                                Valid Ranges: 1 to 4096
+                            </td>
+                            <td>
+                                Should be set to the actual screen with in pixels.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_dpi_group">dpi_group</label>
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td>
+                                <select id="other_dpi_group">
+                                    <option value="0">0: Auto-detect from EDID</option>
+                                    <option value="1">1: Consumer Electronics Association (CEA)</option>
+                                    <option value="2">2: Display Monitor Timings (DMT)</option>
+                                </select>
+                            </td>
+                            <td>
+                                CEA typically used by Televisions (TV)<br />
+                                DMT typically used by Monitors.<br />
+                                For custom settings, use DMT.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label for="other_dpi_mode">dpi_mode</label>
+                            </td>
+                            <td>
+                                &nbsp;
+                            </td>
+                            <td>
+                                <input type="text" id="other_dpi_mode" /><br />
+                                Valid Ranges:
+                                <ul>
+                                    <li>Auto: 1 to 107</li>
+                                    <li>CEA: 1 to 107</li>
+                                    <li>DMT: 1 to 87</li>
+                                </ul>
+                            </td>
+                            <td>
+                                See <a href="https://www.raspberrypi.com/documentation/computers/config_txt.html">Raspberry Pi documentation on config.txt</a> for values.
+                                <br />
+                                For custom settings, use 87.
+                            </td>
+                        </tr>
+                    </table>
+                    <br />
+                    <button id="clear_other" disabled="true">Clear Selections</button>
+                </div>
+
+                <div id="timing_div" class="col-md-12 worksheet">
+                    <h2>Timings</h2>
+                </div>
+
+
+                <div id="config_div" class="col-md-12 worksheet">
+                    <h2>/boot/config.txt</h2>
+                    <textarea id="config_text" readonly="true"></textarea>
+                </div>
+
+                <div id="wiring_div" class="col-md-12 worksheet">
+                    <h2>Wiring Diagram</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dpi.js"></script>
+    <script src="js/dpi_test.js"></script>
+
+</body>
+
+</html>
