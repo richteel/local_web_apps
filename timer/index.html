@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-us">
+
+<head>
+    <meta charset="utf-8" />
+    <title>My Local Web Apps</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <script src="js/timer.js"></script>
+</head>
+
+<body class="reset">
+    <h1>Timer</h1>
+    
+    <div>
+        <label for="minTime">Min Time</label>
+        <input type="text" id="minTime" value="5" />&nbsp;Minutes
+    </div>
+    <div>
+        <label for="maxTime">Max Time</label>
+        <input type="text" id="maxTime" value="7" />&nbsp;Minutes
+    </div>
+    <br />
+    <hr />
+    <br />
+    <div class="centeritems">
+        <span class="timewindow" id="timewindow">0:00:00</span>
+    </div>
+    <br />
+    <hr />
+    <br />
+    <div class="centeritems">
+        <input type="button" id="resetButton" value="Reset" disabled="true" />
+        <input type="button" id="startButton" value="Start" disabled="true" />
+        <input type="button" id="stopButton" value="Stop" disabled="true" />
+    </div>
+
+    <script>
+        document.body.addEventListener("load", init(), false);
+    </script>
+</body>
+</html>

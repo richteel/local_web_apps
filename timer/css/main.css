@@ -1,0 +1,50 @@
+html {
+    padding: 20px;
+}
+div {
+    display: flex;
+    padding-bottom: 10px;
+}
+input[type="button"] {
+    font-size: 2em;
+    height: 100px;
+    margin-right: 10px;
+    width: 200px;
+}
+input[type="text"] {
+    text-align: center;
+    width: 100px;
+}
+label {
+    font-weight: bolder;
+    margin-right: 10px;
+    text-align: right;
+    width: 100px;
+}
+label::after {
+    content: ":";
+}
+
+.centeritems {
+    display: block;
+    text-align: center;
+}
+.maxtime {
+    background-color: red; 
+    color: white;
+}
+.midtime {
+    background-color: yellow; 
+    color: black;
+}
+.mintime {
+    background-color: green; 
+    color: white;
+}
+.reset {
+    background-color: wheat; 
+}
+.timewindow {
+    font-size: 6em;
+    width: 100%;
+}
