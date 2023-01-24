@@ -26,13 +26,14 @@
 			<a href="https://regex101.com/" target="_blank">regex101: build, test, and debug regex</a>
 		</li>
 		<li>
-			<a href="https://www.w3schools.com/js/js_regexp.asp" target="_blank">JavaScript RegExp Object - Regular Expressions - W3Schools</a>
+			<a href="https://www.w3schools.com/js/js_regexp.asp" target="_blank">JavaScript RegExp Object - Regular
+				Expressions - W3Schools</a>
 		</li>
 		<li>
-			<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">Regular expressions - JavaScript - MDN Web Docs</a>
+			<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
+				target="_blank">Regular expressions - JavaScript - MDN Web Docs</a>
 		</li>
 	</ul>
-
 
 	<!-- ********************* MAIN FORM ********************* -->
 	<div class="inputRow">
@@ -48,8 +49,10 @@
 	<div class="inputRow">
 		<span class="inputLabel">Search Option</span>
 		<div class="radiobutton_group">
-			<input type="radio" id="search_option_regex" name="searchOption" value="regex"><label for="search_option_regex">RegEx</label>
-			<input type="radio" id="search_option_text" name="searchOption" value="text" checked="true"><label for="search_option_text">Text</label>
+			<input type="radio" id="search_option_regex" name="searchOption" value="regex"><label
+				for="search_option_regex">RegEx</label>
+			<input type="radio" id="search_option_text" name="searchOption" value="text" checked="true"><label
+				for="search_option_text">Text</label>
 		</div>
 	</div>
 
@@ -74,7 +77,6 @@
 
 
 
-	
 
 
 
@@ -82,32 +84,33 @@
 
 
 
-	
-	
+
+
+
 
 	<script>
 		let findText, replaceText, searchOption, searchText, resultsText, resultsLines;
-		
+
 		function GetOptionSet() {
-			if(!searchOption || searchOption.length==0) {
+			if (!searchOption || searchOption.length == 0) {
 				console.error("ERROR: GetOptionSet failed to find one or more controls");
 				return;
 			}
 
-			for(i = 0; i < searchOption.length; i++) {
-				if(searchOption[i].checked)
+			for (i = 0; i < searchOption.length; i++) {
+				if (searchOption[i].checked)
 					return searchOption[i].value;
 			}
 		}
 
 		function SearchOptionSet(optionValue) {
-			if(!searchOption || searchOption.length==0) {
+			if (!searchOption || searchOption.length == 0) {
 				console.error("ERROR: SearchOptionSet failed to find one or more controls");
 				return;
 			}
 
-			for(i = 0; i < searchOption.length; i++) {
-				if(searchOption[i].value == optionValue)
+			for (i = 0; i < searchOption.length; i++) {
+				if (searchOption[i].value == optionValue)
 					searchOption[i].checked = true;
 				else
 					searchOption[i].checked = false;
@@ -122,7 +125,7 @@
 			resultsText = document.getElementById("resultsText");
 			resultsLines = document.getElementById("resultsLines");
 
-			if(window.myapp === undefined || window.myapp!="test")
+			if (window.myapp === undefined || window.myapp != "test")
 				return;
 
 			LoadTestData();

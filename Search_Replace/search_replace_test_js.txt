@@ -1425,19 +1425,19 @@ function LoadTestData() {
 	loadTestData = document.getElementById("loadTestData");
 	clearData = document.getElementById("clearData");
 
-	if(!testDataButons || !loadTestData || !clearData || !findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+	if (!testDataButons || !loadTestData || !clearData || !findText || !replaceText || !searchOption || searchOption.length == 0 || !searchText || !resultsText) {
 		console.error("ERROR: LoadTestData failed to find one or more controls");
 		return;
 	}
 
 	testDataButons.style.display = "block";
-	
+
 	loadTestData.addEventListener("click", TestDataLoad, false);
 	clearData.addEventListener("click", TestDataClear, false);
 }
 
 function TestDataClear() {
-	if(!findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+	if (!findText || !replaceText || !searchOption || searchOption.length == 0 || !searchText || !resultsText) {
 		console.error("ERROR: TestDataClear failed to find one or more controls");
 		return;
 	}
@@ -1451,7 +1451,7 @@ function TestDataClear() {
 }
 
 function TestDataLoad() {
-	if(!findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+	if (!findText || !replaceText || !searchOption || searchOption.length == 0 || !searchText || !resultsText) {
 		console.error("ERROR: TestDataLoad failed to find one or more controls");
 		return;
 	}

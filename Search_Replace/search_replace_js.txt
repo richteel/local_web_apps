@@ -1,11 +1,11 @@
 function FindAllText() {
-	if(!findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+	if (!findText || !replaceText || !searchOption || searchOption.length == 0 || !searchText || !resultsText) {
 		console.error("ERROR: FindAllText failed to find one or more controls");
 		return;
 	}
 
 	document.body.classList.add('waiting');
-	
+
 	resultsText.innerHTML = "-- WORKING --";
 	resultsLines.innerHTML = "";
 
@@ -20,7 +20,7 @@ function FindOrReplace(replaceFlag) {
 	resultsText.innerHTML = "";
 	resultsLines.innerHTML = "";
 
-	if(searchText.value.length == 0) {
+	if (searchText.value.length == 0) {
 		console.error("ERROR: FindOrReplace has nothing to do. There is no test to search through.");
 		return null;
 	}
@@ -30,8 +30,8 @@ function FindOrReplace(replaceFlag) {
 
 	const useRegEx = GetOptionSet() == "regex";
 	let search = "", searchOption = "";
-	
-	if(useRegEx && findText.value.startsWith("/") && findText.value.lastIndexOf("/")>0) {
+
+	if (useRegEx && findText.value.startsWith("/") && findText.value.lastIndexOf("/") > 0) {
 		search = findText.value.substring(1, findText.value.lastIndexOf("/"));
 		searchOption = findText.value.substring(findText.value.lastIndexOf("/") + 1, findText.value.length);
 	}
@@ -39,32 +39,47 @@ function FindOrReplace(replaceFlag) {
 		search = findText.value;
 	}
 
+	let regx = new RegExp(search, searchOption);
+
+	if (!useRegEx) {
+		const specialChars = new Set(['.', '+', '*', '?', '^', '$', '(', ')', '[', ']', '{', '}', '|', '\\']);
+		const escapeChar = '\\';
+		let newSearch = "";
+		for (const c of search) {
+			if (specialChars.has(c)) {
+				newSearch += escapeChar + c;
+			}
+			else {
+				newSearch += c;
+			}
+		}
+		regx = new RegExp(newSearch, searchOption);
+	}
+
 	const lines = searchText.value.split(/\r?\n/);
 	const linesFound = [];
 	let linesFoundCount = 0;
 	let textFoundCount = 0;
 
-	const regx = new RegExp(search, searchOption);
-
-	for(let ln=0; ln<lines.length; ln++) {
-		if(ln>0) {
+	for (let ln = 0; ln < lines.length; ln++) {
+		if (ln > 0) {
 			resultsText.innerHTML += "\r\n";
 		}
-		if(regx.test(lines[ln])) {
+		if (regx.test(lines[ln])) {
 			let replacedText = lines[ln].replace(regx, replaceText.value);
 			let foundText = lines[ln]; //.replace(regx, preFindHtml + search + postFindHtml);
 			let matches = lines[ln].match(regx);
 			let uniqueMatches = new Set(matches);
 
 			for (const item of uniqueMatches) {
-  				foundText = foundText.replaceAll(item, preFindHtml + item + postFindHtml);
+				foundText = foundText.replaceAll(item, preFindHtml + item + postFindHtml);
 			}
 
 			linesFound.push(`${ln + 1}\t${foundText}`);
 			linesFoundCount++;
 			textFoundCount += matches.length;
 
-			if(replaceFlag) {
+			if (replaceFlag) {
 				resultsText.innerHTML += replacedText;
 			}
 			else {
@@ -76,22 +91,22 @@ function FindOrReplace(replaceFlag) {
 		}
 	}
 
-	resultsLines.innerHTML += `Found ${textFoundCount} occurances in ${linesFoundCount} lines`;
-	
-	for(let r=0; r<linesFound.length; r++) {
+	resultsLines.innerHTML += `Found ${textFoundCount} occurrences in ${linesFoundCount} lines`;
+
+	for (let r = 0; r < linesFound.length; r++) {
 		resultsLines.innerHTML += "\r\n";
 		resultsLines.innerHTML += linesFound[r];
 	}
 }
 
 function ReplaceAllText() {
-	if(!findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+	if (!findText || !replaceText || !searchOption || searchOption.length == 0 || !searchText || !resultsText) {
 		console.error("ERROR: ReplaceAllText failed to find one or more controls");
 		return;
 	}
 
 	document.body.classList.add('waiting');
-	
+
 	resultsText.innerHTML = "-- WORKING --";
 	resultsLines.innerHTML = "";
 
