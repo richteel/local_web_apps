@@ -1,0 +1,1474 @@
+window.myapp = "test";
+
+
+const TEST_SEARCH_TEXT_DATA = `In programming APIs[0][0] (not in communication between hosts), requests a system-allocated (dynamic) port
+TCP Port Service Multiplexer (TCPMUX). Historic. Both TCP and UDP have been assigned to TCPMUX by IANA, but by design only TCP is specified.
+compressnet (Management Utility)
+compressnet (Compression Process)
+Remote Job Entry was historically using socket 5 in its old socket form, while MIB PIM has identified it as TCP/5 and IANA has assigned both TCP and UDP 5 to it.
+Echo Protocol
+Discard Protocol, Wake-on-LAN
+Active Users (systat service)
+Daytime Protocol
+Previously netstat service
+Quote of the Day (QOTD)
+Message Send Protocol
+Character Generator Protocol (CHARGEN)
+File Transfer Protocol (FTP) data transfer
+File Transfer Protocol (FTP) control (command)
+Secure Shell (SSH), secure logins, file transfers (scp, sftp) and port forwarding
+Telnet protocol—unencrypted text communications
+Simple Mail Transfer Protocol (SMTP), used for email routing between mail servers
+nsw-fe (NSW User System FE)
+Palo Alto Networks' Panorama High Availability (HA) sync encrypted port.
+msg-icp (MSG ICP)
+msg-auth (MSG Authentication)
+dsp (Display Support Protocol)
+Time Protocol
+rap (Route Access Protocol)
+rlp (Resource Location Protocol)
+graphics (Graphics)
+Host Name Server Protocol
+WHOIS protocol
+mpm-flags (MPM FLAGS Protocol)
+mpm (Message Processing Module [recv])
+mpm-snd (MPM [default send])
+auditd (Digital Audit Daemon)
+TACACS Login Host protocol. TACACS+, still in draft which is an improved but distinct version of TACACS, only uses TCP 49.
+re-mail-ck (Remote Mail Checking Protocol)
+Historically used for Interface Message Processor logical address management, entry has been removed by IANA on 2013-05-25
+Xerox Network Systems (XNS) Time Protocol. Despite this port being assigned by IANA, the service is meant to work on SPP (ancestor of IPX/SPX), instead of TCP/IP.
+Domain Name System (DNS)
+Xerox Network Systems (XNS) Clearinghouse (Name Server). Despite this port being assigned by IANA, the service is meant to work on SPP (ancestor of IPX/SPX), instead of TCP/IP.
+isi-gl (ISI Graphics Language)
+Xerox Network Systems (XNS) Authentication Protocol. Despite this port being assigned by IANA, the service is meant to work on SPP (ancestor of IPX/SPX), instead of TCP/IP.
+Xerox Network Systems (XNS) Mail. Despite this port being assigned by IANA, the service is meant to work on SPP (ancestor of IPX/SPX), instead of TCP/IP.
+Historically assigned to the NIFTP-Based Mail protocol, but was never documented in the related IEN. The port number entry was removed from IANA's registry on 2017-05-18.
+acas (ACA Services)
+whoispp (whois++)
+covia (Communications Integrator (CI))
+tacacs-ds (TACACS-Database Service)
+sql-net (Oracle SQL*NET)
+Bootstrap Protocol (BOOTP) server; also used by Dynamic Host Configuration Protocol (DHCP)
+Bootstrap Protocol (BOOTP) client; also used by Dynamic Host Configuration Protocol (DHCP)
+Trivial File Transfer Protocol (TFTP)
+Gopher protocol
+NETRJS protocol
+NETRJS protocol
+NETRJS protocol
+NETRJS protocol
+deos (Distributed External Object Store)
+vettcp (vettcp)
+Finger protocol
+Hypertext Transfer Protocol (HTTP) uses TCP in versions 1.x and 2. HTTP/3 uses QUIC, a transport protocol on top of UDP.
+TorPark onion routing[verification needed]
+xfer (XFER Utility)
+TorPark control[verification needed]
+mit-ml-dev (MIT ML Device)
+ctf (Common Trace Facility)
+mit-ml-dev (MIT ML Device)
+mfcobol (Micro Focus Cobol)
+Kerberos authentication system
+su-mit-tg (SU/MIT Telnet Gateway)
+dnsix (DNSIX Security Attribute Token Map)
+PointCast (dotcom)
+mit-dov (MIT Dover Spooler)
+npp (Network Printing Protocol)
+dcp (Device Control Protocol)
+objcall (Tivoli Object Dispatcher)
+SUPDUP, terminal-independent remote login
+dixie (DIXIE Protocol Specification)
+swift-rvf (Swift Remote Virtual File Protocol)
+tacnews (TAC News)
+metagram (Metagram Relay)
+NIC host name
+ISO Transport Service Access Point (TSAP) Class 0 protocol;
+Digital Imaging and Communications in Medicine (DICOM; also port 11112)
+CCSO Nameserver
+macOS Server, (macOS) password server
+Remote User Telnet Service (RTelnet)
+IBM Systems Network Architecture (SNA) gateway access server
+Post Office Protocol, version 2 (POP2)
+Post Office Protocol, version 3 (POP3)
+Open Network Computing Remote Procedure Call (ONC RPC, sometimes referred to as Sun RPC)
+Ident, authentication service/identification protocol, used by IRC servers to identify users | Authentication Service (auth), the predecessor to identification protocol. Used to determine a user's identity of a particular TCP connection.
+Simple File Transfer Protocol
+UUCP Mapping Project (path service)[citation needed]
+Structured Query Language (SQL) Services[jargon]
+Network News Transfer Protocol (NNTP), retrieval of newsgroup messages
+Network Time Protocol (NTP), used for time synchronization
+Formerly Unisys Unitary Login, renamed by Unisys to NXEdit. Used by Unisys Programmer's Workbench for Clearpath MCP, an IDE for Unisys MCP software development
+DCE endpoint resolution
+Microsoft EPMAP (End Point Mapper), also known as DCE/RPC Locator service, used to remotely manage services including DHCP server, DNS server and WINS. Also used by DCOM
+NetBIOS Name Service, used for name registration and resolution
+NetBIOS Datagram Service
+NetBIOS Session Service
+Internet Message Access Protocol (IMAP), management of electronic mail messages on a server
+HEMS
+Background File Transfer Program (BFTP)
+Simple Gateway Monitoring Protocol (SGMP), a protocol for remote inspection and alteration of gateway management information
+Structured Query Language (SQL) Service[jargon]
+Distributed Mail System Protocol (DMSP, sometimes referred to as Pcmail)
+Simple Network Management Protocol (SNMP)
+Simple Network Management Protocol Trap (SNMPTRAP)
+Xerox
+SEND
+Network PostScript print server
+X Display Manager Control Protocol (XDMCP), used for remote logins to an X Display Manager server
+Border Gateway Protocol (BGP), used to exchange routing and reachability information among autonomous systems (AS) on the Internet
+ris
+Internet Relay Chat (IRC)
+SNMP Unix Multiplexer (SMUX)
+AppleTalk Routing Maintenance
+Quick Mail Transfer Protocol[80][self-published source]
+ANSI Z39.50
+Internetwork Packet Exchange (IPX)
+Message posting protocol (MPP)
+Internet Message Access Protocol (IMAP), version 3
+Efficient Short Remote Operations (ESRO)
+Arcisdms
+Border Gateway Multicast Protocol (BGMP)
+http-mgmt
+ThinLinc Web Access
+Novastor Online Backup
+macOS Server Admin (officially AppleShare IP Web administration)
+macOS Xsan administration
+PKIX Time Stamp Protocol (TSP)
+Precision Time Protocol (PTP) event messages
+Precision Time Protocol (PTP) general messages
+Mapping of Airline Traffic over Internet Protocol (MATIP) type A
+MATIP type B
+cloanto-net-1 (used by Cloanto Amiga Explorer and VMs)
+On-Demand Mail Relay (ODMR)
+Rpc2portmap
+codaauth2, Coda authentication server
+securecast1, outgoing packets to NAI's SecureCast servers (As of 2000)
+ClearCase albd
+Amiga Envoy Network Inquiry Protocol
+HP data alarm manager
+A Remote Network Server System
+AURP (AppleTalk Update-based Routing Protocol)
+Unidata LDM near real-time data distribution protocol
+Lightweight Directory Access Protocol (LDAP)
+Digital Equipment Corporation DECnet+ (Phase V) over TCP/IP (RFC1859)
+Uninterruptible power supply (UPS)
+Service Location Protocol (SLP)
+NNTP, part of Network News Transfer Protocol
+Mobile IP Agent (RFC 5944)
+Hypertext Transfer Protocol Secure (HTTPS) uses TCP in versions 1.x and 2. HTTP/3 uses QUIC, a transport protocol on top of UDP.
+Simple Network Paging Protocol (SNPP), RFC 1568
+Microsoft-DS (Directory Services) Active Directory, Windows shares
+Microsoft-DS (Directory Services) SMB file sharing
+Kerberos Change/Set password
+SMTP over implicit SSL (obsolete), URL Rendezvous Directory for Cisco SSM (primary usage assignment), Authenticated SMTP over TLS/SSL (SMTPS) (alternative usage assignment)
+tcpnethaspsrv, Aladdin Knowledge Systems Hasp services
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+Centro Software ERP ports
+GO-Global remote access and application publishing software
+Retrospect
+Internet Security Association and Key Management Protocol (ISAKMP) / Internet Key Exchange (IKE)
+Modbus Protocol
+Citadel, multiservice protocol for dedicated clients for the Citadel groupware system
+FirstClass Protocol (FCP), used by FirstClass client/server groupware system
+Rexec, Remote Process Execution
+comsat, together with biff
+rlogin
+Who
+Remote Shell, used to execute non-interactive commands on a remote system (Remote Shell, rsh, remsh)
+Syslog, used for system logging
+Line Printer Daemon (LPD), print service
+Talk
+NTalk
+efs, extended file name server
+Routing Information Protocol (RIP)
+Routing Information Protocol Next Generation (RIPng)
+NetWare Core Protocol (NCP) is used for a variety things such as access to primary NetWare server resources, Time Synchronization, etc.
+Timed, Timeserver
+Remote procedure call (RPC)
+netnews
+netwall, for emergency broadcasts
+Unix-to-Unix Copy Protocol (UUCP)
+commerce (Commerce Applications)
+klogin, Kerberos login
+kshell, Kerberos Remote shell
+DHCPv6 client
+DHCPv6 server
+Apple Filing Protocol (AFP) over TCP
+new-rwho, new-who
+Real Time Streaming Protocol (RTSP)
+Remotefs, RFS, rfs_server
+rmonitor, Remote Monitor
+monitor
+NNTP over TLS/SSL (NNTPS)
+9P (Plan 9)
+Previously assigned for use of Internet Message Access Protocol over TLS/SSL (IMAPS), now deregistered in favour of port 993.
+email message submission (SMTP)
+FileMaker 6.0 (and later) Web Sharing (HTTP Alternate, also see port 80)
+HTTP RPC Ep Map, Remote procedure call over Hypertext Transfer Protocol, often used by Distributed Component Object Model services and Microsoft Exchange Server
+Reliable Syslog Service — used for system logging
+TUNNEL profile, a protocol for BEEP peers to form an application layer tunnel
+ASF Remote Management and Control Protocol (ASF-RMCP) & IPMI Remote Management Protocol
+Open Directory Proxy (ODProxy)
+Internet Printing Protocol (IPP)
+Common Unix Printing System (CUPS) administration console (extension to IPP)
+RLZ DBase
+Lightweight Directory Access Protocol over TLS/SSL (LDAPS)
+Multicast Source Discovery Protocol, MSDP
+SupportSoft Nexus Remote Command (control/listening), a proxy gateway connecting remote control traffic
+SANity
+Label Distribution Protocol (LDP), a routing protocol used in MPLS networks
+DHCP Failover protocol
+Registry Registrar Protocol (RRP)
+IEEE-MMS
+SupportSoft Nexus Remote Command (data), a proxy gateway connecting remote control traffic
+Media Management System (MMS) Media Management Protocol (MMP)[95]
+Tinc VPN daemon
+IBM RMC (Remote monitoring and Control) protocol, used by System p5 AIX Integrated Virtualization Manager (IVM) and Hardware Management Console to connect managed logical partitions (LPAR) to enable dynamic partition reconfiguration
+macOS Server administration, version 10.4 and earlier
+Doom, the first online first-person shooter
+airserv-ng, aircrack-ng's server for remote-controlling wireless devices
+Application Configuration Access Protocol (ACAP)
+REALM-RUSD (ApplianceWare Server Appliance Management Protocol)
+Velneo Application Transfer Protocol (VATP)
+MS Exchange Routing
+Linux-HA high-availability heartbeat
+IEEE Media Management System over SSL (IEEE-MMS-SSL)
+Optimized Link State Routing (OLSR)
+Extensible Provisioning Protocol (EPP), a protocol for communication between domain name registries and registrars (RFC 5734)
+Link Management Protocol (LMP),[98] a protocol that runs between a pair of nodes and is used to manage traffic engineering (TE) links
+IRIS[99][100] (Internet Registry Information Service) over BEEP (Blocks Extensible Exchange Protocol)[101] (RFC 3983)
+Secure Internet Live Conferencing (SILC)
+Cisco Tag Distribution Protocol[102][103][104]—being replaced by the MPLS Label Distribution Protocol[105]
+Topology Broadcast based on Reverse-Path Forwarding routing protocol (TBRPF; RFC 3684)
+Kerberos administration
+kerberos-iv, Kerberos version IV
+kerberos_master, Kerberos authentication
+passwd_server, Kerberos password (kpasswd) server
+Reverse Routing Header (RRH)[106]
+userreg_server, Kerberos userreg server
+tell send
+krb5_prop, Kerberos v5 slave propagation
+krbupdate [kreg], Kerberos registration
+Conserver serial-console management server
+SpamAssassin spamd daemon
+mdbs-daemon
+MODBUS/TCP Security[107]
+Microsoft Net.TCP Port Sharing Service
+Certificate Management Protocol[108]
+NETCONF over SSH
+NETCONF over BEEP
+NETCONF for SOAP over HTTPS
+NETCONF for SOAP over BEEP
+Adobe Flash[109]
+DHCP Failover protocol
+Group Domain Of Interpretation (GDOI) protocol
+DNS over TLS (RFC 7858)
+DNS over QUIC or DNS over DTLS[110]
+iSCSI (RFC 3720)
+OWAMP control (RFC 4656)
+TWAMP control (RFC 5357)
+rsync file synchronization protocol
+cddbp, CD DataBase (CDDB) protocol (CDDBP)
+IBM Endpoint Manager Remote Control
+Brocade SMI-S RPC
+Brocade SMI-S RPC SSL
+VMware ESXi[111][112]
+VMware ESXi[111][112]
+BIND remote name daemon control (RNDC)[113][114]
+Remote HTTPS management for firewall devices running embedded Check Point VPN-1 software[115]
+Sony PlayStation Wake On Lan
+Microsoft Remote Web Workplace, a feature of Windows Small Business Server[116]
+Lustre (file system)[117] Protocol (data).
+FTPS Protocol (data), FTP over TLS/SSL
+FTPS Protocol (control), FTP over TLS/SSL
+Netnews Administration System (NAS)[118]
+Telnet protocol over TLS/SSL
+Internet Message Access Protocol over TLS/SSL (IMAPS)
+Previously assigned to Internet Relay Chat over TLS/SSL (IRCS), but was not used in common practice.
+Post Office Protocol 3 over TLS/SSL (POP3S)
+ThinLinc web-based administration interface[119]
+
+
+z/OS Network File System (NFS) (potentially ports 991–1023)[78][79][120]
+Reserved
+Teradata database management system (Teradata) server
+Reserved
+Native IPv6 behind IPv4-to-IPv4 NAT Customer Premises Equipment (6a44)[121]
+
+Microsoft DCOM services
+nim, IBM AIX Network Installation Manager (NIM)
+nimreg, IBM AIX Network Installation Manager (NIM)
+SOCKS proxy
+WebObjects
+rmiactivation, Java remote method invocation (RMI) activation
+rmiregistry, Java remote method invocation (RMI) registry
+Reserved
+Licklider Transmission Protocol (LTP) delay tolerant networking protocol
+
+Battle.net chat/game protocol, used by Blizzard's games[124]
+Cisco IP SLA (Service Assurance Agent)
+OpenVPN
+The cajo project Free dynamic transparent distributed computing in Java
+Equalsocial Fediverse protocol
+Kazaa
+QuickTime Streaming Server administration
+Infoseek search agent
+VLC media player default port for UDP/RTP stream
+Nessus Security Scanner
+Microsoft System Center Operations Manager (SCOM) (formerly Microsoft Operations Manager (MOM)) agent
+Internet Protocol Security (IPSec)
+Windows RxMon.exe
+Dell OpenManage HTTPS[125]
+Festival Speech Synthesis System server[126]
+AMX ICSP (Protocol for communications with AMX control systems devices)
+Men&Mice DNS[127]
+Strapi[128]
+Sails.js default port[129]
+Qubes (Manufacturing Execution System)
+Internet Content Adaptation Protocol
+IBM Lotus Notes/Domino (RPC) protocol
+Mimer SQL
+IBM WebSphere MQ (formerly known as MQSeries)
+Timbuktu Service 1 Port
+Timbuktu Service 2 Port
+Timbuktu Service 3 Port
+Timbuktu Service 4 Port
+Reverse Gossip Transport Protocol (RGTP), used to access a General-purpose Reverse-Ordered Gossip Gathering System (GROGGS) bulletin board, such as that implemented on the Cambridge University's Phoenix system
+Microsoft SQL Server database management system (MSSQL) server
+Microsoft SQL Server database management system (MSSQL) monitor
+WiFi Pineapple Hak5.
+AIRS data interchange.
+Sid Meier's CivNet, a multiplayer remake of the original Sid Meier's Civilization game[citation needed]
+Citrix Independent Computing Architecture (ICA)[130]
+IBM Tivoli Storage Manager server[131]
+IBM Tivoli Storage Manager client scheduler[131]
+Windows Live Messenger (Whiteboard and Application Sharing)[132]
+Microsoft's Windows Internet Name Service (WINS)
+Garena game client[citation needed]
+nCUBE License Manager
+Oracle database default listener, in future releases[when?][133] official port 2483 (TCP/IP) and 2484 (TCP/IP with SSL)
+ingreslock, ingres
+Oracle Net Services, formerly known as SQL*Net[134]
+Apache Derby Network Server[135]
+IBM Sametime Virtual Places Chat
+Eclipse Target Communication Framework[136]
+1C:Enterprise server agent (ragent)[137][138]
+1C:Enterprise master cluster manager (rmngr)[137]
+1C:Enterprise configuration repository server[137]
+1C:Enterprise cluster administration server (RAS)[137]
+Laplink
+1C:Enterprise debug server[137]
+Gadu-Gadu (direct client-to-client)[citation needed]
+1C:Enterprise cluster working processes[137]
+MIL STD 2045-47001 VMF
+IBM Tivoli Storage Manager web client[131]
+IBM Tivoli Storage Manager server web interface[131]
+Pervasive PSQL[139]
+Cisco VLAN Query Protocol (VQP)
+DarkComet remote administration tool (RAT)[citation needed]
+iSketch[140]
+iSketch[140]
+LonTalk normal
+LonTalk urgent
+Early deployment of RADIUS before RFC standardization was done using UDP port number 1645. Enabled for compatibility reasons by default on Cisco[citation needed] and Juniper Networks RADIUS servers.[141] Official port is 1812. TCP port 1645 MUST NOT be used.[142]
+Old radacct port,[when?] RADIUS accounting protocol. Enabled for compatibility reasons by default on Cisco[citation needed] and Juniper Networks RADIUS servers.[141] Official port is 1813. TCP port 1646 MUST NOT be used.[142]
+Perforce[143]
+Novell GroupWise clients in client/server access mode
+Microsoft Key Management Service (KMS) for Windows Activation[144]
+Layer 2 Forwarding Protocol (L2F)
+Layer 2 Tunneling Protocol (L2TP)
+Windward Studios games (vdmplay)
+L2TP/IPsec, for establish an initial connection[145]
+KDE Connect[146]
+America's Army, a massively multiplayer online game (MMO)[147]
+H.323 registration and alternate communication
+H.323 call signaling
+Point-to-Point Tunneling Protocol (PPTP)
+Microsoft Media Services (MMS, ms-streaming)
+Novell ZENworks[148][149]
+Emergency management information system
+"Decomissioned [sic] Port 04/14/00, ms"
+Microsoft Message Queuing
+RADIUS authentication protocol, radius
+RADIUS accounting protocol, radius-acct
+Microsoft Notification Protocol (MSNP), used by the Microsoft Messenger service and a number of instant messaging Messenger clients
+Node-RED[150]
+MQTT (formerly MQ Telemetry Transport)
+Simple Service Discovery Protocol (SSDP), discovery of UPnP devices
+Macromedia Flash Communications Server MX, the precursor to Adobe Flash Media Server before Macromedia's acquisition by Adobe on December 3, 2005
+Real Time Messaging Protocol (RTMP)[citation needed], primarily used in Adobe Flash[151]
+Gemini, a lightweight, collaboratively designed protocol, striving to fill the gap between Gopher and HTTP[152]
+Cisco IOS IP Service Level Agreements (IP SLAs) Control Protocol[citation needed]
+InterSystems Caché
+Big Brother
+Cisco Hot Standby Router Protocol (HSRP)[153][self-published source]
+Cisco X.25 over TCP (XOT) service
+Cisco Skinny Client Control Protocol (SCCP)
+Artemis: Spaceship Bridge Simulator[154]
+Civilization IV multiplayer[155]
+Network File System (NFS)
+Civilization IV multiplayer[155]
+Autodesk NLM (FLEXlm)
+cPanel default[156]
+Secure RADIUS Service (radsec)
+cPanel default SSL[156]
+GNUnet
+WebHost Manager default[156]
+WebHost Manager default SSL[156]
+cPanel default web mail[156]
+cPanel default SSL web mail[156]
+Warzone 2100 multiplayer[citation needed]
+Networked Transport of RTCM via Internet Protocol (NTRIP)[citation needed]
+Zephyr Notification Service server
+Zephyr Notification Service serv-hm connection
+Zephyr Notification Service hostmanager
+GTP control messages (GTP-C)
+TDMoIP (TDM over IP)
+GTP user data messages (GTP-U)
+GDB remote debug port
+EForward-document transport system
+Apache ZooKeeper default client port[citation needed]
+Apple Push Notification Service, binary, gateway.[157] Deprecated March 2021.[158]
+Apple Push Notification Service, binary, feedback.[157] Deprecated March 2021.[158]
+Apple Push Notification Service, HTTP/2, JSON-based API.
+NOAAPORT Broadcast Network
+EMWIN
+ESET anti-virus updates[159]
+EtherNet/IP implicit messaging for IO data
+DirectAdmin Access[160]
+ESET Remote administrator[159]
+General Dynamics Remote Encryptor Configuration Information Protocol (RECIPe)
+CoMotion master
+CoMotion backup
+ArmA multiplayer[161]
+Halo: Combat Evolved multiplayer host[162]
+ArmA multiplayer (default port for game +1)[161]
+Halo: Combat Evolved multiplayer listener[162]
+ArmA multiplayer (default port for game +3)[161]
+AIM game LAN network port[citation needed]
+Ghost (blogging platform)[163]
+Default for BMC Control-M/Server Configuration Agent
+Default for BMC Control-M/Server, to allow the Control-M/Enterprise Manager to connect to the Control-M/Server
+Default for K9 Web Protection/parental controls, content filtering agent[citation needed]
+Docker REST API (plain)
+Docker REST API (SSL)
+Docker Swarm cluster management communications[164][self-published source]
+CoreOS etcd client communication
+KGS Go Server[165]
+CoreOS etcd server communication
+OpenView Session Mgr
+FileMaker Data Access Layer (ODBC/JDBC)
+CVS version control system password-based server
+IEC 60870-5-104, used to send electric power telecontrol messages between two systems via directly connected data circuits
+OrientDB database listening for binary client connections[166]
+Media Gateway Control Protocol (MGCP) media gateway
+ovwdb—OpenView Network Node Manager (NNM) daemon
+Valheim
+XRPL
+OrientDB database listening for HTTP client connections[166]
+Oracle database listening for insecure client connections to the listener, replaces port 1521[when?]
+Oracle database listening for SSL client connections to the listener
+NetFS communication[167]
+NetFS probe
+Multicast Address Dynamic Client Allocation Protocol (MADCAP).[168] All standard messages are UDP datagrams.[169]
+LonTalk/IP
+EVault data protection services
+Ultima Online servers[citation needed]
+Citrix Independent Computing Architecture (ICA) with Session Reliability; port 1494 without session reliability[130]
+Ultima Online servers[citation needed]
+DICT[170]
+SQL Anywhere database server[171][172]
+XBT Tracker.[173] UDP tracker extension is considered experimental.[174]
+Media Gateway Control Protocol (MGCP) media gateway controller (call agent)
+Short Message Peer-to-Peer (SMPP)[citation needed]
+corbaloc:iiop URL, per the CORBA 3.0.3 specification
+gsi ftp, per the GridFTP specification
+I2P BOB Bridge[175]
+Megaco text H.248
+Megaco binary (ASN.1) H.248
+gpsd, GPS daemon
+WAP push Multimedia Messaging Service (MMS)
+Symantec System Center agent (SSC-AGENT)
+Ruby on Rails development default[176]
+Meteor development default[177][failed verification]
+Resilio Sync,[178] spun from BitTorrent Sync.
+Create React App, script to create single-page React applications[179]
+Gogs (self-hosted GIT service) [180]
+Grafana[181]
+Honeywell Prowatch[182]
+iSync
+KWS Connector
+Common Internet File System (CIFS). See also port 445 for Server Message Block (SMB), a dialect of CIFS.
+gds-db (Interbase/Firebird databases)
+APC PowerChute Network
+Xbox LIVE and Games for Windows – Live
+BlackBerry Enterprise Server communication protocol[183]
+Squid caching web proxy[184]
+Fibre Channel over IP (FCIP)
+WhiskerControl research control protocol
+iSCSI
+msft-gc, Microsoft Global Catalog (LDAP service which contains data from Active Directory forests)
+msft-gc-ssl, Microsoft Global Catalog over SSL (similar to port 3268, LDAP over SSL)
+Net Assistant, a predecessor to Apple Remote Desktop
+Apple Remote Desktop 2.0 or later
+Virtual Air Traffic Simulation (VATSIM) network voice communication[citation needed]
+Odette File Transfer Protocol (OFTP)
+MySQL database system
+DECE GEODI Server
+Thundercloud DataPath Overlay Control
+Eggdrop, an IRC bot default port[185]
+Network Caller ID server
+CruiseControl.rb[186]
+OpenOCD (gdbserver)[187]
+Pervasive PSQL[139]
+GTP' 3GPP GSM/UMTS CDR logging protocol
+Microsoft Terminal Server (RDP) officially registered as Windows Based Terminal (WBT)[188]
+Novell NDPS Printer Agent
+xmlBlaster
+Xware xTrm Communication Protocol
+Xware xTrm Communication Protocol over SSL
+Pacom Security User Port
+Resource Reservation Protocol (RSVP)
+STUN, a protocol for NAT traversal[189]
+TURN, a protocol for NAT traversal[190] (extension to STUN)
+STUN Behavior Discovery.[191] See also port 5349.
+PlayStation Network[192]
+PlayStation Network[192]
+Slim Devices discovery protocol
+Slim Devices SlimProto protocol
+Network UPS Tools (NUT)
+MPLS LSP-echo Port
+Smartcard Port
+Microsoft Message Queuing
+SMTP alternate[193]
+Teredo tunneling
+Apcupsd Information Port [194]
+SAP Message Server Port[195]
+Distcc, distributed compiler
+Cyc
+Apple SASL, used by macOS Server Password Server
+Battlefield 4
+Information Exchange
+KNXnet/IP(EIBnet/IP)
+Digital Audio Access Protocol (DAAP), used by Apple's iTunes and AirPlay
+Subversion (SVN) version control system
+Web Services Dynamic Discovery (WS-Discovery), used by various components of Windows Vista and later
+Some Blizzard games[124]
+Club Penguin Disney online game for kids
+Netia NA-ER Port
+CimTrak registered port
+RBLcheckd server daemon
+Bidirectional Forwarding Detection (BFD)for IPv4 and IPv6 (Single Hop) (RFC 5881)
+VoIP program used by Ventrilo
+RADIUS change of authorization
+Harman Professional HiQnet protocol
+RedSeal Networks client/server connection[citation needed]
+WarMUX game server
+RedSeal Networks client/server connection[citation needed]
+RedSeal Networks client/server connection[citation needed]
+System Management Agent, developed and used by Cerner to monitor and manage solutions
+ERP Server Application used by F10 Software
+IGRS
+Diameter base protocol (RFC 3588)
+Oracle Enterprise Manager Remote Agent
+udt_os, IBM UniData UDT OS[196]
+Warframe online interaction[citation needed]
+Warframe online interaction[citation needed]
+OpenTTD game (masterserver and content service)
+Palo Alto Networks' Panorama management of firewalls and log collectors & pre-PAN-OS 8.0 Panorama-to-managed devices software updates.[197]
+OpenTTD game
+Norman distributed scanning service
+Diablo II game
+Microsoft Ants game
+CoreOS etcd client communication
+Protocol information and warnings[clarification needed]
+IBM Rational Developer for System z Remote System Explorer Daemon
+Solaris lockd NFS lock daemon/manager
+Mud Master Chat protocol (MMCP) - Peer-to-peer communications between MUD clients.[198]
+Minger Email Address Verification Protocol[199]
+Amazon Echo Dot (Amazon Alexa) streaming connection with Spotify[200]
+OpenCORE Remote Control Service
+Kerio
+PxPlus Client server interface ProvideX
+Ascom Timeplex Bridge Relay Element (BRE)
+Shofar (ShofarNexus)
+Xgrid
+Smartcard-TLS
+Microsoft Remote Web Workplace administration
+Teradici PCoIP
+ManageSieve[201]
+AWS protocol for cloud remoting solution
+Harman International's HControl protocol for control and monitoring of Audio, Video, Lighting and Control equipment
+Couch Potato Android app[202]
+Angular app
+TinyMUD and various derivatives
+NATS server default port[203]
+Aleph One, a computer game
+Orthanc – DICOM server[204]
+Quassel distributed IRC client
+Docker implementations, redistributions, and setups default[205][needs update?]
+CrashPlan
+Viber[206]
+Simple Railroad Command Protocol (SRCP)
+TrueConf Client - TrueConf Server media data exchange[207]
+Referral Whois (RWhois) Protocol[208]
+Oracle WebCenter Content: Content Server—Intradoc Socket port. (formerly known as Oracle Universal Content Management).
+Metasploit's default listener port[209]
+Xvfb X server virtual frame buffer service
+OpenOCD (Telnet)[187]
+I2P HTTP/S proxy
+Integrated Client Message Service (ICMS)
+Apple Wide Area Connectivity Service, used by Back to My Mac
+IPSec NAT Traversal (RFC 3947, RFC 4306)
+Microsoft Silverlight connectable ports under non-elevated trust
+Salt master
+Armagetron Advanced server default
+default Log4j socketappender port
+Sinatra default server port in development mode (HTTP)
+Inter-Asterisk eXchange (IAX2)
+Identity Registration Protocol
+Direct End to End Secure Chat Protocol
+QualiSystems TestShell Suite Services
+OrbitNet Message Service
+Default for older versions of eMule[210]
+Google Desktop Search
+Default for older versions of eMule[210]
+eMule optional web interface[210]
+PulseAudio sound server
+Appium open source automation tool
+Default bootstrap port to use on device to talk to Appium
+Computer Associates Desktop and Server Management (DMP)/Port Multiplexer[211]
+Gearman's job server
+IP Flow Information Export
+Apprentice
+SIMON (service and discovery)
+Virtual eXtensible Local Area Network (VXLAN)
+IP Routable RocE (RoCEv2)
+OPC UA Connection Protocol (TCP) and OPC UA Multicast Datagram Protocol (UDP) for OPC Unified Architecture from OPC Foundation
+OPC UA TCP Protocol over TLS/SSL for OPC Unified Architecture from OPC Foundation
+Web Fresh Communication, Quadrion Software & Odorless Entertainment
+Java, Glassfish Application Server administration default
+LysKOM Protocol A
+DrayTek DSL Status Monitoring[212]
+Munin Resource Monitoring Tool
+Cylon Controls UC32 Communications Port
+UPnP—Windows network device interoperability
+VTun, VPN Software
+ASP.NET Core — Development Webserver
+FlightGear multiplayer[213]
+Synology Inc. Management Console, File Station, Audio Station
+Flask Development Webserver
+Heroku console access
+Docker Registry[214]
+AT&T U-verse public, educational, and government access (PEG) streaming over HTTP[215]
+High-Speed SECS Message Services[citation needed]
+3CX Phone System Management Console/Web Client (HTTP)
+RidgeRun GStreamer Daemon (GSTD) [216]
+Apple's AirPlay Receiver[217]
+League of Legends, a multiplayer online battle arena video game[218]
+Slingbox and Slingplayer
+Iperf (Tool for measuring TCP and UDP bandwidth performance)
+Synology Inc. Secured Management Console, File Station, Audio Station
+3CX Phone System Management Console/Web Client (HTTPS)
+ASSA ARX access control system[219]
+FileMaker – name binding and transport
+Real-time Transport Protocol media data (RTP) (RFC 3551, RFC 4571)
+Real-time Transport Protocol control protocol (RTCP) (RFC 3551, RFC 4571)
+Palo Alto Networks - User-ID agent
+Registered to: TelePath (the IBM FlowMark workflow-management system messaging platform)[220]
+The TCP port is now used for: IBM WebSphere MQ Workflow
+TelePath (the IBM FlowMark workflow-management system messaging platform)[220]
+MSSQL Server Replication and Database mirroring endpoints[221]
+scpi-raw Standard Commands for Programmable Instruments
+Sonic Robo Blast 2 and Sonic Robo Blast 2 Kart servers
+AVM CAPI-over-TCP (ISDN over Ethernet tunneling)[citation needed]
+Android ADB server
+Standard port in Filebeats/Logstash implementation of Lumberjack protocol.
+Texai Message Service
+Yahoo! Messenger
+ita-agent Symantec Intruder Alert[222]
+Session Initiation Protocol (SIP)
+Session Initiation Protocol (SIP) over TLS
+Localisation access
+EPICS Channel Access server[224]
+EPICS Channel Access repeater beacon[224]
+Binary Floor Control Protocol (BFCP)[225]
+List of telephone switches#NEC[NEC Phone System] NEC SV8100 and SV9100 MLC Phones Default iSIP Port
+EPCglobal Low Level Reader Protocol (LLRP)
+EPCglobal Low Level Reader Protocol (LLRP) over TLS
+3CX Phone System 3CX Tunnel Protocol, 3CX App API, 3CX Session Border Controller
+SafeNet, Inc Sentinel LM, Sentinel RMS, License Manager, client-to-server
+SafeNet, Inc Sentinel LM, Sentinel RMS, License Manager, server-to-server
+IBM Tivoli Framework NetCOOL/Impact[226] HTTP Service
+Neverwinter Nights
+TorgaNET (Micronational Darknet)
+TorgaNET (Micronational Intelligence Darknet)
+ATMP Ascend Tunnel Management Protocol[227]
+ESRI SDE Instance
+ESRI SDE Remote Start
+BZFlag
+PC over IP Endpoint Management[228]
+Vite
+AOL Instant Messenger protocol. The chat app is defunct as of 15 December 2017.[229]
+EchoLink VoIP Amateur Radio Software (Voice)
+EchoLink VoIP Amateur Radio Software (Voice)
+EchoLink VoIP Amateur Radio Software (Information)
+Iperf3 (Tool for measuring TCP and UDP bandwidth performance)
+Extensible Messaging and Presence Protocol (XMPP) client connection[230][231]
+Apple Push Notification Service[157]
+Extensible Messaging and Presence Protocol (XMPP) client connection over SSL
+HP Virtual Room Service
+Google Play, Android Cloud to Device Messaging Service, Google Cloud Messaging
+Viber[206]
+Viber[206]
+Control And Provisioning of Wireless Access Points (CAPWAP) CAPWAP control[232]
+Control And Provisioning of Wireless Access Points (CAPWAP) CAPWAP data[232]
+Extensible Messaging and Presence Protocol (XMPP) server-to-server connection[230][231]
+Extensible Messaging and Presence Protocol (XMPP)[233]
+Extensible Messaging and Presence Protocol (XMPP)[234]
+Extensible Messaging and Presence Protocol (XMPP)[235]
+Outlaws, a 1997 first-person shooter video game[236]
+Certificate Management over CMS[237]
+STUN over TLS/DTLS, a protocol for NAT traversal[189]
+TURN over TLS/DTLS, a protocol for NAT traversal[190]
+STUN Behavior Discovery over TLS.[191] See also port 3478.
+NAT Port Mapping Protocol and Port Control Protocol—client-requested configuration for connections through network address translators and firewalls
+Multicast DNS (mDNS)
+Link-Local Multicast Name Resolution (LLMNR), allows hosts to perform name resolution for hosts on the same local link (only provided by Windows Vista and Server 2008)
+Web Services for Devices (WSDAPI) (only provided by Windows Vista, Windows 7 and Server 2008)
+WSDAPI Applications to Use a Secure Channel (only provided by Windows Vista, Windows 7 and Server 2008)
+Kega Fusion, a Sega multi-console emulator[238][239]
+Multicast File Transfer Protocol (MFTP)[240][importance?]
+NetSupport Manager
+IBM Rational Synergy (Telelogic Synergy) (Continuus CM) Message Router
+Wonderware SuiteLink service
+SNS Agent
+NetSupport Manager
+PostgreSQL database system
+Bouwsoft file/webserver[241]
+Cisco Unified Video Advantage[citation needed]
+OSIsoft PI Server Client Access [242]
+OSIsoft PI Asset Framework Client Access [243]
+OSIsoft PI Notifications Client Access [244]
+VMware VAMI (Virtual Appliance Management Infrastructure)—used for initial setup of various administration settings on Virtual Appliances designed using the VAMI architecture.
+Schneider Electric's ClearSCADA (SCADA implementation for Windows) — used for client-to-server communication.[245]
+IBM Cognos TM1 Admin server
+Hotline tracker server connection
+Hotline tracker server discovery
+Hotline control connection
+VNC Remote Frame Buffer RFB protocol—for incoming listening viewer
+Hotline file transfer connection
+Setiqueue Proxy server client for SETI@Home project
+Hewlett-Packard Data Protector[citation needed]
+Fastboot default wireless port
+Oracle WebCenter Content: Inbound Refinery—Intradoc Socket port. (formerly known as Oracle Universal Content Management). Port though often changed during installation
+Freeciv versions up to 2.0, Hewlett-Packard Data Protector, McAfee EndPoint Encryption Database Server, SAP, Default for Microsoft Dynamics CRM 4.0, Softether VPN default port
+Freeciv, Oracle WebLogic Server Node Manager[246]
+Session Data Transport (SDT), a part of Architecture for Control Networks (ACN)[247][full citation needed]
+Kibana[248]
+pcANYWHEREdata, Symantec pcAnywhere (version 7.52 and later[249])[250] data
+pcANYWHEREstat, Symantec pcAnywhere (version 7.52 and later) status
+IBM Lotus Sametime p2p file transfer
+NRPE (Nagios)
+NSCA (Nagios)
+FILEMQ ZeroMQ File Message Queuing Protocol
+ZRE-DISC ZeroMQ Realtime Exchange Protocol (Discovery)
+Advanced Message Queuing Protocol (AMQP)[251] over TLS
+Advanced Message Queuing Protocol (AMQP)[251]
+Constrained Application Protocol (CoAP)
+Constrained Application Protocol Secure (CoAPs)
+Nagios Cross Platform Agent (NCPA)[252]
+Hazelcast default communication port[253]
+Microsoft DPM Data Channel (with the agent coordinator)
+Microsoft DPM Data Channel (with the protection agent)
+Microsoft RPC, DFSR (SYSVOL) Replication Service[citation needed]
+System Center Operations Manager[254]
+Operations Manager Console
+IDA Discover Port 1
+IDA Discover Port 2
+VNC Remote Frame Buffer RFB protocol over HTTP
+ProjectWise Server[255]
+Remote Frame Buffer protocol (RFB)
+Virtual Network Computing (VNC) Remote Frame Buffer RFB protocol[256]
+Windows service "C:\Program Files\Intel\Intel(R) Online Connect Access\IntelTechnologyAccessService.exe" that listens on 127.0.0.1
+AMMYY admin Remote Control
+TeamViewer remote desktop protocol[257]
+CouchDB database server
+Windows PowerShell Default psSession Port[258] Windows Remote Management Service (WinRM-HTTP)[259]
+Windows PowerShell Default psSession Port[258] Windows Remote Management Service (WinRM-HTTPS)[259]
+CIM-XML (DMTF Protocol)[260]
+X11—used between an X client and server over the network
+Default for BMC Software Control-M/Server—Socket used for communication between Control-M processes—though often changed during installation
+Default for Camfrog chat & cam client
+JD Edwards EnterpriseOne ERP system JDENet messaging client listener
+Arcserve backup
+Arcserve backup
+Peer Distributed Transfer Protocol (PDTP), FTP like file server in a P2P network
+Vizrt System
+Ventrilo authentication for version 3
+Backup Exec Agent Browser[citation needed]
+softcm, HP Softbench CM
+spc, HP Softbench Sub-Process Control
+dtspcd, execute commands and launch applications remotely
+Blizzard's Battle.net gaming service and some games,[124] ArenaNet gaming service, Relic gaming service
+Club Penguin Disney online game for kids
+Club Penguin Disney online game for kids, Used by some Blizzard games[124]
+ObjectDB database server[261]
+ARINC 840 EFB Application Control Interface
+Veeam Installer Service
+Veeam vPower NFS Service
+Veeam Data Mover
+Veeam Hyper-V Integration Service
+Veeam WAN Accelerator
+Veeam WAN Accelerator Data Transfer
+Veeam Log Shipping Service
+Veeam Mount Server
+Oracle WebCenter Content Portable: Content Server (With Native UI) and Inbound Refinery
+Thermo-Calc Software AB: Management of service nodes in a processing grid for thermodynamic calculations
+Oracle WebCenter Content Portable: Admin
+Oracle WebCenter Content Portable: Content Server Web UI
+Oracle WebCenter Content Portable: JavaDB
+Oracle WebCenter Content Portable: Capture
+Oracle WebCenter Content Portable: Content Server—Intradoc Socket port
+Oracle WebCenter Content Portable: Inbound Refinery—Intradoc Socket port
+WinMX (see also 6699)
+planet M.U.L.E.
+Sybase Advantage Database Server
+SFlow, sFlow traffic monitoring
+gnutella-svc, gnutella (FrostWire, Limewire, Shareaza, etc.)
+gnutella-rtr, Gnutella alternate
+App Discovery and Access Protocol
+Redis key-value data store
+EMC CLARiiON
+PgBouncer—A connection pooler for PostgreSQL
+Leap Motion Websocket Server TLS
+Leap Motion Websocket Server
+Kubernetes API server [262]
+Sun Grid Engine Qmaster Service
+Sun Grid Engine Execution Service
+Art-Net protocol
+Discord RPC[263]
+Port assignment for medical device communication in accordance to IEEE 11073-20701
+NETCONF over TLS
+Syslog over TLS[264]
+Elipse RPC Protocol (REC)
+Windows Admin Center
+Pylons project#Pyramid Default Pylons Pyramid web service port
+Check MK Agent
+SANE (Scanner Access Now Easy)—SANE network scanner daemon[265]
+Speech-Dispatcher daemon[citation needed]
+Windows Live FolderShare client
+Microsoft Hyper-V Live
+Music Player Daemon (MPD)
+Microsoft Forefront Threat Management Gateway
+Microsoft Windows WSS Communication
+odette-ftps, Odette File Transfer Protocol (OFTP) over TLS/SSL
+Multicast FTP
+OpenFlow[citation needed]
+Internet Relay Chat (IRC)
+Internet Relay Chat (IRC)
+Osorno Automation Protocol (OSAUT)
+Internet Relay Chat (IRC) SSL (Secure Internet Relay Chat)—often used
+Synology Cloud station
+IRC SSL (Secure Internet Relay Chat)—often used
+WinMX (see also 6257)
+AberMUD and derivatives default port
+BitTorrent Local Peer Discovery
+Splashtop Remote server broadcast
+ACNET Control System Protocol
+BitTorrent beginning of range of ports used most often
+MUSE
+BitTorrent continuation of range of ports used most often
+BitTorrent continuation of range of ports used most often
+BitTorrent continuation of range of ports used most often
+Windows Live Messenger (File transfer)
+Windows Live Messenger (Voice)
+BitTorrent continuation of range of ports used most often
+BitTorrent continuation of range of ports used most often
+split-ping, ping with RX/TX latency/loss split
+acmsoda
+BitTorrent tracker
+BitTorrent end of range of ports used most often
+QuickTime Streaming Server
+Voicemeeter VBAN network audio protocol[266]
+Default for Vuze's built-in HTTPS Bittorrent tracker
+Avira Server Management Console
+Avira Server Management Console
+Default for BEA WebLogic Server's HTTP server, though often changed during installation
+Default for BEA WebLogic Server's HTTPS server, though often changed during installation
+Default for BMC Software Control-M/Server and Control-M/Agent for Agent-to-Server, though often changed during installation
+Default for BMC Software Control-M/Server and Control-M/Agent for Server-to-Agent, though often changed during installation
+Default for Cisco AON AMC (AON Management Console)[267]
+Database mirroring endpoints[221]
+Bryan Wilcutt T2-NMCS Protocol for SatCom Modems
+Zimbra LMTP [mailbox]—local mail delivery
+Zimbra conversion server
+Real Time Streaming Protocol (RTSP), used by QuickTime Streaming Server. TCP is used by default, UDP is used as an alternate.
+Development-Network Authentification-Protocol
+Enemy Territory: Quake Wars
+Peercast[citation needed]
+Peercast[citation needed]
+Tibia
+CNAP (Calypso Network Access Protocol)
+WatchMe - WatchMe Monitoring
+Zimbra mysql [mailbox][citation needed]
+Zimbra mysql [logger][citation needed]
+Sibelius License Server
+Web control interface for Folding@home v7.3.6 and later[268]
+RTPS (Real Time Publish Subscribe) DDS Discovery
+RTPS (Real Time Publish Subscribe) DDS User-Traffic
+RTPS (Real Time Publish Subscribe) DDS Meta-Traffic
+Stateless Transport Tunneling (STT)
+Rise: The Vieneo Province
+Neo4J Server webadmin[269]
+Default port used by Open iT Server.[270]
+Saratoga file transfer protocol[271][272]
+CPE WAN Management Protocol (CWMP) Technical Report 069
+Populous: The Beginning server
+Instrument Neutral Distributed Interface
+ERLPhase
+hddtemp—Utility to monitor hard drive temperature
+I2P anonymizing overlay network
+I2P SAM Bridge Socket API
+I2P anonymizing overlay network
+BrettspielWelt BSW Boardgame Portal
+Delivery Optimization for Windows 10[273]
+Bolt database connection
+Killing Floor
+Killing Floor
+iChat server file transfer proxy
+Oracle Cluster File System 2[citation needed]
+Windows backdoor program tini.exe default[citation needed]
+Just Cause 2: Multiplayer Mod Server[citation needed]
+Terraria default server
+San Andreas Multiplayer (SA-MP) default port server
+SCP: Secret Laboratory Multiplayer Server
+Unreal Tournament series default server[citation needed]
+Default used by Smartlaunch Internet Cafe Administration[274] software
+PowerSchool Gradebook Server[citation needed]
+Default that will be used by the iControl Internet Cafe Suite Administration software
+Default for YSFlight server[275]
+Fixed port used for Adobe Flash Debug Player to communicate with a debugger (Flash IDE, Flex Builder or fdb).[276]
+Docker Swarm communication among nodes[164]
+Used by SilverBluff Studios for communication between servers and clients.[citation needed]
+Atlassian Bitbucket (default port)[citation needed]
+Commonly used for Internet radio streams such as SHOUTcast[citation needed], Icecast[citation needed] and iTunes Radio
+DynamoDB Local[277]
+Django Development Webserver[278]
+Python 3 http.server[279]
+Tomcat remote shutdown
+PLATO ASCII protocol (RFC 600)
+Windows SCCM HTTP listener service[280]
+Quest AppAssure 5 API[281]
+Proxmox Virtual Environment admin web interface[282]
+Quest AppAssure 5 Engine[281]
+Proxmox Backup Server admin web interface
+Alternative port for HTTP. See also ports 80 and 8080.
+IBM HTTP Server administration default[importance?]
+iCal, a calendar application by Apple
+Matrix homeserver federation over HTTP[283]
+Apache JServ Protocol (ajp13)[citation needed]
+Buildbot web status page[citation needed]
+Orthanc – REST API over HTTP[204]
+OpenERP 5.0 XML-RPC protocol[284]
+OpenERP 5.0 NET-RPC protocol[284]
+Gadu-Gadu
+Killing Floor web administration interface[citation needed]
+Alternative port for HTTP. See also ports 80 and 8008.
+Apache Tomcat[285]
+Atlassian JIRA applications[286]
+Sun Proxy Admin Service[287]
+Asterisk management access via HTTP[citation needed]
+Splunk daemon management[288]
+Fritz!Box automatic TR-069 configuration[289]
+Atlassian Confluence[290]
+Coral Content Distribution Network (legacy; 80 and 8080 now supported)[291]
+Matrix identity server[citation needed]
+CouchBase web administration[292]
+CouchBase API[292]
+Emby and Jellyfin HTTP port[293]
+JOSM Remote Control
+PAC Pacifica Coin
+Check Point Cluster Control Protocol
+Privoxy—advertisement-filtering Web proxy
+Polipo Web proxy
+Home Assistant Home automation
+BURST P2P[294]
+Standard BURST Mining Pool Software Port
+BURST Web Interface
+Puppet (software) Client agent
+Puppet (software) Master server
+Microsoft Remote Administration for IIS Manager[295]
+NCSA Brown Dog Data Access Proxy
+Bloomberg Terminal[296]
+GoToMyPC
+MiniDLNA media server Web Interface
+VMware VI Web Access via HTTP[297]
+HTTPS listener for Apache Synapse[298]
+Dynamic DNS for at least No-IP and DynDNS[299]
+HTTP listener for Apache Synapse[298]
+HTTP Listener for Gatecraft Plugin
+Winbox—Default on a MikroTik RouterOS for a Windows application used to administer MikroTik RouterOS[300]
+Teeworlds Server
+Bitcoin JSON-RPC server[301]
+Bitcoin[302]
+VMware VI Web Access via HTTPS[297]
+Filestash server (default) [303]
+VisualSVN Distributed File System Service (VDFS)[304]
+Syncthing web GUI
+Shadowsocks proxy server[citation needed]
+Commvault Communications Service (GxCVD, found in all client computers)
+Commvault Server Event Manager (GxEvMgrS, available in CommServe)
+Commvault Firewall (GxFWD, tunnel port for HTTP/HTTPS)
+SW Soft Plesk Control Panel
+Apache Tomcat SSL
+Promise WebPAM SSL
+iCal over SSL
+MineOs WebUi
+Bitmessage
+Matrix homeserver federation over HTTPS[283]
+MapleStory Login Server
+Adobe ColdFusion built-in web server[305]
+Windows Server Update Services over HTTP, when using the default role installation settings in Windows Server 2012 and later versions.[306][307]
+Windows Server Update Services over HTTPS, when using the default role installation settings in Windows Server 2012 and later versions.[306][307]
+Symantec DLP OCR Engine [308]
+Freegate, an Internet anonymizer and proxy tool[309]
+Tibero database[citation needed]
+Lotus Notes Traveler auto synchronization for Windows Mobile and Nokia devices[310]
+Ultra Fractal, a fractal generation and rendering software application – distributed calculations over networked computers[311][312]
+Default port of a local GUN relay peer that the Internet Archive[313] and others use as a decentralized mirror for censorship resistance.[314]
+Voice channel of TeamSpeak 2,[315] a proprietary Voice over IP protocol targeted at gamers[citation needed]
+Nessus, a vulnerability scanner – remote XML-RPC web server[316][third-party source needed]
+Opera Unite, an extensible framework for web applications[317][318]
+Alternate port of CDDB (Compact Disc Database) protocol, used to look up audio CD (compact disc) information over the Internet.[319] See also port 888.
+IBM WebSphere Application Server SOAP connector[320][jargon]
+Secure MQTT (MQTT over TLS)[321][322]
+HyperVM over HTTP[citation needed]
+HyperVM over HTTPS[citation needed]
+Freenet web UI (localhost only)[citation needed]
+Default for IPython[323] / Jupyter[324] notebook dashboards
+MAMP[325]
+MAMP[325]
+Jellyfin HTTPS port[293]
+Apache Solr[326]
+Alternate port for I2P Monotone Proxy[175][jargon]
+I2P Monotone Proxy[175][jargon]
+Alternate port for I2P Monotone Proxy[175][jargon]
+SonarQube Web Server[327]
+ClickHouse default port
+DBGp
+SqueezeCenter web server & streaming
+UDPCast
+Play Framework web server[328]
+Hadoop NameNode default port
+PHP-FPM default port
+QBittorrent's embedded torrent tracker default port[329]
+ETL Service Manager[330]
+Microsoft SharePoint authoring environment
+cisco-xremote router configuration[citation needed]
+Tor network default
+DBGp Proxy
+HSQLDB default port
+Newforma Server comms
+
+Tomcat in standalone mode
+Tor often used
+Apache Cassandra native protocol clients
+WebSphere Application Server Administration Console secure
+Tor (SOCKS-5 proxy client)
+WebSphere Application Server Administration Console
+glrpc, Groove Collaboration software GLRPC
+WebSphere Application Server HTTP Transport (port 1) default
+Remote Potato by FatAttitude, Windows Media Center addon
+ServerWMC, Windows Media Center addon
+Zerto ZVM to ZVM communication
+Prometheus metrics server
+Openfire Administration Console
+SqueezeCenter control (CLI)
+Cherokee Admin Panel
+Openfire Administration Console (SSL Secured)
+Transmission (BitTorrent client) Web Interface
+H2 (DBMS) Database Server
+Apache Kafka A Distributed Streaming Platform[331]
+PDL Data Stream, used for printing to certain network printers
+Bacula Director
+Bacula File Daemon
+Bacula Storage Daemon
+MXit Instant Messenger
+Tor Browser
+Sierra Wireless Airlink
+Avtex LLC—qStats
+Elasticsearch[332]—default Elasticsearch port
+iPass Platform Service
+Sony PlayStation RemotePlay[333]
+Sony PlayStation Remote Play Session creation communication port
+Sony PlayStation Remote Play
+Sony PlayStation Remote Play Video stream
+IBM Cognos BI[citation needed]
+D-Link Shareport Share storage and MFP printers[citation needed]
+Sphinx Native API
+Sony PlayStation Vita Host Collaboration WiFi Data Transfer[334]
+Sphinx SphinxQL
+Litecoin JSON-RPC server
+Litecoin
+Used by all Supercell games such as Brawl Stars and Clash of Clans, mobile freemium strategy video games
+adws, Microsoft AD DS Web Services, Powershell uses this port
+OpenVAS Greenbone Security Assistant web interface
+git, Git pack transfer service
+MooseFS distributed file system – master control port[335]
+MooseFS distributed file system – master command port[335]
+MooseFS distributed file system – master client port[335]
+MooseFS distributed file system – Chunkservers[335]
+MooseFS distributed file system – CGI server[335]
+VMware Websense Triton console (HTTPS port used for accessing and administrating a vCenter Server via the Web Management Interface)
+NCSA Brown Dog Data Tilling Service
+mngsuite, LANDesk Management Suite Remote Control
+laes-bf, IP Fabrics Surveillance buffering function
+Factory Interface Network Service (FINS), a network protocol used by Omron programmable logic controllers[citation needed]
+VGG Image Search Engine VISE
+Spiceworks Desktop, IT Helpdesk Software
+Spiceworks Desktop, IT Helpdesk Software
+Content centric networking (CCN, CCNx)[citation needed]
+Bitcoin Lightning Network[336]
+Viber[206]
+WebDAV Source
+WebCT e-learning portal
+Club Penguin Disney online game for kids
+Tripwire—File Integrity Monitoring Software[337]
+SCTP tunneling (port number used in SCTP packets encapsulated in UDP, RFC 6951)
+Banana for Apache Solr
+Tvheadend HTTP server (web interface)[338]
+Tvheadend HTSP server (Streaming protocol)[338]
+TeamSpeak 3 server default (voice) port (for the conflicting service see the IANA list)[339]
+ZeroTier Default port for ZeroTier
+Splunk port for communication between the forwarders and indexers
+Urchin Web Analytics[citation needed]
+Dash (cryptocurrency)[340]
+Network Data Management Protocol (NDMP) Control stream for network backup and restore.
+BackupExec
+Webmin, Web-based Unix/Linux system administration tool (default port)
+Used on VoIP networks for receiving and transmitting voice telephony traffic which includes Google Voice via the OBiTalk ATA devices as well as on the MagicJack and Vonage ATA network devices.[341]
+Ubiquiti UniFi access points broadcast to 255.255.255.255:10001 (UDP) to locate the controller(s)
+Crossfire, a multiplayer online First Person Shooter[citation needed]
+TeamSpeak 3 ServerQuery[339]
+TeamSpeak 3 ServerQuery over SSH
+Zimbra smtp [mta]—to amavis from postfix[citation needed]
+Zimbra smtp [mta]—back to postfix from amavis[citation needed]
+Mathoid server [342]
+Zabbix agent
+Zabbix trapper
+NMEA 0183 Navigational Data. Transport of NMEA 0183 sentences over TCP or UDP
+Intuit Quickbooks client
+FRISK Software International's fpscand virus scanning daemon for Unix platforms[343]
+FRISK Software International's f-protd virus scanning daemon for Unix platforms[344]
+FRISK Software International's f-protd virus scanning daemon for Unix platforms[344]
+GE Intelligent Platforms Proficy HMI/SCADA – CIMPLICITY WebView[345]
+Digital Combat Simulator Dedicated Server [346]
+SWAT 4 Dedicated Server[citation needed]
+BlueStacks (android simulator) broadcast[347]
+TLS-enabled Rsyslog (default by convention)
+Skyrim Together multiplayer server for The Elder Scrolls V: Skyrim mod.
+Touhou fight games (Immaterial and Missing Power, Scarlet Weather Rhapsody, Hisoutensoku, Hopeless Masquerade and Urban Legend in Limbo)
+Farming Simulator 2011[citation needed]
+Jungle Disk (this port is opened by the Jungle Disk Monitor service on the localhost)[citation needed]
+Octopus Deploy Tentacle deployment agent[348]
+metasys ( Johnson Controls Metasys java AC control environment )
+Risk of Rain multiplayer server
+RiCcI, Remote Configuration Interface (Redhat Linux)
+ACR/NEMA Digital Imaging and Communications in Medicine (DICOM)
+memcached
+memcached incoming SSL proxy
+memcached internal outgoing SSL proxy
+XCOMPUTE numerical systems messaging (Xplicit Computing)[349]
+Robot Operating System master
+OpenPGP HTTP key server
+OpenRCT2 multiplayer[350]
+CubeForm, Multiplayer SandBox Game
+Audition Online Dance Battle, Korea Server—Status/Version Check
+Audition Online Dance Battle, Korea Server
+Second Life, used for server UDP in-bound[351]
+Second Life, used for LSL HTTPS in-bound[352]
+Second Life, used for LSL HTTP in-bound[352]
+Graylog Extended Log Format (GELF)[353][importance?]
+Light Weight Access Point Protocol (LWAPP) LWAPP data (RFC 5412)
+Light Weight Access Point Protocol (LWAPP) LWAPP control (RFC 5412)
+Makerbot UDP Broadcast (client to printer) (JSON-RPC)[354]
+Makerbot UDP Broadcast (printer to client) (JSON-RPC)[354]
+Cube World[355]
+Little Fighter 2
+NetBus remote administration tool (often Trojan horse).
+IBM HMC web browser management access over HTTPS instead of default port 443[356]
+NSClient/NSClient++/NC_Net (Nagios)
+LogMeIn Hamachi (VPN tunnel software; also port 32976)—used to connect to Mediation Server (bibi.hamachi.cc); will attempt to use SSL (TCP port 443) if both 12975 & 32976 fail to connect
+Second Life, used for server UDP in-bound[357]
+Crossfire, a multiplayer online First Person Shooter[citation needed]
+Default[358] for BMC Software Control-M/Enterprise Manager Corba communication, though often changed during installation
+ISO 13400 Road vehicles — Diagnostic communication over Internet Protocol(DoIP)
+Symantec NetBackup—bprd (formerly VERITAS)
+Symantec NetBackup—bpdbm (formerly VERITAS)
+Symantec Network Utility—vnetd (formerly VERITAS)
+Symantec NetBackup—bpcd (formerly VERITAS)
+Symantec VOPIED protocol (formerly VERITAS)
+Symantec NetBackup Database—nbdb (formerly VERITAS)
+Symantec nomdb (formerly VERITAS)
+MAVLink Ground Station Port
+Battlefield 1942 and mods
+Repgen DoxBox reporting tool
+Age of Wonders III p2p port[359]
+psyBNC
+Wesnoth
+Kaspersky Network Agent[360]
+Teltonika networks remote management system (RMS)
+Teltonika networks remote management system (RMS)
+Teltonika networks remote management system (RMS)
+ZeroNet fileserver[citation needed]
+Battlefield Vietnam and mods
+XPilot Contact
+RabbitMQ management plugin[361]
+Oracle WebCenter Content: Imaging (formerly known as Oracle Universal Content Management). Port though often changed during installation
+shroudBNC
+macOS Server Web (HTTP) service with performance cache[362]
+Oracle WebCenter Content: Content Server (formerly known as Oracle Universal Content Management). Port though often changed during installation
+Oracle WebCenter Content: Content Server Web UI. Port though often changed during installation
+Oracle WebCenter Content: Inbound Refinery (formerly known as Oracle Universal Content Management). Port though often changed during installation
+Project Zomboid multiplayer. Additional sequential ports used for each player connecting to server.[citation needed]
+Oracle WebCenter Content: Records Management (formerly known as Oracle Universal Records Management). Port though often changed during installation
+CISCO Default RTP MIN
+Real-time Transport Protocol (RTP), RTP Control Protocol (RTCP), used by Apple's iChat for audio and video
+Real-time Transport Protocol (RTP), RTP Control Protocol (RTCP), used by Apple's FaceTime and Game Center
+Real-time Transport Protocol (RTP), RTP Control Protocol (RTCP), used by Apple's FaceTime and Game Center
+Real-time Transport Protocol (RTP), RTP Control Protocol (RTCP), used by Apple's Game Center
+Oracle WebCenter Content: Capture (formerly known as Oracle Document Capture). Port though often changed during installation
+Battlefield 2 and mods
+SITC Port for mobile web traffic
+SITC Port for mobile web traffic
+M17 - Digital RF voice and data protocol with Internet (UDP) gateways (reflectors).[363]
+Worms multiplayer
+Train Realtime Data Protocol (TRDP) Process Data, network protocol used in train communication.[364]
+Train Realtime Data Protocol (TRDP) Message Data, network protocol used in train communication.[365]
+CS Server (CSMS), default binary protocol port
+Tanium Communication Port
+DMXControl 3 Network Discovery
+DMXControl 3 Network Broker
+Dropbox LanSync Protocol (db-lsp); used to synchronize file catalogs between Dropbox clients on a local network.
+SITC Port for mobile web traffic
+Monero P2P network communications[citation needed]
+Monero incoming RPC calls[citation needed]
+memcached Internal REST HTTPS for SSL
+memcached Internal CAPI HTTPS for SSL
+RAD PDF Service
+Audition Online Dance Battle, AsiaSoft Thailand Server status/version check
+Audition Online Dance Battle, AsiaSoft Thailand Server
+Audition Online Dance Battle, AsiaSoft Thailand Server FAM database
+Audition Online Dance Battle, AsiaSoft SEA Server status/version check
+Audition Online Dance Battle, AsiaSoft SEA Server
+Audition Online Dance Battle, AsiaSoft SEA Server FAM database
+Bitcoin testnet[302]
+Audition Online Dance Battle, KAIZEN Brazil Server status/version check
+Audition Online Dance Battle, KAIZEN Brazil Server
+Audition Online Dance Battle R4p3 Server, Nexon Server status/version check
+Audition Online Dance Battle, Nexon Server
+X-BEAT status/version check
+X-BEAT
+YouView
+Audition Online Dance Battle, G10/alaplaya Server status/version check
+JACK sound server
+Audition Online Dance Battle, G10/alaplaya Server
+Minecraft: Bedrock Edition multiplayer server[366]
+Minecraft: Bedrock Edition IPv6 multiplayer server[366]
+Gkrellm Server
+Panda Software AdminSecure Communication Agent
+Google Talk Voice and Video connections[367]
+Google Talk Voice and Video connections[367]
+Google Talk Voice and Video connections[367]
+systemd-journal-gatewayd[368]
+systemd-journal-remote[369]
+Mesh Link Establishment protocol for IEEE 802.15.4 radio mesh networks[370]
+4D database SQL Communication[371]
+4D database Client Server Communication[371]
+4D database DB4D Communication[371]
+Distributed Network Protocol—Secure (DNP—Secure), a secure version of the protocol used in SCADA systems between communicating RTU's and IED's
+Distributed Network Protocol (DNP), a protocol used in SCADA systems between communicating RTU's and IED's
+Usermin, Web-based Unix/Linux user administration tool (default port)
+Used on VoIP networks for receiving and transmitting voice telephony traffic which includes Google Voice via the OBiTalk ATA devices as well as on the MagicJack and Vonage ATA network devices.[341]
+Killing Floor
+HW Development IoT comms
+HW Development IoT comms
+0 A.D. Empires Ascendant
+Ableton Link
+Starbound Server (default), Starbound
+Default Ingres DBMS server
+Syncthing (default)
+FLIR Systems Camera Resource Protocol
+Davis Instruments, WeatherLink IP
+Soldat Dedicated Server
+Skype default protocol
+Duke Nukem 3D source ports
+Pyzor spam detection network
+NetBeans integrated development environment
+Tonido Directory Server for Tonido which is a Personal Web App and P2P platform
+BINKP, Fidonet mail transfers over TCP/IP
+Synergy: keyboard/mouse sharing software
+StepMania: Online: Dance Dance Revolution Simulator
+Minecraft (Java Edition) multiplayer server[372][373]
+Minecraft (Java Edition) multiplayer server query[374]
+Minecraft (Java Edition) multiplayer server RCON[375]
+SamsidParty Operational Ports
+SOLIDWORKS SolidNetworkLicense Manager[376]
+collectd default port[377]
+id Software's Quake server
+EVE Online
+Xonotic, an open-source arena shooter
+MSI MysticLight
+EVE Online
+Action Tanks Online
+PowerBuilder SySAM license server
+id Software's QuakeWorld master server
+FlexNet Publisher's License server (from the range of default ports)
+Steam (game client traffic)[378]
+GoldSrc and Source engine dedicated server port[378]
+Unturned, a survival game
+Steam (matchmaking and HLTV)[378]
+Steam (downloads)[378]
+Magicka and Space Engineers server port
+MongoDB daemon process (mongod) and routing service (mongos)[379]
+Steam (In-Home Streaming)[378]
+Steam (In-Home Streaming)[378]
+Sub7 default.
+id Software's QuakeWorld
+Kaillera server
+id Software's Quake II master server
+OpenArena outgoing
+Activision's Enemy Territory and id Software's Quake III Arena, Quake III and Quake Live and some ioquake3 derived games, such as Urban Terror (OpenArena incoming)
+Siemens Digital Industries Software license server
+Starsiege: Tribes[citation needed]
+Rust (video game)[380]
+Rust (video game) RCON[381]
+Palo Alto Networks' Panorama HA-1 backup unencrypted sync port.
+Palo Alto Networks' Panorama-to-managed devices software updates, PAN-OS 8.0 and later.[197]
+Palo Alto Networks' Panorama HA unencrypted sync port.
+Palo Alto Networks' Panorama HA-1 backup sync port.
+AssaultCube Reloaded, a video game based upon a modification of AssaultCube[citation needed]
+Cube 2: Sauerbraten[382]
+Killing Floor[citation needed]
+Nintendo Wi-Fi Connection[383]
+Call of Duty; Call of Duty: United Offensive; Call of Duty 2; Call of Duty 4: Modern Warfare[citation needed] Call of Duty: World at War (PC platform)[384]
+Perfect World, an adventure and fantasy MMORPG[citation needed]
+Jedi Knight: Jedi Academy by Ravensoft[citation needed]
+Nintendo Wi-Fi Connection[383]
+Nintendo Wi-Fi Connection[383]
+XLink Kai P2P
+Minetest server default port[385]
+Foundry Virtual Tabletop server default port[386]
+TeamSpeak 3 File Transfer[339]
+Fivem (Default Port) GTA V multiplayer[387][373]
+Multiplicity: keyboard/mouse/clipboard sharing software[citation needed]
+Back Orifice and Back Orifice 2000 remote administration tools[388][389]
+ncat, a netcat alternative[390]
+BOINC RPC[391]
+Rocket U2[392]
+TetriNET
+Immunet Protect (UDP in version 2.0,[393] TCP since version 3.0[394])
+Plex Media Server[395]
+A backdoor found on certain Linksys, Netgear and other wireless DSL modems/combination routers[396]
+Ace of Spades, a multiplayer FPS video game[citation needed]
+LogMeIn Hamachi, a VPN application; also TCP port 12975 and SSL (TCP 443).[397]
+traceroute
+Jenkins, a continuous integration (CI) tool[398][399]
+Infestation: Survivor Stories (formerly known as The War Z), a multiplayer zombie video game[verification needed]
+Factorio, a multiplayer survival and factory-building game[400]
+OpenStack Identity (Keystone) administration[401][self-published source?]
+Folding@home Control Port
+TZSP intrusion detection[citation needed]
+SafetyNET p – a real-time Industrial Ethernet protocol
+Tentacle Server[402] - Pandora FMS
+Crestron Control Port[403] - Crestron Electronics
+Crestron Terminal Port[404] - Crestron Electronics
+Crestron Secure Control Port[405] - Crestron Electronics
+Crestron Secure Terminal Port[406] - Crestron Electronics
+Zippin - Zippin Stores
+Glue - MakePro X
+Discord[407]
+Curiosity [408]
+ZeroNet web UI default port [409]
+RuneScape[410]
+Mu Online Connect Server[citation needed]
+EtherNet/IP explicit messaging
+BACnet Building Automation and Control Networks (4780810 = BAC016 to 4782310 = BACF16)
+drive.web AC/DC Drive Automation and Control Networks [411]
+Reserved`;
+
+// TEST_SEARCH_TEXT_DATA
+const TEST_FIND_TEXT_DATA = `/\\[(\\d)*\\]/gm`; //  /\[(\d)*\]/gm
+const TEST_REPLACE_TEXT_DATA = ``;
+const TEST_SEARCH_OPTION_DATA = `regex`;
+
+/********** MEAT AND POTATOES **********/
+
+let testDataButons, loadTestData, clearData;
+
+function LoadTestData() {
+	testDataButons = document.getElementById("testDataButons");
+	loadTestData = document.getElementById("loadTestData");
+	clearData = document.getElementById("clearData");
+
+	if(!testDataButons || !loadTestData || !clearData || !findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+		console.error("ERROR: LoadTestData failed to find one or more controls");
+		return;
+	}
+
+	testDataButons.style.display = "block";
+	
+	loadTestData.addEventListener("click", TestDataLoad, false);
+	clearData.addEventListener("click", TestDataClear, false);
+}
+
+function TestDataClear() {
+	if(!findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+		console.error("ERROR: TestDataClear failed to find one or more controls");
+		return;
+	}
+
+	findText.value = "";
+	replaceText.innerHTML = "";
+	SearchOptionSet("text");
+	searchText.value = "";
+	resultsText.innerHTML = "";
+	resultsLines.innerHTML = "";
+}
+
+function TestDataLoad() {
+	if(!findText || !replaceText || !searchOption || searchOption.length==0 || !searchText || !resultsText) {
+		console.error("ERROR: TestDataLoad failed to find one or more controls");
+		return;
+	}
+
+	document.body.classList.add('waiting');
+
+	resultsText.innerHTML = "-- WORKING --";
+	resultsLines.innerHTML = "";
+
+	setTimeout(() => {
+		findText.value = TEST_FIND_TEXT_DATA;
+		replaceText.innerHTML = TEST_REPLACE_TEXT_DATA;
+		SearchOptionSet(TEST_SEARCH_OPTION_DATA);
+		searchText.value = TEST_SEARCH_TEXT_DATA;
+		resultsText.innerHTML = "";
+		resultsLines.innerHTML = "";
+
+		document.body.classList.remove('waiting');
+	}, 5);
+}

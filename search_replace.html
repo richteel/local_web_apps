@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-us">
+
+<head>
+	<meta charset="utf-8" />
+	<title>Search &amp; Replace</title>
+	<link rel="stylesheet" href="search_replace.css" />
+	<script src="search_replace_js.txt"></script>
+	<script src="search_replace_test_js.txt"></script>
+</head>
+
+<body>
+	<h1>Search &amp; Replace</h1>
+
+	<!-- ********************* LOAD TEST DATA BUTTONS ********************* -->
+	<div class="inputRow" id="testDataButons">
+		<span class="infoLabel">Test Options</span>
+		<input type="button" id="loadTestData" value="Load Test Data" />
+		<input type="button" id="clearData" value="Clear Test Data" />
+	</div>
+
+	<!-- ********************* REFERENCES ********************* -->
+	<h2>References</h2>
+	<ul>
+		<li>
+			<a href="https://regex101.com/" target="_blank">regex101: build, test, and debug regex</a>
+		</li>
+		<li>
+			<a href="https://www.w3schools.com/js/js_regexp.asp" target="_blank">JavaScript RegExp Object - Regular Expressions - W3Schools</a>
+		</li>
+		<li>
+			<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions" target="_blank">Regular expressions - JavaScript - MDN Web Docs</a>
+		</li>
+	</ul>
+
+
+	<!-- ********************* MAIN FORM ********************* -->
+	<div class="inputRow">
+		<span class="inputLabel">Find</span>
+		<textarea class="textarea_short" id="findText"></textarea>
+	</div>
+
+	<div class="inputRow">
+		<span class="inputLabel">Replace</span>
+		<textarea class="textarea_short" id="replaceText"></textarea>
+	</div>
+
+	<div class="inputRow">
+		<span class="inputLabel">Search Option</span>
+		<div class="radiobutton_group">
+			<input type="radio" id="search_option_regex" name="searchOption" value="regex"><label for="search_option_regex">RegEx</label>
+			<input type="radio" id="search_option_text" name="searchOption" value="text" checked="true"><label for="search_option_text">Text</label>
+		</div>
+	</div>
+
+	<div class="inputRow">
+		<span class="inputLabel">Text to Search</span>
+		<textarea id="searchText"></textarea>
+		<div>
+			<input type="button" onclick="FindAllText();" value="Find" /><br /><br />
+			<input type="button" onclick="ReplaceAllText();" value="Replace" />
+		</div>
+	</div>
+
+	<div class="inputRow">
+		<span class="inputLabel">Results</span>
+		<div class="resultsDiv" id="resultsText" contenteditable="true"></div>
+	</div>
+
+	<div class="inputRow">
+		<span class="inputLabel">Line Numbers</span>
+		<div class="resultsDiv" id="resultsLines" contenteditable="true"></div>
+	</div>
+
+
+
+	
+
+
+
+
+
+
+
+	
+	
+
+	<script>
+		let findText, replaceText, searchOption, searchText, resultsText, resultsLines;
+		
+		function GetOptionSet() {
+			if(!searchOption || searchOption.length==0) {
+				console.error("ERROR: GetOptionSet failed to find one or more controls");
+				return;
+			}
+
+			for(i = 0; i < searchOption.length; i++) {
+				if(searchOption[i].checked)
+					return searchOption[i].value;
+			}
+		}
+
+		function SearchOptionSet(optionValue) {
+			if(!searchOption || searchOption.length==0) {
+				console.error("ERROR: SearchOptionSet failed to find one or more controls");
+				return;
+			}
+
+			for(i = 0; i < searchOption.length; i++) {
+				if(searchOption[i].value == optionValue)
+					searchOption[i].checked = true;
+				else
+					searchOption[i].checked = false;
+			}
+		}
+
+		function init() {
+			findText = document.getElementById("findText");
+			replaceText = document.getElementById("replaceText");
+			searchOption = document.getElementsByName("searchOption");
+			searchText = document.getElementById("searchText");
+			resultsText = document.getElementById("resultsText");
+			resultsLines = document.getElementById("resultsLines");
+
+			if(window.myapp === undefined || window.myapp!="test")
+				return;
+
+			LoadTestData();
+		}
+
+		window.addEventListener("load", init, false);
+	</script>
+</body>
+
+</html>
