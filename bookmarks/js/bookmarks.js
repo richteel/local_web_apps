@@ -1222,6 +1222,7 @@ function tabsDisplayItems() {
         const li = document.createElement("li");
         li.textContent = tab.title;
         li.id = tab.id;
+		li.draggable = true;
         li.addEventListener("dragstart", tabDrag);
         li.addEventListener("drop", tabDrop);
         li.addEventListener("dragover", tabAllowDrop);
