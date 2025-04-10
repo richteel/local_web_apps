@@ -368,6 +368,10 @@ let data_bookmarks = [];
 let data_last_tab_id = 0;
 let data_last_bookmark_id = 0;
 
+function convertLineBreaks(text) {
+    return text.replace(/\n/g, '\n'); // Replaces \n with actual line breaks
+}
+
 function dataInit() {
     if (typeof (Storage) === "undefined") {
         console.error("ERROR: dataInit - Local storage is not supported");
@@ -486,9 +490,26 @@ function dataClear() {
 }
 
 function dataExport() {
-    const localStorageCopy = JSON.stringify(localStorage);
+    // Create an object to store properly parsed key-value pairs
+    const parsedData = {};
+
+    // Iterate over all keys in localStorage
+    for (const key in localStorage) {
+        if (localStorage.hasOwnProperty(key)) {
+            try {
+                // Try to parse the value as JSON
+                parsedData[key] = JSON.parse(localStorage[key]);
+            } catch (e) {
+                // If parsing fails, store the raw value
+                parsedData[key] = localStorage[key];
+            }
+        }
+    }
+
+    // Convert the parsed data to a clean JSON string
+    const localStorageCopy = JSON.stringify(parsedData, null, 4); // Add indentation for readability
     const a = document.createElement('a');
-    const file = new Blob([localStorageCopy], { type: "text/plain" });
+    const file = new Blob([localStorageCopy], { type: "application/json" });
 
     a.href = URL.createObjectURL(file);
     a.download = "bookmarks.json";
@@ -505,8 +526,6 @@ function dataImport() {
             return;
     }
 
-    // Make a temporary backup. If the import fails, we can restore.
-    // const localStorageCopy = JSON.stringify(localStorage);
     const inputFile = document.createElement('input');
     inputFile.type = "file";
     inputFile.addEventListener("change", function (e) {
@@ -517,10 +536,28 @@ function dataImport() {
         const reader = new FileReader();
         reader.onload = function (e) {
             const contents = e.target.result;
-            const data = JSON.parse(contents);
+            let data;
 
-            for (const key of Object.keys(data)) {
-                localStorage.setItem(key, data[key]);
+            try {
+                data = JSON.parse(contents);
+
+                // Check if the data is in the new format
+                for (const key of Object.keys(data)) {
+                    // Handle new format (values are objects or arrays)
+                    if (typeof data[key] === "object" && data[key] !== null) {
+                        console.log("Importing new format data", MESSAGE_WARNING);
+                        // Always stringify the value for localStorage
+                        localStorage.setItem(key, convertLineBreaks(JSON.stringify(data[key])));
+                    } else {
+                        console.log("Importing old format data", MESSAGE_WARNING);
+                        // Old format (values are already strings)
+                        localStorage.setItem(key, data[key]);
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to parse JSON:", err);
+                alert("Error importing data: Invalid JSON format.");
+                return;
             }
 
             tab_selected = null;
@@ -1222,7 +1259,7 @@ function tabsDisplayItems() {
         const li = document.createElement("li");
         li.textContent = tab.title;
         li.id = tab.id;
-		li.draggable = true;
+        li.draggable = true;
         li.addEventListener("dragstart", tabDrag);
         li.addEventListener("drop", tabDrop);
         li.addEventListener("dragover", tabAllowDrop);
