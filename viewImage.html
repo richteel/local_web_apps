@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link REL="SHORTCUT ICON" HREF="favicon.ico">
+	<title>Photo - &lt;None&gt;</title>
+
+	<style>
+		table {
+			border-collapse: collapse;
+			border: 1px solid #ccc;
+			text-align: center;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		td {
+			padding: 5px;
+		}
+
+		.outerControlsDiv {
+			background-color: #f0f0f0;
+			border: 1px solid #ccc;
+			padding: 10px;
+			margin-bottom: 10px;
+			margin-left: auto;
+			margin-right: auto;
+			max-width: 550px;
+		}
+
+		.rowDiv {
+			min-height: 2rem;
+			text-align: center;
+		}
+
+		.colDiv {
+			display: inline-block;
+			height: 100%;
+			padding: 5px;
+			margin: 5px;
+		}
+
+		input[type="number"] {
+			width: 4rem;
+		}
+
+		@media (max-width: 768px) {
+			.outerControlsDiv {
+				max-width: 90%;
+			}
+
+			img {
+				max-width: 100%;
+				height: auto;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<center><img name="imgPreview" id="imgPreview" disabled src="no_preview.gif" WIDTH="100" HEIGHT="100"
+			alt="Preview of selected image"></center><br />
+	<div id=frmControls name=frmControls>
+		<p align="center"><b>Photo Preview and Print</b></p>
+		<div class="outerControlsDiv">
+			<p><b>Instructions:</b><br> Select an image file to preview it. The maximum height and width can be set.
+				Click the "Print Photo" button to print the image.</p>
+			<p><b>Note:</b><br> The image will be resized to fit within the specified maximum height and width while
+				maintaining its aspect ratio.</p>
+			<hr />
+			<div class="rowDiv">
+				<div class="colDiv">
+					<label for="maxHgtW">Maximum Height and Width:</label>
+					<input type="number" name="maxHgtW" id="maxHgtW" value="600" min="1">
+				</div>
+				<div class="colDiv">
+					<p><b><u>Actual</u></b><br>
+						Height: <span id="aImgHeight" aria-live="polite">100</span><br>
+						Width: <span id="aImgWidth" aria-live="polite">100</span></p>
+				</div>
+				<div class="colDiv">
+					<p><b><u>Display</u></b><br>
+						Height: <span id="aDispImgHeight" aria-live="polite">100</span><br>
+						Width: <span id="aDispImgWidth" aria-live="polite">100</span></p>
+				</div>
+			</div>
+			<div class="rowDiv">
+				<div class="colDiv">
+					<label for="file1">Image File:</label>
+					<input id="file1" type="file" name="file1">
+				</div>
+			</div>
+			<div class="rowDiv">
+				<div class="colDiv" align="center">
+					<input id="printPhoto" type="button" value="Print Photo" name="printPhoto">&nbsp;
+					<input id="reset1" type="reset" value="Reset" name="reset1">
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+
+<script Language="JavaScript">
+	// Whole-script strict mode syntax
+	"use strict";
+
+	const config = {
+		noImgFile: "no_preview.gif",
+		defaultMaxWH: 600,
+	};
+
+	const elements = {
+		fileInput: document.getElementById('file1'),
+		imgPreview: document.getElementById('imgPreview'),
+		maxHgtW: document.getElementById('maxHgtW'),
+	};
+
+	const noimageSrc = elements.imgPreview.src; // Store the source of the no image preview
+
+	// *** EVENTS ***
+	// Print Photo Button
+	document.getElementById("printPhoto").addEventListener('click', function () {
+		if (elements.imgPreview.src !== noimageSrc) { // Check if the image is not the default no image source
+			window.print(); // Print the document if an image is loaded
+		} else {
+			alert("No image to print!"); // Alert if no image is loaded
+		}
+	});
+	document.body.onbeforeprint = function () {
+		// Hide the controls before printing
+		document.getElementById('frmControls').style.display = 'none';
+	};
+	document.body.onafterprint = function () {
+		// Show the controls after printing
+		document.getElementById('frmControls').style.display = 'block';
+	};
+
+	// Reset Button
+	document.getElementById("reset1").addEventListener('click', function () {
+		resetPreview(); // Reset the preview when the reset button is clicked
+	}); // Add event listener for reset button click
+
+	// Change max height/width
+	elements.maxHgtW.addEventListener('change', resizePreview); // Add event listener for max height/width change
+
+	// Load photo
+	elements.fileInput.addEventListener('change', previewImage); // Add event listener for file input change
+	elements.imgPreview.addEventListener('load', resizePreview); // Add event listener for image load
+	elements.imgPreview.addEventListener('error', function () {
+		alert("An error occurred while loading the image. Please check the file format and try again.");
+		resetPreview(); // Reset preview if there's an error loading the image
+	}); // Add event listener for image load error
+
+
+	// *** FUNCTIONS ***
+	function previewImage() {
+		updateAltText("Loading preview..."); // Update alt text while loading preview
+		elements.imgPreview.src = config.noImgFile; // Set the image source to the no preview image
+		elements.imgPreview.removeAttribute('width');
+		elements.imgPreview.removeAttribute('height');
+
+		if (elements.fileInput.files && elements.fileInput.files[0]) { // Ensure there's a file selected
+			const reader = new FileReader(); // Create a FileReader instance
+
+			reader.onload = function (e) {
+				elements.imgPreview.src = e.target.result; // Use the file content as the image src
+				updateAltText(`Preview of ${elements.fileInput.files[0].name}`); // Update alt text with the file name
+			};
+
+			reader.onerror = function () {
+				resetPreview();
+				updateAltText("Error loading preview.");
+			};
+
+			reader.readAsDataURL(elements.fileInput.files[0]); // Read the file as a Data URL
+		} else {
+			resetPreview(); // Reset preview if no file is selected
+		}
+	}
+
+	function resetPreview() {
+		elements.imgPreview.src = ''; // Reset the image source to empty'';
+		elements.imgPreview.src = config.noImgFile;
+		elements.fileInput.value = ''; // Clear the file input
+		elements.imgPreview.removeAttribute('width');
+		elements.imgPreview.removeAttribute('height');
+		aImgHeight.innerText = '';
+		aImgWidth.innerText = '';
+		updateAltText("No preview available."); // Update alt text if no file is selected
+	}
+
+	function resizePreview() {
+		var imgWidth = 0, imgHeight = 0, scaleW_H = 0, maxWH = config.defaultMaxWH; // Default max height/width
+
+		if (isNaN(elements.maxHgtW.value) || elements.maxHgtW.value <= 0) {
+			alert(`Invalid input for maximum height/width. Resetting to default value: ${maxWH}.`);
+			elements.maxHgtW.value = maxWH; // Reset the field
+		}
+		maxWH = elements.maxHgtW.value;
+
+		imgWidth = elements.imgPreview.width;
+		imgHeight = elements.imgPreview.height;
+
+		aImgHeight.innerText = imgHeight;
+		aImgWidth.innerText = imgWidth;
+
+		aDispImgHeight.innerText = 0;
+		aDispImgWidth.innerText = 0;
+
+		if (imgWidth > maxWH || imgHeight > maxWH) {
+			const scaleFactor = imgWidth > imgHeight ? maxWH / imgWidth : maxWH / imgHeight;
+			elements.imgPreview.width = imgWidth * scaleFactor;
+			elements.imgPreview.height = imgHeight * scaleFactor;
+		}
+
+		aDispImgHeight.innerText = elements.imgPreview.height;
+		aDispImgWidth.innerText = elements.imgPreview.width;
+		updateTitle();
+	}
+
+	function updateAltText(message) {
+		elements.imgPreview.alt = message;
+	}
+
+	function updateTitle() {
+		if (elements.fileInput.files.length > 0)
+			document.title = 'Photo - ' + elements.fileInput.files[0].name;
+		else
+			document.title = 'Photo - <None>';
+	}
+</script>
+
+</html>

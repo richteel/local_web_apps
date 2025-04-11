@@ -1,0 +1,141 @@
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+	<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+	<meta name="ProgId" content="FrontPage.Editor.Document">
+	<title>View Images in a Directory</title>
+	<style>
+		.flex_container {
+			display: flex;
+			flex-wrap: wrap;
+			margin-right: -15px;
+			margin-left: -15px;
+		}
+
+		.content_box {
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+			background-color: white;
+			height: 250px;
+			width: 250px;
+			display: flex;
+			border-radius: 20px;
+			padding: 25px;
+			margin: 10px;
+			cursor: pointer;
+			overflow: hidden;
+			text-align: center;
+			justify-content: center;
+			align-items: center;
+			break-inside: avoid;
+		}
+
+		.content_box img {
+			max-width: 200px;
+			max-height: 200px;
+			object-fit: scale-down;
+			margin: 0 auto;
+		}
+
+		@media print {
+
+			.noprint {
+				display: none !important;
+			}
+
+			.content_box {
+				height: 125px;
+				width: 125px;
+				margin: 5px;
+			}
+
+			.content_box img {
+				max-width: 100px;
+				max-height: 100px;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="noprint" id="form1">
+		<h1>View Images in a Directory</h1>
+		<p>Link: <A id=linkit name=linkit>&nbsp;</A></p>
+		<p><label for="T1">Left:</label> <input type="text" id="T1" name="T1" size=100 onkeyup="changeLink()"
+				value="https://raw.githubusercontent.com/yavuzceliker/sample-images/refs/heads/main/images/image-1" />
+		</p>
+		<p><label for="T2">Right:</label> <input type="text" id="T2" name="T2" size=100 onkeyup="changeLink()"
+				value=".jpg" /></p>
+		<p><INPUT type="button" value="GO" onclick="loadimages()" /></p>
+	</div>
+
+	<div class="flex_container" id="pics"></div>
+
+</body>
+
+<script language="JavaScript">
+	const picsContainer = document.getElementById("pics");
+	const linkit = document.getElementById("linkit");
+
+	function loadimages() {
+		// Clear all images
+		while (picsContainer.firstChild) {
+			picsContainer.removeChild(picsContainer.firstChild);
+		}
+
+		const leadZero = !isNaN(T1.value[T1.value.length - 1]); // Check if the last character is a number
+
+		// Load images
+		for (var i = 0; i < 100; i++) {
+			const newBox = document.createElement("div");
+			newBox.classList.add("content_box");
+			newBox.id = "div_" + i;
+
+			const newLink = document.createElement("a");
+			newLink.id = "link_" + i;
+			if (i < 10 && leadZero) {
+				newLink.href = T1.value + "0" + i + T2.value;
+			} else {
+				newLink.href = T1.value + i + T2.value;
+			}
+			newLink.target = "blank";
+
+			const newImg = document.createElement("img");
+			newImg.id = "img_" + i;
+			newImg.src = newLink.href;
+			newImg.alt = "Image " + i;
+			newImg.loadCount = 0; // Initialize load count
+			newImg.onerror = function () {
+				this.onerror = null; // Remove the error handler to prevent infinite loop
+				this.src = "no_preview.gif"; // Fallback image if the original fails to load
+				this.alt = "Image not found"; // Update alt text
+			};
+
+			const newPara = document.createElement("p");
+			newPara.id = "para_" + i;
+			newPara.textContent = newLink.href.substring(newLink.href.lastIndexOf("/") + 1);
+
+			newLink.appendChild(newImg);
+			newLink.appendChild(newPara);
+			newBox.appendChild(newLink);
+
+			picsContainer.appendChild(newBox);
+		}
+	}
+
+	function changeLink() {
+		const leadZero = !isNaN(T1.value[T1.value.length - 1]); // Check if the last character is a number
+		const i = 0;
+		if (i < 10 && leadZero) {
+			linkit.href = T1.value + "0" + i + T2.value;
+		} else {
+			linkit.href = T1.value + i + T2.value;
+		}
+
+		linkit.innerHTML = linkit.href;
+	}
+
+	changeLink(); // Initialize the link on page load
+</script>
+
+</html>

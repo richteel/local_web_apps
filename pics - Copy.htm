@@ -1,0 +1,212 @@
+<html>
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
+<meta name="ProgId" content="FrontPage.Editor.Document">
+<title>View Images in a Directory</title>
+<script language="JavaScript">
+	function changeLink(){
+		linkit.href=T1.value + "0" + T2.value;
+		linkit.innerHTML=T1.value + "0" + T2.value;
+	}
+	
+	function loadimages()
+	{
+		var strFileName = "";
+		var pos = 0;
+		
+		for(var i = 0; i < 100; i++)
+		{
+			strFileName = T1.value + i + T2.value
+			document.all["img" + i].src = strFileName;
+			document.all["lnk" + i].href = strFileName;
+			document.all["lnk" + i].target = "blank";
+			pos = strFileName.lastIndexOf("/");
+			if(pos == -1)
+			{
+				pos = strFileName.lastIndexOf("\\");
+			}
+			strFileName = strFileName.substring(pos + 1);
+			document.all["lnk" + i].innerHTML = strFileName;
+			window.status = "Loading " + strFileName;
+		}
+		for(var i = 0; i < 10; i++)
+		{
+			strFileName = T1.value + "0" + i + T2.value
+			document.all["img" + i + "A"].src = strFileName;
+			document.all["lnk" + i + "A"].href = strFileName;
+			document.all["lnk" + i + "A"].target = "blank";
+			pos = strFileName.lastIndexOf("/");
+			if(pos == -1)
+			{
+				pos = strFileName.lastIndexOf("\\");
+			}
+			strFileName = strFileName.substring(pos + 1);
+			document.all["lnk" + i + "A"].innerHTML = strFileName;
+			window.status = "Loading " + strFileName;
+		}
+		window.status = "Finished";
+	}
+</script>
+</head>
+
+<body>
+<p><h1>View Images in a Directory</h1></p>
+<p>Link: <A id=linkit name=linkit>&nbsp;</A></p>
+  <p>Left: <input type="text" id="T1" name="T1" size=100 onkeyup="changeLink()" /></p>
+  <p>Right: <input type="text" id="T2" name="T2" size=100 onkeyup="changeLink()" value=".jpg" /></p>
+<p><INPUT type="button" value="GO" onclick="loadimages()" /></p>
+
+<TABLE>
+	<TR>
+		<TD><IMG SRC="" id=img0 height=100 width=100 /><BR><A id=lnk0></A></TD>
+		<TD><IMG SRC="" id=img1 height=100 width=100 /><BR><A id=lnk1></A></TD>
+		<TD><IMG SRC="" id=img2 height=100 width=100 /><BR><A id=lnk2></A></TD>
+		<TD><IMG SRC="" id=img3 height=100 width=100 /><BR><A id=lnk3></A></TD>
+		<TD><IMG SRC="" id=img4 height=100 width=100 /><BR><A id=lnk4></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img5 height=100 width=100 /><BR><A id=lnk5></A></TD>
+		<TD><IMG SRC="" id=img6 height=100 width=100 /><BR><A id=lnk6></A></TD>
+		<TD><IMG SRC="" id=img7 height=100 width=100 /><BR><A id=lnk7></A></TD>
+		<TD><IMG SRC="" id=img8 height=100 width=100 /><BR><A id=lnk8></A></TD>
+		<TD><IMG SRC="" id=img9 height=100 width=100 /><BR><A id=lnk9></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img0A height=100 width=100 /><BR><A id=lnk0A></A></TD>
+		<TD><IMG SRC="" id=img1A height=100 width=100 /><BR><A id=lnk1A></A></TD>
+		<TD><IMG SRC="" id=img2A height=100 width=100 /><BR><A id=lnk2A></A></TD>
+		<TD><IMG SRC="" id=img3A height=100 width=100 /><BR><A id=lnk3A></A></TD>
+		<TD><IMG SRC="" id=img4A height=100 width=100 /><BR><A id=lnk4A></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img5A height=100 width=100 /><BR><A id=lnk5A></A></TD>
+		<TD><IMG SRC="" id=img6A height=100 width=100 /><BR><A id=lnk6A></A></TD>
+		<TD><IMG SRC="" id=img7A height=100 width=100 /><BR><A id=lnk7A></A></TD>
+		<TD><IMG SRC="" id=img8A height=100 width=100 /><BR><A id=lnk8A></A></TD>
+		<TD><IMG SRC="" id=img9A height=100 width=100 /><BR><A id=lnk9A></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img10 height=100 width=100 /><BR><A id=lnk10></A></TD>
+		<TD><IMG SRC="" id=img11 height=100 width=100 /><BR><A id=lnk11></A></TD>
+		<TD><IMG SRC="" id=img12 height=100 width=100 /><BR><A id=lnk12></A></TD>
+		<TD><IMG SRC="" id=img13 height=100 width=100 /><BR><A id=lnk13></A></TD>
+		<TD><IMG SRC="" id=img14 height=100 width=100 /><BR><A id=lnk14></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img15 height=100 width=100 /><BR><A id=lnk15></A></TD>
+		<TD><IMG SRC="" id=img16 height=100 width=100 /><BR><A id=lnk16></A></TD>
+		<TD><IMG SRC="" id=img17 height=100 width=100 /><BR><A id=lnk17></A></TD>
+		<TD><IMG SRC="" id=img18 height=100 width=100 /><BR><A id=lnk18></A></TD>
+		<TD><IMG SRC="" id=img19 height=100 width=100 /><BR><A id=lnk19></A></TD>
+	</TR><TR>
+		<TD><IMG SRC="" id=img20 height=100 width=100 /><BR><A id=lnk20></A></TD>
+		<TD><IMG SRC="" id=img21 height=100 width=100 /><BR><A id=lnk21></A></TD>
+		<TD><IMG SRC="" id=img22 height=100 width=100 /><BR><A id=lnk22></A></TD>
+		<TD><IMG SRC="" id=img23 height=100 width=100 /><BR><A id=lnk23></A></TD>
+		<TD><IMG SRC="" id=img24 height=100 width=100 /><BR><A id=lnk24></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img25 height=100 width=100 /><BR><A id=lnk25></A></TD>
+		<TD><IMG SRC="" id=img26 height=100 width=100 /><BR><A id=lnk26></A></TD>
+		<TD><IMG SRC="" id=img27 height=100 width=100 /><BR><A id=lnk27></A></TD>
+		<TD><IMG SRC="" id=img28 height=100 width=100 /><BR><A id=lnk28></A></TD>
+		<TD><IMG SRC="" id=img29 height=100 width=100 /><BR><A id=lnk29></A></TD>
+	</TR><TR>
+		<TD><IMG SRC="" id=img30 height=100 width=100 /><BR><A id=lnk30></A></TD>
+		<TD><IMG SRC="" id=img31 height=100 width=100 /><BR><A id=lnk31></A></TD>
+		<TD><IMG SRC="" id=img32 height=100 width=100 /><BR><A id=lnk32></A></TD>
+		<TD><IMG SRC="" id=img33 height=100 width=100 /><BR><A id=lnk33></A></TD>
+		<TD><IMG SRC="" id=img34 height=100 width=100 /><BR><A id=lnk34></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img35 height=100 width=100 /><BR><A id=lnk35></A></TD>
+		<TD><IMG SRC="" id=img36 height=100 width=100 /><BR><A id=lnk36></A></TD>
+		<TD><IMG SRC="" id=img37 height=100 width=100 /><BR><A id=lnk37></A></TD>
+		<TD><IMG SRC="" id=img38 height=100 width=100 /><BR><A id=lnk38></A></TD>
+		<TD><IMG SRC="" id=img39 height=100 width=100 /><BR><A id=lnk39></A></TD>
+	</TR><TR>
+		<TD><IMG SRC="" id=img40 height=100 width=100 /><BR><A id=lnk40></A></TD>
+		<TD><IMG SRC="" id=img41 height=100 width=100 /><BR><A id=lnk41></A></TD>
+		<TD><IMG SRC="" id=img42 height=100 width=100 /><BR><A id=lnk42></A></TD>
+		<TD><IMG SRC="" id=img43 height=100 width=100 /><BR><A id=lnk43></A></TD>
+		<TD><IMG SRC="" id=img44 height=100 width=100 /><BR><A id=lnk44></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img45 height=100 width=100 /><BR><A id=lnk45></A></TD>
+		<TD><IMG SRC="" id=img46 height=100 width=100 /><BR><A id=lnk46></A></TD>
+		<TD><IMG SRC="" id=img47 height=100 width=100 /><BR><A id=lnk47></A></TD>
+		<TD><IMG SRC="" id=img48 height=100 width=100 /><BR><A id=lnk48></A></TD>
+		<TD><IMG SRC="" id=img49 height=100 width=100 /><BR><A id=lnk49></A></TD>
+	</TR><TR>
+		<TD><IMG SRC="" id=img50 height=100 width=100 /><BR><A id=lnk50></A></TD>
+		<TD><IMG SRC="" id=img51 height=100 width=100 /><BR><A id=lnk51></A></TD>
+		<TD><IMG SRC="" id=img52 height=100 width=100 /><BR><A id=lnk52></A></TD>
+		<TD><IMG SRC="" id=img53 height=100 width=100 /><BR><A id=lnk53></A></TD>
+		<TD><IMG SRC="" id=img54 height=100 width=100 /><BR><A id=lnk54></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img55 height=100 width=100 /><BR><A id=lnk55></A></TD>
+		<TD><IMG SRC="" id=img56 height=100 width=100 /><BR><A id=lnk56></A></TD>
+		<TD><IMG SRC="" id=img57 height=100 width=100 /><BR><A id=lnk57></A></TD>
+		<TD><IMG SRC="" id=img58 height=100 width=100 /><BR><A id=lnk58></A></TD>
+		<TD><IMG SRC="" id=img59 height=100 width=100 /><BR><A id=lnk59></A></TD>
+	</TR><TR>
+		<TD><IMG SRC="" id=img60 height=100 width=100 /><BR><A id=lnk60></A></TD>
+		<TD><IMG SRC="" id=img61 height=100 width=100 /><BR><A id=lnk61></A></TD>
+		<TD><IMG SRC="" id=img62 height=100 width=100 /><BR><A id=lnk62></A></TD>
+		<TD><IMG SRC="" id=img63 height=100 width=100 /><BR><A id=lnk63></A></TD>
+		<TD><IMG SRC="" id=img64 height=100 width=100 /><BR><A id=lnk64></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img65 height=100 width=100 /><BR><A id=lnk65></A></TD>
+		<TD><IMG SRC="" id=img66 height=100 width=100 /><BR><A id=lnk66></A></TD>
+		<TD><IMG SRC="" id=img67 height=100 width=100 /><BR><A id=lnk67></A></TD>
+		<TD><IMG SRC="" id=img68 height=100 width=100 /><BR><A id=lnk68></A></TD>
+		<TD><IMG SRC="" id=img69 height=100 width=100 /><BR><A id=lnk69></A></TD>
+	</TR><TR>
+		<TD><IMG SRC="" id=img70 height=100 width=100 /><BR><A id=lnk70></A></TD>
+		<TD><IMG SRC="" id=img71 height=100 width=100 /><BR><A id=lnk71></A></TD>
+		<TD><IMG SRC="" id=img72 height=100 width=100 /><BR><A id=lnk72></A></TD>
+		<TD><IMG SRC="" id=img73 height=100 width=100 /><BR><A id=lnk73></A></TD>
+		<TD><IMG SRC="" id=img74 height=100 width=100 /><BR><A id=lnk74></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img75 height=100 width=100 /><BR><A id=lnk75></A></TD>
+		<TD><IMG SRC="" id=img76 height=100 width=100 /><BR><A id=lnk76></A></TD>
+		<TD><IMG SRC="" id=img77 height=100 width=100 /><BR><A id=lnk77></A></TD>
+		<TD><IMG SRC="" id=img78 height=100 width=100 /><BR><A id=lnk78></A></TD>
+		<TD><IMG SRC="" id=img79 height=100 width=100 /><BR><A id=lnk79></A></TD>
+	</TR><TR>
+		<TD><IMG SRC="" id=img80 height=100 width=100 /><BR><A id=lnk80></A></TD>
+		<TD><IMG SRC="" id=img81 height=100 width=100 /><BR><A id=lnk81></A></TD>
+		<TD><IMG SRC="" id=img82 height=100 width=100 /><BR><A id=lnk82></A></TD>
+		<TD><IMG SRC="" id=img83 height=100 width=100 /><BR><A id=lnk83></A></TD>
+		<TD><IMG SRC="" id=img84 height=100 width=100 /><BR><A id=lnk84></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img85 height=100 width=100 /><BR><A id=lnk85></A></TD>
+		<TD><IMG SRC="" id=img86 height=100 width=100 /><BR><A id=lnk86></A></TD>
+		<TD><IMG SRC="" id=img87 height=100 width=100 /><BR><A id=lnk87></A></TD>
+		<TD><IMG SRC="" id=img88 height=100 width=100 /><BR><A id=lnk88></A></TD>
+		<TD><IMG SRC="" id=img89 height=100 width=100 /><BR><A id=lnk89></A></TD>
+	</TR>
+		<TD><IMG SRC="" id=img90 height=100 width=100 /><BR><A id=lnk90></A></TD>
+		<TD><IMG SRC="" id=img91 height=100 width=100 /><BR><A id=lnk91></A></TD>
+		<TD><IMG SRC="" id=img92 height=100 width=100 /><BR><A id=lnk92></A></TD>
+		<TD><IMG SRC="" id=img93 height=100 width=100 /><BR><A id=lnk93></A></TD>
+		<TD><IMG SRC="" id=img94 height=100 width=100 /><BR><A id=lnk94></A></TD>
+	</TR>
+	<TR>
+		<TD><IMG SRC="" id=img95 height=100 width=100 /><BR><A id=lnk95></A></TD>
+		<TD><IMG SRC="" id=img96 height=100 width=100 /><BR><A id=lnk96></A></TD>
+		<TD><IMG SRC="" id=img97 height=100 width=100 /><BR><A id=lnk97></A></TD>
+		<TD><IMG SRC="" id=img98 height=100 width=100 /><BR><A id=lnk98></A></TD>
+		<TD><IMG SRC="" id=img99 height=100 width=100 /><BR><A id=lnk99></A></TD>
+	</TR>
+</TABLE>
+
+</body>
+
+</html>

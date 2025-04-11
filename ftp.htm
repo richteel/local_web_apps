@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+
+<head>
+<meta name="GENERATOR" content="Microsoft FrontPage 3.0">
+<title>Connect to FTP Site</title>
+</head>
+
+<body bgcolor="#FFFFFF">
+<script language="JavaScript">
+
+<!--
+
+function CheckBlank(str,nam)
+
+{
+
+if (str=="")
+
+	window.alert(nam+" must contain a value!");
+
+if (str=="")
+
+	FTP_URL=ThisURL;
+
+return;
+
+
+
+}
+
+var ThisURL;
+
+
+
+var FTP_URL;
+
+// -->
+
+    </script>
+
+
+<h2>Connect to FTP Site</h2>
+
+<h3><a href="ftp://localhost/">Anonymous</a> FTP</h3>
+
+<form method="POST" name="SecureFTP">
+  <div align="left"><table border="0">
+    <tr>
+      <th align="left" colspan="2"><div align="center"><center><p>Secure FTP</th>
+    </tr>
+    <tr>
+      <td><div align="right"><p><strong>Base URL:</strong></td>
+      <td><div align="left"><p><input type="text" size="20" name="BaseURL" value="localhost"> </td>
+    </tr>
+    <tr>
+      <td><div align="right"><p><strong>User ID:</strong></td>
+      <td><div align="left"><p><input type="text" size="20" name="UserID"> </td>
+    </tr>
+    <tr>
+      <td><div align="right"><p><strong>Password:</strong></td>
+      <td><div align="left"><p><input type="password" size="20" name="Password"> </td>
+    </tr>
+    <tr>
+      <td colspan="2"><div align="center"><center><p><input type="button" name="B1"
+      value="Go To FTP Site" language="JavaScript"
+      onclick="ThisURL=window.location.href;
+
+FTP_URL=&quot;ftp:&quot;+&quot;//&quot;+SecureFTP.UserID.value+&quot;:&quot;+SecureFTP.Password.value+&quot;@&quot;+SecureFTP.BaseURL.value;
+
+CheckBlank(SecureFTP.BaseURL.value,&quot;Base URL&quot;);
+
+CheckBlank(SecureFTP.UserID.value,&quot;User ID&quot;);
+
+CheckBlank(SecureFTP.Password.value,&quot;Password&quot;);
+
+if (FTP_URL != ThisURL)
+
+	window.location.href = FTP_URL;">
+      </td>
+    </tr>
+  </table>
+  </div>
+</form>
+
+<hr>
+
+<p align="center"><a href="../index.htm" target="_top">[Home]</a></p>
+
+<table border="0">
+  <tr>
+    <td width="33%"><p align="center"><font size="2">Created using Microsoft Frontpage</font><br>
+    <img src="../images/frontpag.gif" alt="Created with Microsoft Frontpage" width="88" height="31"></td>
+    <td width="33%"><p align="center"><small><small><i><a
+    href="http://www.clari.net/brad/copymyths.html" target="_top">Copyright</a> © 2000 by
+    Richard J. Teel</i></small></small></p>
+    <p align="center"><font size="1">This page was last edited on: <!--webbot bot="Timestamp"
+    s-type="EDITED" s-format="%A, %d %B %Y %I:%M:%S %p" startspan -->Monday, 03 July 2000 02:26:34 PM<!--webbot bot="Timestamp" endspan i-checksum="62937" -->.<br>
+    Created by <a href="http://www.teelsys.com/">TeelSys</a></font></td>
+    <td width="33%"><p align="center"><font size="2">Web hosting by Hiway Technologies, Inc.,
+    the world's largest hosting provider.<br>
+    </font><a href="http://www.hiway.com/"><img border="0"
+    src="http://www.hiway.com/images/hiwaypowered.gif" width="70" height="51"
+    alt="Powered by Hiway Technologies, Inc."></a> </td>
+  </tr>
+</table>
+</body>
+</html>
