@@ -240,6 +240,78 @@ function bookmarksSelectedbookmarkChanged() {
     }
 }
 
+function searchBookmarks() {
+    if (search_text.value.length == 0) {
+        search_results.style.display = "none";
+        return;
+    }
+    // Clear all results
+    while (search_results.firstChild) {
+        search_results.removeChild(search_results.firstChild);
+    }
+
+    let result_count = 0;
+
+    const searchQuery = search_text.value.toLowerCase();
+    const dataBookmarks = JSON.parse(localStorage.getItem('bookmarks')); // Assuming your JSON is stored under "bookmarkData"
+    const dataTabs = JSON.parse(localStorage.getItem('tabs')); // Assuming your JSON is stored under "bookmarkData"
+    const tabsMap = new Map(dataTabs.map(tab => [tab.id, tab.title]));
+
+    // Filter bookmarks based on search query
+    const filteredBookmarks = dataBookmarks.filter(bookmark =>
+        bookmark.title.toLowerCase().includes(searchQuery) ||
+        bookmark.note.toLowerCase().includes(searchQuery)
+    );
+    result_count = filteredBookmarks.length;
+
+    if (result_count > 0) {
+        // Show result count
+        const resultCountP = document.createElement("p");
+        resultCountP.textContent = `${result_count} results found`;
+        resultCountP.style.fontStyle = "italic";
+        search_results.appendChild(resultCountP);
+
+        // Group bookmarks by tab
+        const groupedResults = new Map();
+        filteredBookmarks.forEach(bookmark => {
+            if (!groupedResults.has(bookmark.tab_id)) {
+                groupedResults.set(bookmark.tab_id, []);
+            }
+            groupedResults.get(bookmark.tab_id).push(bookmark);
+        });
+
+        // Render grouped results
+        groupedResults.forEach((bookmarks, tabId) => {
+            const tabTitle = tabsMap.get(tabId) || 'Unknown Tab';
+            const tabSection = document.createElement('div');
+            tabSection.innerHTML = `<h3>${tabTitle}</h3>`;
+
+            const ul = document.createElement('ul');
+            bookmarks.forEach(bookmark => {
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
+                if(bookmark.note.length > 0) {
+                    li.innerHTML += `<br><span class="bookmark_note">${bookmark.note}</span>`;
+                }
+                ul.appendChild(li);
+            });
+
+            tabSection.appendChild(ul);
+            search_results.appendChild(tabSection);
+        });
+    }
+
+    // Show no results message
+    if (result_count == 0) {
+        const no_results = document.createElement("p");
+        no_results.textContent = NO_SEARCH_RESULTS;
+        no_results.style.fontStyle = "italic";
+        search_results.appendChild(no_results);
+    }
+
+    search_results.style.display = "block";
+}
+
 
 /*************************************************************************/
 /**************************** COMMAND BUTTONS ****************************/
@@ -1341,6 +1413,9 @@ function uiUpdate() {
 /*************************************************************************/
 let initialized = true;
 const main_content_area = document.getElementById("outer-parent");
+const search_text = document.getElementById("search_text");
+const search_results = document.getElementById("search_results");
+const NO_SEARCH_RESULTS = "No Search Results Found";
 
 initialized = initialized && messageInit("msg");
 initialized = initialized && tabsInit("tabs_panel", "lefttab", "righttab", "tabs", "tabcommands", "tabsCommandMenu", 100);
@@ -1363,3 +1438,6 @@ dataLoad();
 uiUpdate();
 
 window.addEventListener("resize", tabsUpdateScrollButtonsDisabledState);
+search_text.addEventListener("keyup", function (e) {
+    searchBookmarks();
+});

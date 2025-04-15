@@ -97,6 +97,13 @@ h1 {
     max-width: 80%;
 }
 
+.container.search {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 80%;
+    min-height: 3rem;
+}
+
 .dialog_title {
     /* background-color: rgb(26, 115, 232, 33); */
     background-image: linear-gradient(135deg, #B4C5E4, rgb(26, 115, 232, 33));
@@ -350,4 +357,15 @@ h1 {
 .message.information {
     border: 1px blue solid;
     color: blue;
+}
+
+.search_results {
+    border: 1px solid black;
+    border-radius: 10px;
+    display: none;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: var(--bookmark_area_bgcolor);
 }
