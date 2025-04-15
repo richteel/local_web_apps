@@ -280,24 +280,26 @@ function searchBookmarks() {
             groupedResults.get(bookmark.tab_id).push(bookmark);
         });
 
-        // Render grouped results
-        groupedResults.forEach((bookmarks, tabId) => {
-            const tabTitle = tabsMap.get(tabId) || 'Unknown Tab';
-            const tabSection = document.createElement('div');
-            tabSection.innerHTML = `<h3>${tabTitle}</h3>`;
+        // Render grouped results in the order of dataTabs
+        dataTabs.forEach(tab => {
+            if (groupedResults.has(tab.id)) {
+                const tabTitle = tab.title || 'Unknown Tab';
+                const tabSection = document.createElement('div');
+                tabSection.innerHTML = `<h3>${tabTitle}</h3>`;
 
-            const ul = document.createElement('ul');
-            bookmarks.forEach(bookmark => {
-                const li = document.createElement('li');
-                li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
-                if(bookmark.note.length > 0) {
-                    li.innerHTML += `<br><span class="bookmark_note">${bookmark.note}</span>`;
-                }
-                ul.appendChild(li);
-            });
+                const ul = document.createElement('ul');
+                groupedResults.get(tab.id).forEach(bookmark => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
+                    if (bookmark.note.length > 0) {
+                        li.innerHTML += `<br><span class="bookmark_note">${bookmark.note}</span>`;
+                    }
+                    ul.appendChild(li);
+                });
 
-            tabSection.appendChild(ul);
-            search_results.appendChild(tabSection);
+                tabSection.appendChild(ul);
+                search_results.appendChild(tabSection);
+            }
         });
     }
 
