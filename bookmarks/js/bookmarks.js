@@ -1417,6 +1417,7 @@ let initialized = true;
 const main_content_area = document.getElementById("outer-parent");
 const search_text = document.getElementById("search_text");
 const search_results = document.getElementById("search_results");
+const clear_search_text = document.getElementById("clear_search_text");
 const NO_SEARCH_RESULTS = "No Search Results Found";
 
 initialized = initialized && messageInit("msg");
@@ -1441,5 +1442,10 @@ uiUpdate();
 
 window.addEventListener("resize", tabsUpdateScrollButtonsDisabledState);
 search_text.addEventListener("keyup", function (e) {
+    searchBookmarks();
+});
+
+clear_search_text.addEventListener("click", function (e) {
+    search_text.value = '';
     searchBookmarks();
 });

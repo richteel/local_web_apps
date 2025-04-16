@@ -21,11 +21,14 @@
         </div>
         <div class="container search">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-12 input-container">
                     <label for="search_text">Search Bookmarks</label>
-                    <input type="text" id="search_text" placeholder="Search Bookmarks" /><br />
-                    <div id="search_results" class="search_results"></div>
+                    <input type="text" id="search_text" placeholder="Search Bookmarks" class="clearable-input"/>
+                    <button id="clear_search_text" class="clear-btn" onclick="clearInput()">✖</button><br />
                 </div>
+            </div>
+            <div class="row">
+                <div id="search_results" class="search_results"></div>
             </div>
         </div>
     </div>
