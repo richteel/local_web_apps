@@ -1,0 +1,93 @@
+@import "modern-normalize.css";
+
+html {
+  margin: 0;
+  font-size: 62.5%; /* Set the '1rem' value to 10px, instead of 16px, but still have sizing work nicely. */
+}
+body {
+  min-height: 100vh;
+  font-size: 1.6rem; /* 16px, by default */
+  font-family: MicrosoftSansSerif;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: none;
+
+  color: #000;
+  background: #afcadf;
+  background: linear-gradient(135deg, #afcadf 0%, #e6a9dc 20%, #c592b0ab 30%, #c7b8c1ab 40%, #eaeaea 50%, #c7b8c1ab 60%, #c592b0ab 70%, #e6a9dc 80%, #afcadf 90%);
+  padding-top: 5rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+@font-face {
+  font-family: 'MicrosoftSansSerif';
+  src: url('fonts/MicrosoftSansSerif.eot?') format('eot'), url('fonts/MicrosoftSansSerif.woff') format('woff'), url('fonts/MicrosoftSansSerif.ttf') format('truetype'), url('fonts/MicrosoftSansSerif.svg#MicrosoftSansSerif') format('svg');
+}
+
+.window {
+  flex: 0;
+  border-top: 2px solid #d7d7d7;
+  border-right: 2px solid #000;
+  border-bottom: 2px solid #000;
+  border-left: 2px solid #d7d7d7;
+  background: #b3b3b3;
+  padding: 4px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.window .titlebar {
+  background: #00006f;
+  background: linear-gradient(to right, #00006f 0%, #0a6cc8 100%);
+  display: block;
+  height: 27px;
+  color: #fff;
+  text-indent: 4px;
+  padding-top: 4px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.window .inner {
+  background: #b3b3b3;
+  padding: 11px;
+  position: relative;
+}
+
+.window .inner main {
+  position: relative;
+  border-top: 2px solid #6d6d6d;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  border-left: 2px solid #6d6d6d;
+  padding: 2px 15px;
+  background: #fff;
+  height: 100%;
+  font-size: 2rem;
+  box-shadow: 2px 2px #000 inset, -2px -2px #d7d7d7 inset; /* replaces the ".window .inner main:before" shadow implementation that blocks link clicking */
+}
+
+.window .inner main h1 {
+  text-align: center;
+}
+.window .inner main h1 img {
+  max-width: 100%;
+}
+
+.window footer p {
+  margin-bottom: 0;
+}
+
+.credits {
+  max-width: 75%;
+  line-height: 1.5;
+}
+
+.site-style-credit {
+  flex: 0;
+  align-self: flex-end;
+  font-size: 1.2rem;
+  margin: auto 1rem 1rem;
+}

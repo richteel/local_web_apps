@@ -290,7 +290,12 @@ function searchBookmarks() {
                 const ul = document.createElement('ul');
                 groupedResults.get(tab.id).forEach(bookmark => {
                     const li = document.createElement('li');
-                    li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
+                    
+                    if (bookmark.url.length > 0) {
+                        li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
+                    } else {
+                        li.innerHTML = bookmark.title;
+                    }
                     if (bookmark.note.length > 0) {
                         li.innerHTML += `<br><span class="bookmark_note">${bookmark.note}</span>`;
                     }
