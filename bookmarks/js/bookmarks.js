@@ -1163,7 +1163,11 @@ function save_bookmark_data_edit() {
     localStorage.setItem(DATA_TABS_KEY, convertLineBreaks(JSON.stringify(tabs_data_text)));
     localStorage.setItem(DATA_BOOKMARKS_KEY, convertLineBreaks(JSON.stringify(bookmarks_data_text)));
 
+    // dataLoad();
+    tab_selected = null;
+    bookmark_selected = null;
     dataLoad();
+    uiUpdate();
     showBookmarksScreen();
 }
 
