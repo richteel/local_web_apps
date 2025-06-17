@@ -577,7 +577,7 @@ function dataExport() {
 
     // Iterate over all keys in localStorage
     for (const key in localStorage) {
-        if (localStorage.hasOwnProperty(key)) {
+        if (localStorage.hasOwnProperty(key) && (key === DATA_BOOKMARKS_KEY || key === DATA_TABS_KEY)) {
             try {
                 // Try to parse the value as JSON
                 parsedData[key] = JSON.parse(localStorage[key]);
