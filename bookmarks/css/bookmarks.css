@@ -389,3 +389,12 @@ h1 {
     cursor: pointer;
     font-size: 16px;
 }
+
+
+#bookmark_edit_screen > div {
+    text-align: center;
+}
+#bookmark_edit_screen textarea {
+    width: 80%;
+    height: 20em;
+}

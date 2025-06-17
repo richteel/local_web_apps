@@ -361,6 +361,9 @@ function commandButtonClicked(e) {
         case "clear":
             dataClear();
             break;
+        case "edit_data":
+            dialogsShowEditData();
+            break;
         case "export":
             dataExport();
             break;
@@ -708,6 +711,9 @@ function dataGetLastNumbericId(items) {
 }
 
 function dataLoad() {
+    dialog_bookmark_edit_tabs.value = localStorage.getItem(DATA_TABS_KEY);
+    dialog_bookmark_edit_bookmarks.value = localStorage.getItem(DATA_BOOKMARKS_KEY);
+    
     data_tabs = JSON.parse(localStorage.getItem(DATA_TABS_KEY));
     data_bookmarks = JSON.parse(localStorage.getItem(DATA_BOOKMARKS_KEY));
 
@@ -1131,6 +1137,66 @@ function dialogsShowEditBookmark(id, parent_id = "") {
     DIALOG_BOOKMARK.style.left = dialogLeft + "px";
     DIALOG_BOOKMARK.style.top = dialogTop + "px";
     DIALOG_BOOKMARK.style.display = "block";
+}
+
+// Fix for systems with inability to import bookmarks
+
+function cancel_bookmark_data_edit() {
+    showBookmarksScreen();
+}
+
+function reload_bookmark_data_edit() {
+    const tabs_data = JSON.parse(localStorage.getItem(DATA_TABS_KEY));
+    const bookmarks_data = JSON.parse(localStorage.getItem(DATA_BOOKMARKS_KEY));
+
+    dialog_bookmark_edit_tabs.value = JSON.stringify(tabs_data, null, 4);
+    dialog_bookmark_edit_bookmarks.value = JSON.stringify(bookmarks_data, null, 4);
+
+    console.log(JSON.stringify(tabs_data, null, 4));
+}
+
+
+function save_bookmark_data_edit() {
+    const tabs_data_text = JSON.parse(dialog_bookmark_edit_tabs.value);
+    const bookmarks_data_text = JSON.parse(dialog_bookmark_edit_bookmarks.value);
+
+    localStorage.setItem(DATA_TABS_KEY, convertLineBreaks(JSON.stringify(tabs_data_text)));
+    localStorage.setItem(DATA_BOOKMARKS_KEY, convertLineBreaks(JSON.stringify(bookmarks_data_text)));
+
+    dataLoad();
+    showBookmarksScreen();
+}
+
+function dialogsShowEditData() {
+    // hide the bookmarks and show the edit data dialog
+    const bookmarks_screen = document.getElementById("bookmarks_screen");
+    const search_screen = document.getElementById("search_screen");
+    const bookmark_edit_screen = document.getElementById("bookmark_edit_screen");
+
+    if (!bookmarks_screen || !search_screen || !bookmark_edit_screen) {
+        console.error("ERROR: dialogsShowEditData - Failed to get required document elements");
+        return;
+    }
+    bookmarks_screen.style.display = "none";
+    search_screen.style.display = "none";
+    bookmark_edit_screen.style.display = "block";
+
+    reload_bookmark_data_edit();
+}
+
+function showBookmarksScreen() {
+    // hide the edit data dialog and show the bookmarks screen
+    const bookmarks_screen = document.getElementById("bookmarks_screen");
+    const search_screen = document.getElementById("search_screen");
+
+    const bookmark_edit_screen = document.getElementById("bookmark_edit_screen");
+    if (!bookmarks_screen || !search_screen || !bookmark_edit_screen) {
+        console.error("ERROR: showBookmarksScreen - Failed to get required document elements");
+        return;
+    }
+    bookmarks_screen.style.display = "block";
+    search_screen.style.display = "none";
+    bookmark_edit_screen.style.display = "none";
 }
 
 function dialogsShowEditTab(id) {

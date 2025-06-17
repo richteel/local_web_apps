@@ -19,7 +19,7 @@
                 <div id="msg" class="message error"></div>
             </div>
         </div>
-        <div class="container search">
+        <div class="container search" id="search_screen">
             <div class="row">
                 <div class="col-md-12 input-container">
                     <label for="search_text">Search Bookmarks</label>
@@ -32,7 +32,7 @@
             </div>
         </div>
     </div>
-    <div class="container outer">
+    <div class="container outer" id="bookmarks_screen">
         <div class="row tabs_row">
             <div class="col-12 flex_full_width">
                 <div class="left_div">
@@ -70,6 +70,7 @@
             <hr aria-hidden="true">
             <button command="export" role="menuitem"> Export Data to a File </button>
             <button command="import" role="menuitem"> Import Data from a File </button>
+            <button command="edit_data" role="menuitem"> Edit Raw Data </button>
             <hr aria-hidden="true">
             <button command="clear" role="menuitem"> Delete All Bookmarks and Tabs </button>
         </div>
@@ -150,6 +151,36 @@
         </div>
     </div>
     <!-- END: Dialog - Edit Bookmark -->
+
+    
+    <!-- Edit Data Screen -->
+    <div class="container outer" id="bookmark_edit_screen" style="display: none;">
+        <div class="row tabs_row">
+            <div class="col-12 flex_full_width">
+                <h2>Edit Tab and Bookmark Data</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-9 scrollV">
+                <div class="edit_data_outer">
+                    <label for="dialog_bookmark_edit_tabs">Tabs</label><br />
+                    <textarea id="dialog_bookmark_edit_tabs" placeholder="JSON for Tabs"></textarea>
+                </div>
+                <div class="edit_data_outer">
+                    <label for="dialog_bookmark_edit_bookmarks">Bookmarks</label><br />
+                    <textarea id="dialog_bookmark_edit_bookmarks" placeholder="JSON for Bookmarks"></textarea>
+                </div>
+                <div class="edit_data_outer">
+                    <input type="button" id="dialog_bookmark_edit_save" class="button_save" value="Save" onclick="save_bookmark_data_edit()" />
+                    <input type="button" id="dialog_bookmark_edit_cancel" class="button_reload" value="Reload Data" onclick="reload_bookmark_data_edit()" />
+                    <input type="button" id="dialog_bookmark_edit_cancel" class="button_cancel" value="Cancel" onclick="cancel_bookmark_data_edit()" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- END: Edit Data Screen -->
 </body>
 
 <script src="js/myDragMove.js"></script>
