@@ -77,7 +77,8 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
                     <br>
                     <span class="bookmark_note">T1600G-28PS - JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots</span>
                 </div>
-                <button type="button" class="bookmark_button">…</button>
+                <!-- <button type="button" class="bookmark_button">…</button> -->
+                <button type="button" class="bookmark_button">&#8230;</button>
             </div>
         </li>
     */
@@ -127,7 +128,8 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
         bm_span_note.className = "bookmark_note";
 
         bm_button.type = "button";
-        bm_button.textContent = "…";
+        // bm_button.textContent = "…";
+        bm_button.innerHTML = "&#8230;"; // Horizontal ellipsis
         bm_button.className = "bookmark_button";
         bm_button.addEventListener("click", function (e) {
             e.stopPropagation();
