@@ -106,6 +106,7 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
         bm_li.id = bookmark.id;
 
         bm_li.addEventListener("dragstart", bookmarkDrag);
+        bm_li.addEventListener("dragend", bookmarkDragEnd);
         bm_li.addEventListener("drop", bookmarkDrop);
         bm_li.addEventListener("dragover", bookmarkAllowDrop);
 
@@ -129,7 +130,7 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
 
         bm_button.type = "button";
         // bm_button.textContent = "…";
-        bm_button.innerHTML = "&#8230;"; // Horizontal ellipsis
+        bm_button.innerHTML = "&#8230;"; // Horizontal ellipsisp
         bm_button.className = "bookmark_button";
         bm_button.addEventListener("click", function (e) {
             e.stopPropagation();
@@ -181,146 +182,140 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
 
 // https://www.w3schools.com/html/tryit.asp?filename=tryhtml5_draganddrop
 
+// --- Drop indicator for bookmarks ---
+let bookmarkDropIndicator = null;
+
+function createBookmarkDropIndicator() {
+    if (!bookmarkDropIndicator) {
+        bookmarkDropIndicator = document.createElement('div');
+        bookmarkDropIndicator.className = 'bookmark-drop-indicator';
+        bookmarkDropIndicator.style.position = 'absolute';
+        bookmarkDropIndicator.style.height = '2px';
+        bookmarkDropIndicator.style.background = '#0078d4';
+        bookmarkDropIndicator.style.zIndex = 9999;
+        bookmarkDropIndicator.style.pointerEvents = 'none';
+        document.body.appendChild(bookmarkDropIndicator);
+    }
+    bookmarkDropIndicator.style.display = 'block';
+}
+
+function hideBookmarkDropIndicator() {
+    if (bookmarkDropIndicator) {
+        bookmarkDropIndicator.style.display = 'none';
+    }
+}
+
+// --- Enhanced drag/drop handlers ---
+
 function bookmarkAllowDrop(e) {
     e.preventDefault();
+    // Visual indicator logic
+    const li = e.target.closest('li');
+    if (!li) {
+        hideBookmarkDropIndicator();
+        return;
+    }
+    createBookmarkDropIndicator();
+    const rect = li.getBoundingClientRect();
+    const offsetY = e.clientY - rect.top;
+    let position;
+    if (offsetY < rect.height / 3) {
+        // Drop above
+        bookmarkDropIndicator.style.top = (rect.top - 1) + 'px';
+        position = 'above';
+    } else if (offsetY > rect.height * 2 / 3) {
+        // Drop below
+        bookmarkDropIndicator.style.top = (rect.bottom - 1) + 'px';
+        position = 'below';
+    } else {
+        // Drop as child
+        bookmarkDropIndicator.style.top = (rect.top + rect.height / 2 - 1) + 'px';
+        position = 'child';
+    }
+    bookmarkDropIndicator.style.left = rect.left + 'px';
+    bookmarkDropIndicator.style.width = rect.width + 'px';
+    bookmarkDropIndicator.dataset.position = position;
+    bookmarkDropIndicator.dataset.targetId = li.id;
 }
 
 function bookmarkDrag(e) {
     e.dataTransfer.setData("target_id", e.target.id);
+    // Optionally, add a dragging class for styling
+    e.target.classList.add('dragging');
 }
 
 function bookmarkDrop(e) {
     e.preventDefault();
     e.stopPropagation();
+    hideBookmarkDropIndicator();
 
     const data = e.dataTransfer.getData("target_id");
-    const target_li_id = e.target.closest("li").id;
-    if (data && target_li_id) {
-        const dropped_item = dataFindItemsById(data_bookmarks, data)[0];
-        const target_item = dataFindItemsById(data_bookmarks, target_li_id)[0];
+    const li = e.target.closest("li");
+    if (!data || !li) return;
 
-        if (dropped_item && target_item) {
-            if (dropped_item.parent_id == target_item.parent_id) {
-                console.info("bookmarkDrop - Reorder")
-                const dropped_index = data_bookmarks.map(obj => obj.id).indexOf(dropped_item.id);
-                const target_index = data_bookmarks.map(obj => obj.id).indexOf(target_item.id);
+    const target_li_id = li.id;
+    const dropped_item = dataFindItemsById(data_bookmarks, data)[0];
+    const target_item = dataFindItemsById(data_bookmarks, target_li_id)[0];
+    if (!dropped_item || !target_item) return;
 
-                // Swaps position, which is not what we want
-                // data_bookmarks[dropped_index], data_bookmarks[target_index]] = [data_bookmarks[target_index], data_bookmarks[dropped_index]];
-                const move_item = data_bookmarks.splice(dropped_index, 1)[0];
-                data_bookmarks.splice(target_index, 0, move_item);
-            }
-            else {
-                console.info("bookmarkDrop - Change Parent");
-                dropped_item.parent_id = target_item.parent_id;
-            }
-
-            localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
-            dataLoad();
-            uiUpdate();
-        }
+    // Determine drop position
+    let position = 'child';
+    if (bookmarkDropIndicator && bookmarkDropIndicator.dataset.targetId === target_li_id) {
+        position = bookmarkDropIndicator.dataset.position;
+    } else {
+        // fallback: use mouse position
+        const rect = li.getBoundingClientRect();
+        const offsetY = e.clientY - rect.top;
+        if (offsetY < rect.height / 3) position = 'above';
+        else if (offsetY > rect.height * 2 / 3) position = 'below';
+        else position = 'child';
     }
+
+    // Prevent dropping onto itself or its descendants
+    if (dropped_item.id === target_item.id) return;
+    let parent = target_item;
+    while (parent && parent.parent_id) {
+        if (parent.parent_id === dropped_item.id) return;
+        parent = dataFindItemsById(data_bookmarks, parent.parent_id)[0];
+    }
+
+    // Remove from current position
+    const dropped_index = data_bookmarks.map(obj => obj.id).indexOf(dropped_item.id);
+    if (dropped_index < 0) return;
+    data_bookmarks.splice(dropped_index, 1);
+
+    if (position === 'above') {
+        // Insert before target
+        const target_index = data_bookmarks.map(obj => obj.id).indexOf(target_item.id);
+        dropped_item.parent_id = target_item.parent_id;
+        data_bookmarks.splice(target_index, 0, dropped_item);
+    } else if (position === 'below') {
+        // Insert after target
+        const target_index = data_bookmarks.map(obj => obj.id).indexOf(target_item.id);
+        dropped_item.parent_id = target_item.parent_id;
+        data_bookmarks.splice(target_index + 1, 0, dropped_item);
+    } else {
+        // As child
+        dropped_item.parent_id = target_item.id;
+        // Insert after last child of target_item
+        let insert_index = data_bookmarks.map(obj => obj.id).indexOf(target_item.id) + 1;
+        // Find last child in sequence
+        for (let i = insert_index; i < data_bookmarks.length; i++) {
+            if (data_bookmarks[i].parent_id !== target_item.id) break;
+            insert_index = i + 1;
+        }
+        data_bookmarks.splice(insert_index, 0, dropped_item);
+    }
+
+    localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+    dataLoad();
+    uiUpdate();
 }
 
-function bookmarksSelectedbookmarkChanged() {
-    // Update bookmarks context menu
-    const disable_selected_items = !bookmark_selected;
-
-    for (const item of bookmarks_command_menu.getElementsByTagName("button")) {
-        item.disabled = false;
-        if (!bookmark_selected && (item.textContent.toUpperCase().includes("SELECTED") || item.textContent.toUpperCase().includes("BOOKMARK"))) {
-            item.disabled = disable_selected_items;
-        }
-    }
-
-    // Update bookmark styles
-    for (const bookmark of bookmark_items.getElementsByTagName("li")) {
-        bookmark.classList.remove("selected");
-        if (bookmark_selected && bookmark.id == bookmark_selected.id) {
-            bookmark.classList.add("selected");
-        }
-    }
+function bookmarkDragEnd(e) {
+    hideBookmarkDropIndicator();
+    e.target.classList.remove('dragging');
 }
-
-function searchBookmarks() {
-    if (search_text.value.length == 0) {
-        search_results.style.display = "none";
-        return;
-    }
-    // Clear all results
-    while (search_results.firstChild) {
-        search_results.removeChild(search_results.firstChild);
-    }
-
-    let result_count = 0;
-
-    const searchQuery = search_text.value.toLowerCase();
-    const dataBookmarks = JSON.parse(localStorage.getItem('bookmarks')); // Assuming your JSON is stored under "bookmarkData"
-    const dataTabs = JSON.parse(localStorage.getItem('tabs')); // Assuming your JSON is stored under "bookmarkData"
-    const tabsMap = new Map(dataTabs.map(tab => [tab.id, tab.title]));
-
-    // Filter bookmarks based on search query
-    const filteredBookmarks = dataBookmarks.filter(bookmark =>
-        bookmark.title.toLowerCase().includes(searchQuery) ||
-        bookmark.note.toLowerCase().includes(searchQuery)
-    );
-    result_count = filteredBookmarks.length;
-
-    if (result_count > 0) {
-        // Show result count
-        const resultCountP = document.createElement("p");
-        resultCountP.textContent = `${result_count} results found`;
-        resultCountP.style.fontStyle = "italic";
-        search_results.appendChild(resultCountP);
-
-        // Group bookmarks by tab
-        const groupedResults = new Map();
-        filteredBookmarks.forEach(bookmark => {
-            if (!groupedResults.has(bookmark.tab_id)) {
-                groupedResults.set(bookmark.tab_id, []);
-            }
-            groupedResults.get(bookmark.tab_id).push(bookmark);
-        });
-
-        // Render grouped results in the order of dataTabs
-        dataTabs.forEach(tab => {
-            if (groupedResults.has(tab.id)) {
-                const tabTitle = tab.title || 'Unknown Tab';
-                const tabSection = document.createElement('div');
-                tabSection.innerHTML = `<h3>${tabTitle}</h3>`;
-
-                const ul = document.createElement('ul');
-                groupedResults.get(tab.id).forEach(bookmark => {
-                    const li = document.createElement('li');
-                    
-                    if (bookmark.url.length > 0) {
-                        li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
-                    } else {
-                        li.innerHTML = bookmark.title;
-                    }
-                    if (bookmark.note.length > 0) {
-                        li.innerHTML += `<br><span class="bookmark_note">${bookmark.note}</span>`;
-                    }
-                    ul.appendChild(li);
-                });
-
-                tabSection.appendChild(ul);
-                search_results.appendChild(tabSection);
-            }
-        });
-    }
-
-    // Show no results message
-    if (result_count == 0) {
-        const no_results = document.createElement("p");
-        no_results.textContent = NO_SEARCH_RESULTS;
-        no_results.style.fontStyle = "italic";
-        search_results.appendChild(no_results);
-    }
-
-    search_results.style.display = "block";
-}
-
 
 /*************************************************************************/
 /**************************** COMMAND BUTTONS ****************************/
@@ -700,7 +695,8 @@ function dataGetLastNumbericId(items) {
 
         const found = item.id.match(regex);
 
-        if (found.length == 1 && Number(found[0]) !== NaN) {
+        // if (found.length == 1 && Number(found[0]) !== NaN) {
+        if (found.length == 1 && !isNaN(Number(found[0]))) {
             ids.push(found[0]);
         }
     }
@@ -1248,6 +1244,24 @@ function dialogsShowEditTab(id) {
     DIALOG_TAB.style.top = dialogTop + "px";
     DIALOG_TAB.style.display = "block";
 }
+
+// Add CSS for drop indicator (inject if not present)
+(function addDropIndicatorStyle() {
+    if (!document.getElementById('bookmark-drop-indicator-style')) {
+        const style = document.createElement('style');
+        style.id = 'bookmark-drop-indicator-style';
+        style.textContent = `
+            .bookmark-drop-indicator {
+                transition: top 0.05s, left 0.05s, width 0.05s;
+            }
+            li.dragging {
+                opacity: 0.5;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+})();
+
 
 for (const button of document.getElementsByClassName("button_cancel")) {
     button.addEventListener("click", dialogsHide);
