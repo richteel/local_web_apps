@@ -317,6 +317,85 @@ function bookmarkDragEnd(e) {
     e.target.classList.remove('dragging');
 }
 
+function searchBookmarks() {
+    if (search_text.value.length == 0) {
+        search_results.style.display = "none";
+        return;
+    }
+    // Clear all results
+    while (search_results.firstChild) {
+        search_results.removeChild(search_results.firstChild);
+    }
+
+    let result_count = 0;
+
+    const searchQuery = search_text.value.toLowerCase();
+    const dataBookmarks = JSON.parse(localStorage.getItem('bookmarks')); // Assuming your JSON is stored under "bookmarkData"
+    const dataTabs = JSON.parse(localStorage.getItem('tabs')); // Assuming your JSON is stored under "bookmarkData"
+    const tabsMap = new Map(dataTabs.map(tab => [tab.id, tab.title]));
+
+    // Filter bookmarks based on search query
+    const filteredBookmarks = dataBookmarks.filter(bookmark =>
+        bookmark.title.toLowerCase().includes(searchQuery) ||
+        bookmark.note.toLowerCase().includes(searchQuery)
+    );
+    result_count = filteredBookmarks.length;
+
+    if (result_count > 0) {
+        // Show result count
+        const resultCountP = document.createElement("p");
+        resultCountP.textContent = `${result_count} results found`;
+        resultCountP.style.fontStyle = "italic";
+        search_results.appendChild(resultCountP);
+
+        // Group bookmarks by tab
+        const groupedResults = new Map();
+        filteredBookmarks.forEach(bookmark => {
+            if (!groupedResults.has(bookmark.tab_id)) {
+                groupedResults.set(bookmark.tab_id, []);
+            }
+            groupedResults.get(bookmark.tab_id).push(bookmark);
+        });
+
+        // Render grouped results in the order of dataTabs
+        dataTabs.forEach(tab => {
+            if (groupedResults.has(tab.id)) {
+                const tabTitle = tab.title || 'Unknown Tab';
+                const tabSection = document.createElement('div');
+                tabSection.innerHTML = `<h3>${tabTitle}</h3>`;
+
+                const ul = document.createElement('ul');
+                groupedResults.get(tab.id).forEach(bookmark => {
+                    const li = document.createElement('li');
+                    
+                    if (bookmark.url.length > 0) {
+                        li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
+                    } else {
+                        li.innerHTML = bookmark.title;
+                    }
+                    if (bookmark.note.length > 0) {
+                        li.innerHTML += `<br><span class="bookmark_note">${bookmark.note}</span>`;
+                    }
+                    ul.appendChild(li);
+                });
+
+                tabSection.appendChild(ul);
+                search_results.appendChild(tabSection);
+            }
+        });
+    }
+
+    // Show no results message
+    if (result_count == 0) {
+        const no_results = document.createElement("p");
+        no_results.textContent = NO_SEARCH_RESULTS;
+        no_results.style.fontStyle = "italic";
+        search_results.appendChild(no_results);
+    }
+
+    search_results.style.display = "block";
+}
+
 /*************************************************************************/
 /**************************** COMMAND BUTTONS ****************************/
 /*************************************************************************/
@@ -695,8 +774,8 @@ function dataGetLastNumbericId(items) {
 
         const found = item.id.match(regex);
 
-        // if (found.length == 1 && Number(found[0]) !== NaN) {
-        if (found.length == 1 && !isNaN(Number(found[0]))) {
+        // if (found.length == 1 && !isNaN(Number(found[0]))) {
+        if (found.length == 1 && Number(found[0]) !== NaN) {
             ids.push(found[0]);
         }
     }
