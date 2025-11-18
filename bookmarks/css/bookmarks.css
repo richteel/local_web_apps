@@ -235,10 +235,22 @@ h1 {
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
     background: white;
-    display: none;
-    position: absolute;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     width: 500px;
+    max-height: 90vh;
     z-index: 5000;
+    flex-direction: column;
+}
+
+.dialog_box[style*="display: none"] {
+    display: none !important;
+}
+
+.dialog_box[style*="display: block"] {
+    display: flex !important;
 }
 
 .dialog_box .dialog_content {
@@ -248,6 +260,10 @@ h1 {
     margin: 13px;
     padding: 10px;
     text-align: left;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .dialog_box .dialog_content button {
@@ -304,7 +320,6 @@ h1 {
 }
 
 .dialog_box .dialog_content ul {
-    height: 50px;
     margin: 10px 0 10px 20px;
     padding: 0;
 }
@@ -397,4 +412,47 @@ h1 {
 #bookmark_edit_screen textarea {
     width: 80%;
     height: 20em;
+}
+
+#merge_preview_content {
+    clear: both;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+#merge_preview_content h3 {
+    margin: 15px 0 8px 0;
+    clear: both;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+#merge_preview_content h4 {
+    margin: 12px 0 5px 0;
+    clear: both;
+    font-size: 1em;
+    font-weight: bold;
+}
+
+#merge_preview_content ul {
+    margin: 5px 0 10px 0;
+    padding-left: 25px;
+    list-style-position: outside;
+    clear: both;
+}
+
+#merge_preview_content li {
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+
+#merge_preview_content p {
+    margin: 10px 0;
+    clear: both;
+}
+
+#dialog_merge_preview .dialog_content > div:last-child {
+    clear: both;
+    padding-top: 10px;
+    overflow: hidden;
 }

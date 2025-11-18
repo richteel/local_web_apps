@@ -1,5 +1,3 @@
-let isSwiping = false;
-
 /*************************************************************************/
 /******************************* BOOKMARKS *******************************/
 /*************************************************************************/
@@ -19,7 +17,6 @@ function bookmarksInit(bookmarks_container_id, bookmarks_command_menu_id) {
         item.addEventListener("click", function (e) {
             commandButtonClicked(e);
         });
-        // TODO: Need to know which bookmark
     }
 
     CONTEXT_MENUS.push(bookmarks_command_menu);
@@ -32,7 +29,7 @@ function dataBookmarkDelete(bookmark_id) {
         console.error(`ERROR: dataBookmarkDelete - The bookmark_id parameter value is missing.`);
         return false;
     }
-    const index = data_bookmarks.map(obj => obj.id).indexOf(bookmark_id);
+    const index = data_bookmarks.findIndex(obj => obj.id === bookmark_id);
 
     if (index < 0) {
         console.error(`ERROR: dataBookmarkDelete - Failed to find id in array of bookmarks. id -> ${bookmark_id}`);
@@ -40,13 +37,20 @@ function dataBookmarkDelete(bookmark_id) {
     }
 
     for (let i = data_bookmarks.length - 1; i > -1; i--) {
-        if (data_bookmarks[i].parent_id == bookmark_id) {
+        if (data_bookmarks[i].parent_id === bookmark_id) {
             data_bookmarks.splice(i, 1);
         }
     }
 
     data_bookmarks.splice(index, 1);
-    localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+    
+    try {
+        localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+    } catch (err) {
+        console.error("ERROR: dataBookmarkDelete - Failed to save to localStorage:", err);
+        messageShow("Error: Failed to save changes (quota exceeded?)", MESSAGE_ERROR);
+        return false;
+    }
 
     return true;
 }
@@ -69,70 +73,50 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
 
     let parent_elem_ul;
 
-    /*
-        <li draggable="true" id="bookmark_10">
-            <div class="bookmark_outer">
-                <div class="bookmark_inner">
-                    <a class="bookmark_link" href="http://10.140.1.32/" target="_blank">Hub/Switch1</a>
-                    <br>
-                    <span class="bookmark_note">T1600G-28PS - JetStream 24-Port Gigabit Smart PoE+ Switch with 4 SFP Slots</span>
-                </div>
-                <!-- <button type="button" class="bookmark_button">…</button> -->
-                <button type="button" class="bookmark_button">&#8230;</button>
-            </div>
-        </li>
-    */
     for (const bookmark of data_bookmarks) {
-        if (!bookmark.title || bookmark.tab_id != tab_id)
+        if (!bookmark.title || bookmark.tab_id !== tab_id)
             continue;
 
-        if (parent_id && bookmark.parent_id != parent_id)
+        if (parent_id && bookmark.parent_id !== parent_id)
             continue;
 
         if (!parent_id && bookmark.parent_id)
             continue;
 
         // Create items to display the bookmark
-        const bm_li = document.createElement("li");
-        const bm_div_outer = document.createElement("div");
-        const bm_div_inner = document.createElement("div");
-        const bm_link = document.createElement("a");
-        const bm_break = document.createElement("br");
-        const bm_span_note = document.createElement("span");
-        const bm_button = document.createElement("button");
+        const bookmark_li = document.createElement("li");
+        const bookmark_div_outer = document.createElement("div");
+        const bookmark_div_inner = document.createElement("div");
+        const bookmark_link = document.createElement("a");
+        const bookmark_break = document.createElement("br");
+        const bookmark_span_note = document.createElement("span");
+        const bookmark_button = document.createElement("button");
 
-        // bm_elem_outer > bm_li
-        bm_li.draggable = true;
-        bm_li.id = bookmark.id;
+        // Configure list item
+        bookmark_li.draggable = true;
+        bookmark_li.id = bookmark.id;
 
-        bm_li.addEventListener("dragstart", bookmarkDrag);
-        bm_li.addEventListener("dragend", bookmarkDragEnd);
-        bm_li.addEventListener("drop", bookmarkDrop);
-        bm_li.addEventListener("dragover", bookmarkAllowDrop);
+        bookmark_li.addEventListener("dragstart", bookmarkDrag);
+        bookmark_li.addEventListener("dragend", bookmarkDragEnd);
+        bookmark_li.addEventListener("drop", bookmarkDrop);
+        bookmark_li.addEventListener("dragover", bookmarkAllowDrop);
 
-        bm_li.addEventListener("click", function (e) {
+        bookmark_li.addEventListener("click", function (e) {
             e.stopPropagation();
             if (e.target.getElementsByTagName('a').length > 0) {
                 e.target.getElementsByTagName('a')[0].click();
             }
         });
 
-        bm_div_outer.className = "bookmark_outer";
+        bookmark_div_outer.className = "bookmark_outer";
+        bookmark_div_inner.className = "bookmark_inner";
+        bookmark_link.className = "bookmark_link";
+        bookmark_span_note.className = "bookmark_note";
 
-        // bm_elem > bm_div_inner
-        bm_div_inner.className = "bookmark_inner";
-
-        // bm_anchor > bm_link
-        bm_link.className = "bookmark_link";
-
-        // note_span > bm_span_note
-        bm_span_note.className = "bookmark_note";
-
-        bm_button.type = "button";
-        // bm_button.textContent = "…";
-        bm_button.innerHTML = "&#8230;"; // Horizontal ellipsisp
-        bm_button.className = "bookmark_button";
-        bm_button.addEventListener("click", function (e) {
+        bookmark_button.type = "button";
+        bookmark_button.innerHTML = "&#8230;"; // Horizontal ellipsis
+        bookmark_button.className = "bookmark_button";
+        bookmark_button.addEventListener("click", function (e) {
             e.stopPropagation();
 
             bookmark_selected = e.target.closest("li");
@@ -143,30 +127,29 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
 
         // - Add link and notes to inner div
         if (bookmark.url) {
-            bm_link.textContent = bookmark.title;
-            bm_link.href = bookmark.url;
-            bm_link.target = bookmark.target;
-            bm_div_inner.appendChild(bm_link);
+            bookmark_link.textContent = bookmark.title;
+            bookmark_link.href = bookmark.url;
+            bookmark_link.target = bookmark.target;
+            bookmark_div_inner.appendChild(bookmark_link);
         }
         else {
-            bm_div_inner.textContent = bookmark.title;
+            bookmark_div_inner.textContent = bookmark.title;
         }
         if (bookmark.note) {
-            // bm_span_note.textContent = bookmark.note;
-            bm_span_note.innerHTML = bookmark.note;
-            bm_div_inner.appendChild(bm_break);
-            bm_div_inner.appendChild(bm_span_note);
+            bookmark_span_note.innerHTML = sanitizeHTML(bookmark.note);
+            bookmark_div_inner.appendChild(bookmark_break);
+            bookmark_div_inner.appendChild(bookmark_span_note);
         }
 
         // - Add inner & button to outer
-        bm_div_outer.appendChild(bm_div_inner);
-        bm_div_outer.appendChild(bm_button);
+        bookmark_div_outer.appendChild(bookmark_div_inner);
+        bookmark_div_outer.appendChild(bookmark_button);
 
         // - Add items to li
-        bm_li.appendChild(bm_div_outer);
+        bookmark_li.appendChild(bookmark_div_outer);
         // - Add items to ul
-        if (parent_elem.tagName == "UL") {
-            parent_elem.appendChild(bm_li);
+        if (parent_elem.tagName === "UL") {
+            parent_elem.appendChild(bookmark_li);
         }
         else {
             if (!parent_elem_ul) {
@@ -174,9 +157,9 @@ function bookmarksDisplayItems(tab_id, parent_elem, parent_id = "") {
                 parent_elem.appendChild(parent_elem_ul);
             }
 
-            parent_elem_ul.appendChild(bm_li);
+            parent_elem_ul.appendChild(bookmark_li);
         }
-        bookmarksDisplayItems(tab_id, bm_li, bookmark.id);
+        bookmarksDisplayItems(tab_id, bookmark_li, bookmark.id);
     }
 }
 
@@ -254,9 +237,13 @@ function bookmarkDrop(e) {
     if (!data || !li) return;
 
     const target_li_id = li.id;
-    const dropped_item = dataFindItemsById(data_bookmarks, data)[0];
-    const target_item = dataFindItemsById(data_bookmarks, target_li_id)[0];
-    if (!dropped_item || !target_item) return;
+    const droppedItems = dataFindItemsById(data_bookmarks, data);
+    const targetItems = dataFindItemsById(data_bookmarks, target_li_id);
+    
+    if (!droppedItems || droppedItems.length === 0 || !targetItems || targetItems.length === 0) return;
+    
+    const dropped_item = droppedItems[0];
+    const target_item = targetItems[0];
 
     // Determine drop position
     let position = 'child';
@@ -276,29 +263,31 @@ function bookmarkDrop(e) {
     let parent = target_item;
     while (parent && parent.parent_id) {
         if (parent.parent_id === dropped_item.id) return;
-        parent = dataFindItemsById(data_bookmarks, parent.parent_id)[0];
+        const parentItems = dataFindItemsById(data_bookmarks, parent.parent_id);
+        if (!parentItems || parentItems.length === 0) break;
+        parent = parentItems[0];
     }
 
     // Remove from current position
-    const dropped_index = data_bookmarks.map(obj => obj.id).indexOf(dropped_item.id);
+    const dropped_index = data_bookmarks.findIndex(obj => obj.id === dropped_item.id);
     if (dropped_index < 0) return;
     data_bookmarks.splice(dropped_index, 1);
 
     if (position === 'above') {
         // Insert before target
-        const target_index = data_bookmarks.map(obj => obj.id).indexOf(target_item.id);
+        const target_index = data_bookmarks.findIndex(obj => obj.id === target_item.id);
         dropped_item.parent_id = target_item.parent_id;
         data_bookmarks.splice(target_index, 0, dropped_item);
     } else if (position === 'below') {
         // Insert after target
-        const target_index = data_bookmarks.map(obj => obj.id).indexOf(target_item.id);
+        const target_index = data_bookmarks.findIndex(obj => obj.id === target_item.id);
         dropped_item.parent_id = target_item.parent_id;
         data_bookmarks.splice(target_index + 1, 0, dropped_item);
     } else {
         // As child
         dropped_item.parent_id = target_item.id;
         // Insert after last child of target_item
-        let insert_index = data_bookmarks.map(obj => obj.id).indexOf(target_item.id) + 1;
+        let insert_index = data_bookmarks.findIndex(obj => obj.id === target_item.id) + 1;
         // Find last child in sequence
         for (let i = insert_index; i < data_bookmarks.length; i++) {
             if (data_bookmarks[i].parent_id !== target_item.id) break;
@@ -307,7 +296,13 @@ function bookmarkDrop(e) {
         data_bookmarks.splice(insert_index, 0, dropped_item);
     }
 
-    localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+    try {
+        localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+    } catch (err) {
+        console.error("ERROR: bookmarkDrop - Failed to save to localStorage:", err);
+        messageShow("Error: Failed to save bookmark position", MESSAGE_ERROR);
+        return;
+    }
     dataLoad();
     uiUpdate();
 }
@@ -318,7 +313,7 @@ function bookmarkDragEnd(e) {
 }
 
 function searchBookmarks() {
-    if (search_text.value.length == 0) {
+    if (search_text.value.length === 0) {
         search_results.style.display = "none";
         return;
     }
@@ -330,15 +325,31 @@ function searchBookmarks() {
     let result_count = 0;
 
     const searchQuery = search_text.value.toLowerCase();
-    const dataBookmarks = JSON.parse(localStorage.getItem('bookmarks')); // Assuming your JSON is stored under "bookmarkData"
-    const dataTabs = JSON.parse(localStorage.getItem('tabs')); // Assuming your JSON is stored under "bookmarkData"
+    let dataBookmarks, dataTabs;
+    
+    try {
+        dataBookmarks = JSON.parse(localStorage.getItem('bookmarks'));
+        dataTabs = JSON.parse(localStorage.getItem('tabs'));
+    } catch (err) {
+        console.error("ERROR: searchBookmarks - Failed to parse data from localStorage:", err);
+        messageShow("Error loading bookmark data", MESSAGE_ERROR);
+        return;
+    }
+    
+    if (!dataBookmarks || !dataTabs) {
+        console.warn("WARNING: searchBookmarks - No data available to search");
+        return;
+    }
+    
     const tabsMap = new Map(dataTabs.map(tab => [tab.id, tab.title]));
 
     // Filter bookmarks based on search query
-    const filteredBookmarks = dataBookmarks.filter(bookmark =>
-        bookmark.title.toLowerCase().includes(searchQuery) ||
-        bookmark.note.toLowerCase().includes(searchQuery)
-    );
+    const filteredBookmarks = dataBookmarks.filter(bookmark => {
+        if (!bookmark) return false;
+        const title = bookmark.title ? bookmark.title.toLowerCase() : '';
+        const note = bookmark.note ? bookmark.note.toLowerCase() : '';
+        return title.includes(searchQuery) || note.includes(searchQuery);
+    });
     result_count = filteredBookmarks.length;
 
     if (result_count > 0) {
@@ -362,19 +373,25 @@ function searchBookmarks() {
             if (groupedResults.has(tab.id)) {
                 const tabTitle = tab.title || 'Unknown Tab';
                 const tabSection = document.createElement('div');
-                tabSection.innerHTML = `<h3>${tabTitle}</h3>`;
+                tabSection.innerHTML = `<h3>${sanitizeHTML(tabTitle)}</h3>`;
 
                 const ul = document.createElement('ul');
                 groupedResults.get(tab.id).forEach(bookmark => {
-                    const li = document.createElement('li');
+                    if (!bookmark) return;
                     
-                    if (bookmark.url.length > 0) {
-                        li.innerHTML = `<a href="${bookmark.url}" target="${bookmark.target}">${bookmark.title}</a>`;
+                    const li = document.createElement('li');
+                    const url = bookmark.url || '';
+                    const title = bookmark.title || 'Untitled';
+                    const note = bookmark.note || '';
+                    const target = bookmark.target || '_self';
+                    
+                    if (url.length > 0) {
+                        li.innerHTML = `<a href="${sanitizeHTML(url)}" target="${sanitizeHTML(target)}">${sanitizeHTML(title)}</a>`;
                     } else {
-                        li.innerHTML = bookmark.title;
+                        li.innerHTML = sanitizeHTML(title);
                     }
-                    if (bookmark.note.length > 0) {
-                        li.innerHTML += `<br><span class="bookmark_note">${bookmark.note}</span>`;
+                    if (note.length > 0) {
+                        li.innerHTML += `<br><span class="bookmark_note">${sanitizeHTML(note)}</span>`;
                     }
                     ul.appendChild(li);
                 });
@@ -386,7 +403,7 @@ function searchBookmarks() {
     }
 
     // Show no results message
-    if (result_count == 0) {
+    if (result_count === 0) {
         const no_results = document.createElement("p");
         no_results.textContent = NO_SEARCH_RESULTS;
         no_results.style.fontStyle = "italic";
@@ -417,13 +434,25 @@ function commandButtonClicked(e) {
             dialogsShowEditBookmark("", bookmark_selected.id);
             break;
         case "bookmark_add_sibling":
-            const parent_id = dataFindItemsById(data_bookmarks, bookmark_selected.id)[0].parent_id;
+            const parentItems = dataFindItemsById(data_bookmarks, bookmark_selected.id);
+            if (!parentItems || parentItems.length === 0) {
+                messageShow("Unable to find selected bookmark", MESSAGE_ERROR);
+                setTimeout(function () { messageShow(""); }, MESSAGE_TIMEOUT_SHORT);
+                break;
+            }
+            const parent_id = parentItems[0].parent_id;
             dialogsShowEditBookmark("", parent_id);
             break;
         case "bookmark_delete":
-            const bookmark = dataFindItemsById(data_bookmarks, bookmark_selected.id)[0];
+            const bookmarkItems = dataFindItemsById(data_bookmarks, bookmark_selected.id);
+            if (!bookmarkItems || bookmarkItems.length === 0) {
+                messageShow("Unable to find selected bookmark", MESSAGE_ERROR);
+                setTimeout(function () { messageShow(""); }, MESSAGE_TIMEOUT_SHORT);
+                break;
+            }
+            const bookmark = bookmarkItems[0];
             const prompt_bookmark = `Are you sure you want to delete the "${bookmark.title}" bookmark and child bookmarks?`;
-            if (confirm(prompt_bookmark) == true) {
+            if (confirm(prompt_bookmark) === true) {
                 if (dataBookmarkDelete(bookmark_selected.id)) {
                     bookmark_selected = null;
                     dataLoad();
@@ -446,7 +475,13 @@ function commandButtonClicked(e) {
         case "import":
             // Use setTimeout to clear the context menu when displaying the prompt.
             // The click event needs to complete first.
-            setTimeout(dataImport, 10);
+            setTimeout(dataImport, CONTEXT_MENU_DELAY);
+            break;
+        case "merge_import":
+            setTimeout(dataMergeImport, CONTEXT_MENU_DELAY);
+            break;
+        case "printview":
+            printViewTab();
             break;
         case "tab_add":
             dialogsShowEditTab("");
@@ -465,7 +500,7 @@ function commandButtonClicked(e) {
             break;
         case "tab_remove":
             const prompt = `Are you sure you want to delete the ${selectedTitle} tab and associated bookmarks?`;
-            if (confirm(prompt) == true) {
+            if (confirm(prompt) === true) {
                 if (dataTabDelete(selectedId)) {
                     tab_selected = null;
                     dataLoad();
@@ -517,18 +552,189 @@ function contextMenuShow(menu, pos) {
 
 
 /*************************************************************************/
+/************************** HTML SANITIZATION ****************************/
+/*************************************************************************/
+function sanitizeHTML(html) {
+    if (!html) return '';
+    
+    const temp = document.createElement('div');
+    temp.innerHTML = html;
+    
+    // Remove all script tags
+    const scripts = temp.querySelectorAll('script');
+    scripts.forEach(script => script.remove());
+    
+    // Remove dangerous event handlers
+    const allElements = temp.querySelectorAll('*');
+    allElements.forEach(element => {
+        // Remove all on* attributes (onclick, onerror, etc.)
+        Array.from(element.attributes).forEach(attr => {
+            if (attr.name.startsWith('on')) {
+                element.removeAttribute(attr.name);
+            }
+        });
+        
+        // Sanitize href and src to prevent javascript: URLs
+        if (element.hasAttribute('href')) {
+            const href = element.getAttribute('href');
+            if (href.toLowerCase().trim().startsWith('javascript:')) {
+                element.removeAttribute('href');
+            }
+        }
+        if (element.hasAttribute('src')) {
+            const src = element.getAttribute('src');
+            if (src.toLowerCase().trim().startsWith('javascript:')) {
+                element.removeAttribute('src');
+            }
+        }
+    });
+    
+    return temp.innerHTML;
+}
+
+/*************************************************************************/
+/****************************** PRINT VIEW *******************************/
+function printViewTab() {
+    if (!tab_selected) {
+        messageShow("No tab selected", MESSAGE_WARNING);
+        setTimeout(function () { messageShow(""); }, MESSAGE_TIMEOUT_SHORT);
+        return;
+    }
+
+    const tabTitle = tab_selected.textContent;
+    const tabId = tab_selected.id;
+    
+    // Generate HTML for bookmarks
+    let bookmarksHTML = generateBookmarksHTML(tabId, "");
+    
+    // Create the complete HTML document
+    const printHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${tabTitle}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        ul ul {
+            padding-left: 30px;
+            margin-top: 5px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .bookmark-note {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
+            display: block;
+            margin-top: 3px;
+        }
+        .bookmark-folder {
+            font-weight: bold;
+            color: #333;
+        }
+        @media print {
+            body {
+                margin: 0;
+            }
+            a {
+                color: #000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>${tabTitle}</h1>
+    ${bookmarksHTML}
+</body>
+</html>`;
+    
+    // Open in new window
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+        printWindow.document.write(printHTML);
+        printWindow.document.close();
+    } else {
+        messageShow("Failed to open print view. Please allow popups.", MESSAGE_ERROR);
+        setTimeout(function () { messageShow(""); }, MESSAGE_TIMEOUT_LONG);
+    }
+}
+
+function generateBookmarksHTML(tabId, parentId) {
+    const bookmarksAtLevel = data_bookmarks.filter(bookmark => 
+        bookmark.tab_id === tabId && bookmark.parent_id === parentId
+    );
+    
+    if (bookmarksAtLevel.length === 0) {
+        return '';
+    }
+    
+    let html = '<ul>';
+    
+    for (const bookmark of bookmarksAtLevel) {
+        if (!bookmark.title) continue;
+        
+        html += '<li>';
+        
+        if (bookmark.url) {
+            html += `<a href="${sanitizeHTML(bookmark.url)}" target="${sanitizeHTML(bookmark.target)}">${sanitizeHTML(bookmark.title)}</a>`;
+        } else {
+            html += `<span class="bookmark-folder">${sanitizeHTML(bookmark.title)}</span>`;
+        }
+        
+        if (bookmark.note) {
+            html += `<span class="bookmark-note">${sanitizeHTML(bookmark.note)}</span>`;
+        }
+        
+        // Recursively add child bookmarks
+        const childrenHTML = generateBookmarksHTML(tabId, bookmark.id);
+        if (childrenHTML) {
+            html += childrenHTML;
+        }
+        
+        html += '</li>';
+    }
+    
+    html += '</ul>';
+    return html;
+}
+
+/*************************************************************************/
 /********************************* DATA **********************************/
 /*************************************************************************/
 const DATA_BOOKMARKS_KEY = "bookmarks";
 const DATA_TABS_KEY = "tabs";
+const DATA_LAST_EXPORT_FILENAME_KEY = "last_export_filename";
+const DEFAULT_TAB_SCROLL_STEP = 200;
+const MESSAGE_TIMEOUT_SHORT = 1500;
+const MESSAGE_TIMEOUT_LONG = 3000;
+const CONTEXT_MENU_DELAY = 10;
+const DIALOG_INIT_RETRY_DELAY = 100;
 let data_tabs = [];
 let data_bookmarks = [];
 let data_last_tab_id = 0;
 let data_last_bookmark_id = 0;
-
-function convertLineBreaks(text) {
-    return text.replace(/\n/g, '\n'); // Replaces \n with actual line breaks
-}
 
 function dataInit() {
     if (typeof (Storage) === "undefined") {
@@ -547,12 +753,18 @@ function dataBookmarkDeleteAllForTab(tab_id) {
     }
 
     for (let i = data_bookmarks.length - 1; i > -1; i--) {
-        if (data_bookmarks[i].tab_id == tab_id) {
+        if (data_bookmarks[i].tab_id === tab_id) {
             data_bookmarks.splice(i, 1);
         }
     }
 
-    localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+    try {
+        localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+    } catch (err) {
+        console.error("ERROR: dataBookmarkDeleteAllForTab - Failed to save to localStorage:", err);
+        messageShow("Error: Failed to save changes", MESSAGE_ERROR);
+        return false;
+    }
 
     return true;
 }
@@ -586,12 +798,21 @@ function dataBookmarkSave(bookmark_id, bookmark_tab_id, bookmark_parent_id, book
             note: bookmark_note
         };
         data_bookmarks.push(newBookmark);
-        localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+        
+        try {
+            localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+        } catch (err) {
+            console.error("ERROR: dataBookmarkSave - Failed to save to localStorage:", err);
+            messageShow("Error: Failed to save bookmark (quota exceeded?)", MESSAGE_ERROR);
+            data_bookmarks.pop(); // Rollback
+            return false;
+        }
+        
         console.info(`Added Bookmark ${newBookmark}`, newBookmark);
         return true;
     }
     else {
-        if (!bookmarks_with_ids || bookmarks_with_ids.length != 1) {
+        if (!bookmarks_with_ids || bookmarks_with_ids.length !== 1) {
             console.error(`ERROR: dataBookmarkSave - Saving bookmark failed. Zero or more than one bookmark found with id -> ${bookmark_id}`);
             console.dir(bookmarks_with_ids);
             return false;
@@ -599,8 +820,12 @@ function dataBookmarkSave(bookmark_id, bookmark_tab_id, bookmark_parent_id, book
 
         let saved = false;
         let data_changed = false;
+        if (!data_bookmarks || data_bookmarks.length === 0) {
+            console.error(`ERROR: dataBookmarkSave - No bookmarks data available`);
+            return false;
+        }
         for (const bookmark of data_bookmarks) {
-            if (bookmark.id == bookmark_id) {
+            if (bookmark.id === bookmark_id) {
                 bookmark.tab_id = bookmark_tab_id;
                 bookmark.parent_id = bookmark_parent_id;
                 bookmark.title = bookmark_title;
@@ -609,8 +834,8 @@ function dataBookmarkSave(bookmark_id, bookmark_tab_id, bookmark_parent_id, book
                 bookmark.note = bookmark_note;
                 data_changed = true;
             }
-            else if (bookmark.parent_id == bookmark_id) {
-                if (bookmark.tab_id != bookmark_tab_id) {
+            else if (bookmark.parent_id === bookmark_id) {
+                if (bookmark.tab_id !== bookmark_tab_id) {
                     bookmark.tab_id = bookmark_tab_id;
                     data_changed = true;
                 }
@@ -618,8 +843,14 @@ function dataBookmarkSave(bookmark_id, bookmark_tab_id, bookmark_parent_id, book
         }
 
         if (data_changed) {
-            localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
-            saved = true;
+            try {
+                localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+                saved = true;
+            } catch (err) {
+                console.error("ERROR: dataBookmarkSave - Failed to save to localStorage:", err);
+                messageShow("Error: Failed to save bookmark changes", MESSAGE_ERROR);
+                return false;
+            }
         }
 
         if (saved) {
@@ -638,13 +869,40 @@ function dataClear() {
     const prompt_clear = `Delete the existing tabs and bookmarks. Are you sure?`;
 
     if (hasItems) {
-        if (confirm(prompt_clear) == false)
+        if (confirm(prompt_clear) === false)
             return;
     }
     localStorage.clear();
 
     dataLoad();
     uiUpdate();
+}
+
+function getCurrentDateString() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function getExportFilename() {
+    const currentDate = getCurrentDateString();
+    const lastFilename = localStorage.getItem(DATA_LAST_EXPORT_FILENAME_KEY);
+    
+    if (lastFilename) {
+        // Replace existing date pattern (YYYY-MM-DD) with current date
+        // Match pattern: 4 digits, dash, 2 digits, dash, 2 digits
+        const datePattern = /\d{4}-\d{2}-\d{2}/;
+        if (datePattern.test(lastFilename)) {
+            return lastFilename.replace(datePattern, currentDate);
+        }
+        // If no date pattern found, insert date before .json extension
+        return lastFilename.replace(/\.json$/i, ` ${currentDate}.json`);
+    }
+    
+    // Default filename with current date
+    return `bookmarks ${currentDate}.json`;
 }
 
 function dataExport() {
@@ -668,11 +926,21 @@ function dataExport() {
     const localStorageCopy = JSON.stringify(parsedData, null, 4); // Add indentation for readability
     const a = document.createElement('a');
     const file = new Blob([localStorageCopy], { type: "application/json" });
+    
+    const filename = getExportFilename();
 
     a.href = URL.createObjectURL(file);
-    a.download = "bookmarks.json";
+    a.download = filename;
     a.click();
     URL.revokeObjectURL(a.href);
+    
+    // Save the filename for next export
+    try {
+        localStorage.setItem(DATA_LAST_EXPORT_FILENAME_KEY, filename);
+    } catch (err) {
+        console.warn("WARNING: dataExport - Failed to save last export filename:", err);
+        // Non-critical error, continue
+    }
 }
 
 function dataImport() {
@@ -680,7 +948,7 @@ function dataImport() {
     const prompt_import = `Importing data will delete the existing tabs and bookmarks. Are you sure you want to replace your bookmarks?`;
 
     if (hasItems) {
-        if (confirm(prompt_import) == false)
+        if (confirm(prompt_import) === false)
             return;
     }
 
@@ -703,13 +971,25 @@ function dataImport() {
                 for (const key of Object.keys(data)) {
                     // Handle new format (values are objects or arrays)
                     if (typeof data[key] === "object" && data[key] !== null) {
-                        console.log("Importing new format data", MESSAGE_WARNING);
+                        console.info("Importing new format data");
                         // Always stringify the value for localStorage
-                        localStorage.setItem(key, convertLineBreaks(JSON.stringify(data[key])));
+                        try {
+                            localStorage.setItem(key, JSON.stringify(data[key]));
+                        } catch (err) {
+                            console.error("ERROR: dataImport - Failed to save to localStorage:", err);
+                            alert("Error importing data: Storage quota exceeded.");
+                            return;
+                        }
                     } else {
-                        console.log("Importing old format data", MESSAGE_WARNING);
+                        console.info("Importing old format data");
                         // Old format (values are already strings)
-                        localStorage.setItem(key, data[key]);
+                        try {
+                            localStorage.setItem(key, data[key]);
+                        } catch (err) {
+                            console.error("ERROR: dataImport - Failed to save to localStorage:", err);
+                            alert("Error importing data: Storage quota exceeded.");
+                            return;
+                        }
                     }
                 }
             } catch (err) {
@@ -729,58 +1009,326 @@ function dataImport() {
 }
 
 function dataFindItemsById(items, item_id) {
-    let found;
-
-    if (items && items.length > 0) {
-        found = items.filter(obj => {
-            return obj.id === item_id;
-        });
+    if (!items || items.length === 0) {
+        return [];
     }
-
-    return found;
+    
+    return items.filter(obj => {
+        return obj && obj.id === item_id;
+    });
 }
 
 function dataFindItemsByTitle(items, item_title) {
-    let found;
-
-    if (items && items.length > 0) {
-        found = items.filter(obj => {
-            return obj.title === item_title;
-        });
+    if (!items || items.length === 0) {
+        return [];
     }
-
-    return found;
+    
+    return items.filter(obj => {
+        return obj && obj.title === item_title;
+    });
 }
 
 function dataFindItemsByTitleAndTabId(items, item_title, item_tab_id) {
-    let found;
-
-    if (items && items.length > 0) {
-        found = items.filter(obj => {
-            return obj.title === item_title && obj.tab_id == item_tab_id;
-        });
+    if (!items || items.length === 0) {
+        return [];
     }
+    
+    return items.filter(obj => {
+        return obj && obj.title === item_title && obj.tab_id === item_tab_id;
+    });
+}
 
-    return found;
+/**
+ * Normalize a URL for comparison (removes protocol, www, and trailing slash)
+ */
+function normalizeUrl(url) {
+    if (!url) return "";
+    return url.toLowerCase()
+        .replace(/^https?:\/\//, "")
+        .replace(/^www\./, "")
+        .replace(/\/$/, "")
+        .trim();
+}
+
+/**
+ * Build ID mappings for tabs from imported data to existing data
+ * Returns: { importedTabId: existingTabId, ... }
+ */
+function buildTabIdMapping(importedTabs, existingTabs) {
+    const mapping = {};
+    
+    for (const importedTab of importedTabs) {
+        const normalizedTitle = importedTab.title.toLowerCase().trim();
+        const existingTab = existingTabs.find(tab => 
+            tab.title.toLowerCase().trim() === normalizedTitle
+        );
+        
+        if (existingTab) {
+            mapping[importedTab.id] = existingTab.id;
+        }
+    }
+    
+    return mapping;
+}
+
+/**
+ * Check if a bookmark already exists based on tab, parent, title, and URL
+ */
+function bookmarkExists(bookmark, existingBookmarks) {
+    const normalizedUrl = normalizeUrl(bookmark.url);
+    const normalizedTitle = bookmark.title.toLowerCase().trim();
+    
+    return existingBookmarks.some(existing => 
+        existing.tab_id === bookmark.tab_id &&
+        existing.parent_id === bookmark.parent_id &&
+        existing.title.toLowerCase().trim() === normalizedTitle &&
+        normalizeUrl(existing.url) === normalizedUrl
+    );
+}
+
+/**
+ * Analyze merge without modifying data - returns preview information
+ */
+function analyzeMergeData(importedData) {
+    const importedTabs = importedData.tabs || [];
+    const importedBookmarks = importedData.bookmarks || [];
+    
+    const tabIdMapping = buildTabIdMapping(importedTabs, data_tabs);
+    const bookmarkIdMapping = {};
+    
+    const newTabs = [];
+    const newBookmarks = [];
+    const tabTitles = {};
+    
+    // Build tab titles map for display
+    for (const tab of data_tabs) {
+        tabTitles[tab.id] = tab.title;
+    }
+    
+    // Analyze tabs
+    for (const importedTab of importedTabs) {
+        if (!tabIdMapping[importedTab.id]) {
+            newTabs.push(importedTab);
+            // Add to mapping for bookmark analysis
+            tabIdMapping[importedTab.id] = `preview_tab_${newTabs.length}`;
+            tabTitles[tabIdMapping[importedTab.id]] = importedTab.title;
+        }
+    }
+    
+    // Analyze bookmarks
+    for (let i = 0; i < importedBookmarks.length; i++) {
+        const importedBookmark = importedBookmarks[i];
+        const translatedTabId = tabIdMapping[importedBookmark.tab_id];
+        if (!translatedTabId) {
+            continue;
+        }
+        
+        let translatedParentId = importedBookmark.parent_id;
+        if (translatedParentId && bookmarkIdMapping[translatedParentId]) {
+            translatedParentId = bookmarkIdMapping[translatedParentId];
+        }
+        
+        const translatedBookmark = {
+            tab_id: translatedTabId,
+            parent_id: translatedParentId,
+            title: importedBookmark.title,
+            url: importedBookmark.url
+        };
+        
+        if (!bookmarkExists(translatedBookmark, data_bookmarks)) {
+            newBookmarks.push({
+                ...importedBookmark,
+                tab_id: translatedTabId,
+                parent_id: translatedParentId,
+                _originalIndex: i
+            });
+            bookmarkIdMapping[importedBookmark.id] = `preview_bm_${newBookmarks.length}`;
+        }
+    }
+    
+    return {
+        newTabs,
+        newBookmarks,
+        newTabsCount: newTabs.length,
+        newBookmarksCount: newBookmarks.length,
+        tabTitles,
+        originalTabs: importedTabs,
+        originalBookmarks: importedBookmarks
+    };
+}
+
+/**
+ * Merge imported data into existing data without creating duplicates
+ * Only merges items specified by the analysis results and selected indices
+ */
+function mergeDataSelective(mergeAnalysis, selectedTabIndices, selectedBookmarkIndices) {
+    const tabIdMapping = buildTabIdMapping(mergeAnalysis.originalTabs, data_tabs);
+    const bookmarkIdMapping = {};
+    
+    let newTabsCount = 0;
+    let newBookmarksCount = 0;
+    
+    // Process only selected new tabs
+    for (let i = 0; i < mergeAnalysis.newTabs.length; i++) {
+        if (!selectedTabIndices.includes(i)) {
+            continue;
+        }
+        
+        const tab = mergeAnalysis.newTabs[i];
+        const newTabId = `tab_${++data_last_tab_id}`;
+        const newTab = {
+            id: newTabId,
+            title: tab.title
+        };
+        data_tabs.push(newTab);
+        tabIdMapping[tab.id] = newTabId;
+        newTabsCount++;
+    }
+    
+    // Process only selected new bookmarks
+    for (let i = 0; i < mergeAnalysis.newBookmarks.length; i++) {
+        if (!selectedBookmarkIndices.includes(i)) {
+            continue;
+        }
+        
+        const bookmark = mergeAnalysis.newBookmarks[i];
+        
+        // Translate tab_id
+        const translatedTabId = tabIdMapping[mergeAnalysis.originalBookmarks[bookmark._originalIndex].tab_id];
+        if (!translatedTabId) {
+            console.info(`Skipping bookmark "${bookmark.title}" - tab not found or not selected`);
+            continue;
+        }
+        
+        // Translate parent_id if it exists
+        let translatedParentId = bookmark.parent_id;
+        if (translatedParentId && bookmarkIdMapping[translatedParentId]) {
+            translatedParentId = bookmarkIdMapping[translatedParentId];
+        }
+        
+        // Add new bookmark
+        const newBookmarkId = `bookmark_${++data_last_bookmark_id}`;
+        const newBookmark = {
+            id: newBookmarkId,
+            tab_id: translatedTabId,
+            parent_id: translatedParentId,
+            title: bookmark.title,
+            url: bookmark.url,
+            target: bookmark.target || "_blank",
+            note: bookmark.note || ""
+        };
+        data_bookmarks.push(newBookmark);
+        bookmarkIdMapping[mergeAnalysis.originalBookmarks[bookmark._originalIndex].id] = newBookmarkId;
+        newBookmarksCount++;
+    }
+    
+    return { newTabsCount, newBookmarksCount };
+}
+
+/**
+ * Import data and merge with existing data (no duplicates)
+ */
+function dataMergeImport() {
+    const inputFile = document.createElement('input');
+    inputFile.type = "file";
+    inputFile.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (!file) {
+            return;
+        }
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            const contents = e.target.result;
+            let importedData;
+
+            try {
+                const parsedData = JSON.parse(contents);
+                
+                // Handle both old and new format
+                if (parsedData.tabs && parsedData.bookmarks) {
+                    // New format - direct object with tabs and bookmarks
+                    importedData = parsedData;
+                } else {
+                    // Old format - localStorage dump
+                    importedData = {
+                        tabs: [],
+                        bookmarks: []
+                    };
+                    
+                    for (const key of Object.keys(parsedData)) {
+                        if (key === DATA_TABS_KEY || key === "tabs") {
+                            const tabsData = typeof parsedData[key] === "string" 
+                                ? JSON.parse(parsedData[key]) 
+                                : parsedData[key];
+                            importedData.tabs = tabsData || [];
+                        } else if (key === DATA_BOOKMARKS_KEY || key === "bookmarks") {
+                            const bookmarksData = typeof parsedData[key] === "string" 
+                                ? JSON.parse(parsedData[key]) 
+                                : parsedData[key];
+                            importedData.bookmarks = bookmarksData || [];
+                        }
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to parse JSON:", err);
+                alert("Error importing data: Invalid JSON format.");
+                return;
+            }
+
+            // Analyze what would be merged (without modifying data)
+            const mergeAnalysis = analyzeMergeData(importedData);
+            
+            // Show preview dialog
+            dialogMergePreviewShow(mergeAnalysis, function(selectedTabIndices, selectedBookmarkIndices) {
+                // User accepted - perform actual merge with selected items
+                const result = mergeDataSelective(mergeAnalysis, selectedTabIndices, selectedBookmarkIndices);
+                
+                // Save to localStorage
+                try {
+                    localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+                    localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(data_bookmarks));
+                } catch (err) {
+                    console.error("ERROR: dataMergeImport - Failed to save to localStorage:", err);
+                    alert("Error saving merged data: Storage quota exceeded.");
+                    return;
+                }
+
+                // Update UI
+                tab_selected = null;
+                bookmark_selected = null;
+                dataLoad();
+                uiUpdate();
+                
+                // Show success message
+                const message = `Merge complete!\nAdded ${result.newTabsCount} new tab(s) and ${result.newBookmarksCount} new bookmark(s).`;
+                alert(message);
+            });
+        };
+        reader.readAsText(file);
+    });
+    inputFile.click();
 }
 
 function dataGetLastNumbericId(items) {
+    if (!items || items.length === 0) {
+        return 0;
+    }
+    
     const regex = /(?<=[a-z]_)[0-9]+/gm;
     const ids = [];
 
     for (const item of items) {
-        if (!item.id)
+        if (!item || !item.id)
             continue;
 
         const found = item.id.match(regex);
 
-        // if (found.length == 1 && !isNaN(Number(found[0]))) {
-        if (found.length == 1 && Number(found[0]) !== NaN) {
-            ids.push(found[0]);
+        if (found && found.length === 1 && !isNaN(Number(found[0]))) {
+            ids.push(Number(found[0]));
         }
     }
 
-    if (ids.length == 0) {
+    if (ids.length === 0) {
         return 0;
     }
 
@@ -791,10 +1339,18 @@ function dataLoad() {
     dialog_bookmark_edit_tabs.value = localStorage.getItem(DATA_TABS_KEY);
     dialog_bookmark_edit_bookmarks.value = localStorage.getItem(DATA_BOOKMARKS_KEY);
     
-    data_tabs = JSON.parse(localStorage.getItem(DATA_TABS_KEY));
-    data_bookmarks = JSON.parse(localStorage.getItem(DATA_BOOKMARKS_KEY));
+    try {
+        data_tabs = JSON.parse(localStorage.getItem(DATA_TABS_KEY));
+        data_bookmarks = JSON.parse(localStorage.getItem(DATA_BOOKMARKS_KEY));
+    } catch (err) {
+        console.error("ERROR: dataLoad - Failed to parse data from localStorage:", err);
+        messageShow("Error loading bookmark data. Data may be corrupted.", MESSAGE_ERROR);
+        data_tabs = [];
+        data_bookmarks = [];
+        return;
+    }
 
-    if (!data_tabs || data_tabs.length == 0) {
+    if (!data_tabs || data_tabs.length === 0) {
         data_last_tab_id = 0;
         data_tabs = [];
     }
@@ -804,7 +1360,7 @@ function dataLoad() {
 
     console.info("dataLoad - data_last_tab_id ->", data_last_tab_id);
 
-    if (!data_bookmarks || data_bookmarks.length == 0) {
+    if (!data_bookmarks || data_bookmarks.length === 0) {
         data_last_bookmark_id = 0;
         data_bookmarks = [];
     }
@@ -819,7 +1375,7 @@ function dataTabDelete(tab_id) {
         console.error(`ERROR: dataTabDelete - The tab_id parameter value is missing.`);
         return false;
     }
-    const index = data_tabs.map(obj => obj.id).indexOf(tab_id);
+    const index = data_tabs.findIndex(obj => obj.id === tab_id);
 
     if (index < 0) {
         console.error(`ERROR: dataTabDelete - Failed to find id in array of tabs. id -> ${tab_id}`);
@@ -831,7 +1387,14 @@ function dataTabDelete(tab_id) {
     }
 
     data_tabs.splice(index, 1);
-    localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+    
+    try {
+        localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+    } catch (err) {
+        console.error("ERROR: dataTabDelete - Failed to save to localStorage:", err);
+        messageShow("Error: Failed to save tab deletion", MESSAGE_ERROR);
+        return false;
+    }
 
     return true;
 }
@@ -842,7 +1405,7 @@ function dataTabMove(tab_id, increment) {
         return false;
     }
 
-    const index = data_tabs.map(obj => obj.id).indexOf(tab_id);
+    const index = data_tabs.findIndex(obj => obj.id === tab_id);
 
     if (index < 0) {
         console.error(`ERROR: dataTabMove - Failed to find id in array of tabs. id -> ${tab_id}`);
@@ -856,13 +1419,20 @@ function dataTabMove(tab_id, increment) {
     }
 
     data_tabs.splice(newIndex, 0, data_tabs.splice(index, 1)[0]);
-    localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+    
+    try {
+        localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+    } catch (err) {
+        console.error("ERROR: dataTabMove - Failed to save to localStorage:", err);
+        messageShow("Error: Failed to save tab order", MESSAGE_ERROR);
+        return false;
+    }
 
     return true;
 }
 
 function dataTabSave(tab_id, tab_title) {
-    if (!tab_title || tab_title.length == 0) {
+    if (!tab_title || tab_title.length === 0) {
         console.error(`ERROR: dataTabSave - Called without tab title`);
         return false;
     }
@@ -870,7 +1440,7 @@ function dataTabSave(tab_id, tab_title) {
     const tabs_with_titles = dataFindItemsByTitle(data_tabs, tab_title);
     const tabs_with_ids = dataFindItemsById(data_tabs, tab_id);
 
-    if (tabs_with_titles && tabs_with_titles.length > 0 && !(tabs_with_titles.length == 1 && tabs_with_titles[0].id == tab_id)) {
+    if (tabs_with_titles && tabs_with_titles.length > 0 && !(tabs_with_titles.length === 1 && tabs_with_titles[0].id === tab_id)) {
         console.error(`ERROR: dataTabSave - Attempted to save duplicate tab title -> ${tab_title}`);
         console.dir(tabs_with_titles);
         return false;
@@ -883,23 +1453,43 @@ function dataTabSave(tab_id, tab_title) {
             title: tab_title
         };
         data_tabs.push(newTab);
-        localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+        
+        try {
+            localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+        } catch (err) {
+            console.error("ERROR: dataTabSave - Failed to save to localStorage:", err);
+            messageShow("Error: Failed to save tab (quota exceeded?)", MESSAGE_ERROR);
+            data_tabs.pop(); // Rollback
+            return false;
+        }
+        
         console.info(`Added Tab ${newTab}`);
         return true;
     }
     else {
-        if (!tabs_with_ids || tabs_with_ids.length != 1) {
+        if (!tabs_with_ids || tabs_with_ids.length !== 1) {
             console.error(`ERROR: dataTabSave - Saving tab failed. Zero or more than one tab found with id -> ${tab_id}`);
             console.dir(tabs_with_ids);
             return false;
         }
 
         let saved = false;
+        if (!data_tabs || data_tabs.length === 0) {
+            console.error(`ERROR: dataTabSave - No tabs data available`);
+            return false;
+        }
         for (const tab of data_tabs) {
-            if (tab.id == tab_id) {
+            if (tab.id === tab_id) {
                 tab.title = tab_title;
-                localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
-                saved = true;
+                
+                try {
+                    localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+                    saved = true;
+                } catch (err) {
+                    console.error("ERROR: dataTabSave - Failed to save to localStorage:", err);
+                    messageShow("Error: Failed to save tab changes", MESSAGE_ERROR);
+                    return false;
+                }
                 break;
             }
         }
@@ -921,28 +1511,30 @@ function dataTabSave(tab_id, tab_title) {
 const DIALOG_OVERLAY = document.getElementById("dialog_overlay");
 const DIALOG_TAB = document.getElementById("dialog_tab_edit");
 const DIALOG_BOOKMARK = document.getElementById("dialog_bookmark_edit");
+const DIALOG_MERGE_PREVIEW = document.getElementById("dialog_merge_preview");
 
-const DIALOGS = [DIALOG_TAB, DIALOG_BOOKMARK];
+const DIALOGS = [DIALOG_TAB, DIALOG_BOOKMARK, DIALOG_MERGE_PREVIEW];
 
 function dialogsInit() {
-    if (typeof myDragMove === "undefined" || !myDragMove) {
-        console.log("myDragMove script not loaded yet - come back in 0.1 seconds");
-        setTimeout(function () { dialogsInit(); }, 100);
-        return;
+    // Add event listener for Show Advanced link
+    const showAdvancedLink = document.getElementById("show_advanced_link");
+    if (showAdvancedLink) {
+        showAdvancedLink.addEventListener("click", function(e) {
+            e.preventDefault();
+            dialogBookmarkShowAdvanced();
+        });
     }
-
-    for (const dialog of DIALOGS) {
-        dialog.addEventListener("mousedown", function (e) {
-            console.log("mousedown - startMoving");
-            console.dir(e.target.type);
-            const eTagName = e.target.tagName.toUpperCase();
-            if (eTagName == "INPUT" || eTagName == "SELECT" || eTagName == "BUTTON" || eTagName == "TEXTAREA" || eTagName == "A" || eTagName == "LABEL")
-                return;
-            myDragMove.startMoving(this, "dialog_overlay", e);
-        });
-        dialog.addEventListener("mouseup", function (e) {
-            myDragMove.stopMoving("dialog_overlay");
-        });
+    
+    // Add event listener for tab dropdown
+    const tabDropdown = document.getElementById("dialog_bookmark_edit_tab");
+    if (tabDropdown) {
+        tabDropdown.addEventListener("change", dialogBookmarkTabListChanged);
+    }
+    
+    // Add event listener for parent dropdown
+    const parentDropdown = document.getElementById("dialog_bookmark_edit_parent");
+    if (parentDropdown) {
+        parentDropdown.addEventListener("change", dialogBookmarkParentListChanged);
     }
 }
 
@@ -951,7 +1543,7 @@ function dialogBookmarkParentListChanged() {
     const parentId_elem = document.getElementById("dialog_bookmark_parent_id");
 
     parentId_elem.value = parentList_elem.value;
-    console.log(`Bookmark Parent changed to ${parentId_elem.value} / ${parentList_elem.options[parentList_elem.selectedIndex].text}`);
+    console.info(`Bookmark Parent changed to ${parentId_elem.value} / ${parentList_elem.options[parentList_elem.selectedIndex].text}`);
 }
 
 function dialogBookmarkPopulateParentList() {
@@ -969,10 +1561,10 @@ function dialogBookmarkPopulateParentList() {
         parentList_elem.firstChild.remove()
     }
 
-    var opt = document.createElement('option');
+    const opt = document.createElement('option');
     opt.value = "";
     opt.textContent = "<None/Root>";
-    if (parentId_elem.value == "") {
+    if (parentId_elem.value === "") {
         opt.selected = true;
     }
     parentList_elem.appendChild(opt);
@@ -981,13 +1573,13 @@ function dialogBookmarkPopulateParentList() {
 }
 
 function dialogBookmarkPopulateParentListRecursive(select_elem, tab_id, parent_id, path, selected_id) {
-    const current_level_bookmarks = data_bookmarks.filter(b => { return b.tab_id == tab_id && b.parent_id == parent_id });
+    const current_level_bookmarks = data_bookmarks.filter(b => { return b.tab_id === tab_id && b.parent_id === parent_id });
 
     for (const bm of current_level_bookmarks) {
-        var opt = document.createElement('option');
+        const opt = document.createElement('option');
         opt.value = bm.id;
         opt.textContent = path + (path.length > 0 ? " > " : "") + bm.title;
-        if (bm.id == selected_id) {
+        if (bm.id === selected_id) {
             opt.selected = true;
         }
         select_elem.appendChild(opt);
@@ -1010,10 +1602,10 @@ function dialogBookmarkPopulateTabsList() {
     }
 
     for (const tab of data_tabs) {
-        var opt = document.createElement('option');
+        const opt = document.createElement('option');
         opt.value = tab.id;
-        opt.innerHTML = tab.title;
-        if (tab.id == tabId_elem.value) {
+        opt.textContent = tab.title;
+        if (tab.id === tabId_elem.value) {
             opt.selected = true;
         }
         tabsList_elem.appendChild(opt);
@@ -1031,13 +1623,15 @@ function dialogBookmarkShowAdvanced() {
         return;
     }
 
-    if (advancedDiv.style.display == "none") {
+    if (advancedDiv.style.display === "none") {
         advancedDiv.style.display = "block";
         link.textContent = "Hide Advanced";
+        link.setAttribute("aria-expanded", "true");
     }
     else {
         advancedDiv.style.display = "none";
         link.textContent = "Show Advanced";
+        link.setAttribute("aria-expanded", "false");
     }
 }
 
@@ -1051,13 +1645,123 @@ function dialogsHide() {
     }
 }
 
+function dialogMergePreviewShow(mergeAnalysis, onAccept) {
+    DIALOG_OVERLAY.style.display = "block";
+    DIALOG_MERGE_PREVIEW.style.display = "block";
+    
+    // Generate summary
+    const summary = document.getElementById("merge_preview_summary");
+    summary.textContent = `${mergeAnalysis.newTabsCount} new tab(s) and ${mergeAnalysis.newBookmarksCount} new bookmark(s) available to add.`;
+    
+    // Generate preview content with checkboxes
+    const content = document.getElementById("merge_preview_content");
+    let html = "";
+    
+    // Show new tabs with checkboxes
+    if (mergeAnalysis.newTabs.length > 0) {
+        html += "<h3>New Tabs:</h3><ul style='list-style: none; padding-left: 0;'>";
+        for (let i = 0; i < mergeAnalysis.newTabs.length; i++) {
+            const tab = mergeAnalysis.newTabs[i];
+            const tabCheckId = `merge_tab_${i}`;
+            html += `<li><label><input type="checkbox" checked class="merge-tab-checkbox" data-tab-index="${i}" id="${tabCheckId}"> <strong>${sanitizeHTML(tab.title)}</strong></label></li>`;
+        }
+        html += "</ul>";
+    }
+    
+    // Show new bookmarks grouped by tab with checkboxes
+    if (mergeAnalysis.newBookmarks.length > 0) {
+        html += "<h3>New Bookmarks:</h3>";
+        
+        // Group bookmarks by tab
+        const bookmarksByTab = {};
+        for (let i = 0; i < mergeAnalysis.newBookmarks.length; i++) {
+            const bookmark = mergeAnalysis.newBookmarks[i];
+            bookmark._index = i; // Store index for checkbox ID
+            const tabTitle = mergeAnalysis.tabTitles[bookmark.tab_id] || "Unknown Tab";
+            if (!bookmarksByTab[tabTitle]) {
+                bookmarksByTab[tabTitle] = [];
+            }
+            bookmarksByTab[tabTitle].push(bookmark);
+        }
+        
+        // Display grouped bookmarks with checkboxes
+        for (const [tabTitle, bookmarks] of Object.entries(bookmarksByTab)) {
+            html += `<h4>${sanitizeHTML(tabTitle)}</h4><ul style='list-style: none; padding-left: 0;'>`;
+            for (const bookmark of bookmarks) {
+                const bmCheckId = `merge_bm_${bookmark._index}`;
+                const indent = bookmark.parent_id ? "margin-left: 25px;" : "";
+                const urlDisplay = bookmark.url ? ` - <em>${sanitizeHTML(bookmark.url)}</em>` : "";
+                const parentClass = bookmark.parent_id ? 'merge-bookmark-child' : 'merge-bookmark-parent';
+                const parentAttr = bookmark.parent_id ? `data-parent-id="${sanitizeHTML(bookmark.parent_id)}"` : '';
+                html += `<li style="${indent}"><label><input type="checkbox" checked class="merge-bookmark-checkbox ${parentClass}" data-bookmark-index="${bookmark._index}" id="${bmCheckId}" ${parentAttr}> ${sanitizeHTML(bookmark.title)}${urlDisplay}</label></li>`;
+            }
+            html += "</ul>";
+        }
+    }
+    
+    if (mergeAnalysis.newTabsCount === 0 && mergeAnalysis.newBookmarksCount === 0) {
+        html = "<p><em>No new items to add. All items already exist in your bookmarks.</em></p>";
+    }
+    
+    content.innerHTML = html;
+    
+    // Add checkbox event handlers for parent-child relationships
+    const bookmarkCheckboxes = content.querySelectorAll('.merge-bookmark-checkbox');
+    bookmarkCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const bookmarkIndex = this.dataset.bookmarkIndex;
+            const bookmark = mergeAnalysis.newBookmarks[bookmarkIndex];
+            
+            // If unchecking a parent, uncheck all children
+            if (!this.checked && !bookmark.parent_id) {
+                const children = content.querySelectorAll(`.merge-bookmark-child[data-parent-id="${bookmark.id}"]`);
+                children.forEach(child => {
+                    child.checked = false;
+                });
+            }
+        });
+    });
+    
+    // Set up event handlers
+    const acceptBtn = document.getElementById("merge_preview_accept");
+    const cancelBtn = document.getElementById("merge_preview_cancel");
+    
+    // Remove old listeners by cloning
+    const newAcceptBtn = acceptBtn.cloneNode(true);
+    const newCancelBtn = cancelBtn.cloneNode(true);
+    acceptBtn.parentNode.replaceChild(newAcceptBtn, acceptBtn);
+    cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+    
+    // Add new listeners
+    newAcceptBtn.addEventListener("click", () => {
+        // Get selected items
+        const selectedTabIndices = [];
+        const selectedBookmarkIndices = [];
+        
+        content.querySelectorAll('.merge-tab-checkbox:checked').forEach(checkbox => {
+            selectedTabIndices.push(parseInt(checkbox.dataset.tabIndex));
+        });
+        
+        content.querySelectorAll('.merge-bookmark-checkbox:checked').forEach(checkbox => {
+            selectedBookmarkIndices.push(parseInt(checkbox.dataset.bookmarkIndex));
+        });
+        
+        dialogsHide();
+        onAccept(selectedTabIndices, selectedBookmarkIndices);
+    });
+    
+    newCancelBtn.addEventListener("click", () => {
+        dialogsHide();
+    });
+}
+
 function dialogBookmarkTabListChanged() {
     const tabsList_elem = document.getElementById("dialog_bookmark_edit_tab");
     const tabId_elem = document.getElementById("dialog_bookmark_tab_id");
     const parentId_elem = document.getElementById("dialog_bookmark_parent_id");
 
     tabId_elem.value = tabsList_elem.value;
-    console.log(`Bookmark Tab changed to ${tabId_elem.value} / ${tabsList_elem.options[tabsList_elem.selectedIndex].text}`);
+    console.info(`Bookmark Tab changed to ${tabId_elem.value} / ${tabsList_elem.options[tabsList_elem.selectedIndex].text}`);
 
     parentId_elem.value = "";
     dialogBookmarkPopulateParentList();
@@ -1116,7 +1820,7 @@ function dialogsSave(e) {
     if (hide_dialog) {
         dialogsHide();
 
-        setTimeout(function () { messageShow(""); }, 1500);
+        setTimeout(function () { messageShow(""); }, MESSAGE_TIMEOUT_SHORT);
 
         dataLoad();
         uiUpdate();
@@ -1185,34 +1889,31 @@ function dialogsShowEditBookmark(id, parent_id = "") {
     }
     else {
         title.textContent = "Edit Bookmark"
-        const bookmark = dataFindItemsById(data_bookmarks, id)[0];
+        const bookmarkItems = dataFindItemsById(data_bookmarks, id);
+        if (!bookmarkItems || bookmarkItems.length === 0) {
+            console.error("ERROR: dialogsShowEditBookmark - Bookmark not found with id:", id);
+            messageShow("Bookmark not found", MESSAGE_ERROR);
+            return;
+        }
+        const bookmark = bookmarkItems[0];
         console.dir(bookmark);
         bookmark_id_elem.value = id;
         bookmark_tab_id_elem.value = bookmark.tab_id;
         bookmark_parent_id_elem.value = bookmark.parent_id;
         bookmark_title_elem.value = bookmark.title;
         bookmark_url_elem.value = bookmark.url;
-        bookmark_url_target_elem.checked = bookmark.target == "_blank";
+        bookmark_url_target_elem.checked = bookmark.target === "_blank";
         bookmark_notes_elem.value = bookmark.note;
     }
 
     dialogBookmarkPopulateTabsList();
-
-    // Show dialog
-    DIALOG_BOOKMARK.style.display = "block";
-
-    // calculate the values for center alignment
-    var dialogLeft = (viewPortWidth - Number(DIALOG_BOOKMARK.offsetWidth)) / 2;
-    var dialogTop = (viewPortHeight - Number(DIALOG_BOOKMARK.offsetHeight)) / 2;
 
     // Show DIALOG_OVERLAY
     DIALOG_OVERLAY.style.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     DIALOG_OVERLAY.style.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     DIALOG_OVERLAY.style.display = "block";
 
-    // Position dialog
-    DIALOG_BOOKMARK.style.left = dialogLeft + "px";
-    DIALOG_BOOKMARK.style.top = dialogTop + "px";
+    // Show dialog
     DIALOG_BOOKMARK.style.display = "block";
 }
 
@@ -1223,22 +1924,42 @@ function cancel_bookmark_data_edit() {
 }
 
 function reload_bookmark_data_edit() {
-    const tabs_data = JSON.parse(localStorage.getItem(DATA_TABS_KEY));
-    const bookmarks_data = JSON.parse(localStorage.getItem(DATA_BOOKMARKS_KEY));
+    let tabs_data, bookmarks_data;
+    
+    try {
+        tabs_data = JSON.parse(localStorage.getItem(DATA_TABS_KEY));
+        bookmarks_data = JSON.parse(localStorage.getItem(DATA_BOOKMARKS_KEY));
+    } catch (err) {
+        console.error("ERROR: reload_bookmark_data_edit - Failed to parse data from localStorage:", err);
+        messageShow("Error loading bookmark data for editing", MESSAGE_ERROR);
+        return;
+    }
 
     dialog_bookmark_edit_tabs.value = JSON.stringify(tabs_data, null, 4);
     dialog_bookmark_edit_bookmarks.value = JSON.stringify(bookmarks_data, null, 4);
-
-    console.log(JSON.stringify(tabs_data, null, 4));
 }
 
 
 function save_bookmark_data_edit() {
-    const tabs_data_text = JSON.parse(dialog_bookmark_edit_tabs.value);
-    const bookmarks_data_text = JSON.parse(dialog_bookmark_edit_bookmarks.value);
+    let tabs_data_text, bookmarks_data_text;
+    
+    try {
+        tabs_data_text = JSON.parse(dialog_bookmark_edit_tabs.value);
+        bookmarks_data_text = JSON.parse(dialog_bookmark_edit_bookmarks.value);
+    } catch (err) {
+        console.error("ERROR: save_bookmark_data_edit - Failed to parse edited data:", err);
+        messageShow("Error: Invalid JSON format in edited data", MESSAGE_ERROR);
+        return;
+    }
 
-    localStorage.setItem(DATA_TABS_KEY, convertLineBreaks(JSON.stringify(tabs_data_text)));
-    localStorage.setItem(DATA_BOOKMARKS_KEY, convertLineBreaks(JSON.stringify(bookmarks_data_text)));
+    try {
+        localStorage.setItem(DATA_TABS_KEY, JSON.stringify(tabs_data_text));
+        localStorage.setItem(DATA_BOOKMARKS_KEY, JSON.stringify(bookmarks_data_text));
+    } catch (err) {
+        console.error("ERROR: save_bookmark_data_edit - Failed to save to localStorage:", err);
+        messageShow("Error: Failed to save data (quota exceeded?)", MESSAGE_ERROR);
+        return;
+    }
 
     // dataLoad();
     tab_selected = null;
@@ -1306,21 +2027,12 @@ function dialogsShowEditTab(id) {
         tab_id_elem.value = id;
     }
 
-    // Show dialog
-    DIALOG_TAB.style.display = "block";
-
-    // calculate the values for center alignment
-    var dialogLeft = (viewPortWidth - Number(DIALOG_TAB.offsetWidth)) / 2;
-    var dialogTop = (viewPortHeight - Number(DIALOG_TAB.offsetHeight)) / 2;
-
     // Show DIALOG_OVERLAY
     DIALOG_OVERLAY.style.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
     DIALOG_OVERLAY.style.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
     DIALOG_OVERLAY.style.display = "block";
 
-    // Position dialog
-    DIALOG_TAB.style.left = dialogLeft + "px";
-    DIALOG_TAB.style.top = dialogTop + "px";
+    // Show dialog
     DIALOG_TAB.style.display = "block";
 }
 
@@ -1379,7 +2091,7 @@ function messageShow(message, message_type = MESSAGE_ERROR) {
     message_container.textContent = "";
     message_container.className = MESSAGE_CLASS;
 
-    if (!message || message.length == 0) {
+    if (!message || message.length === 0) {
         message_container.style.display = "none";
         return;
     }
@@ -1417,7 +2129,7 @@ function tabsInit(tabs_container_id, tabs_left_button_id, tabs_right_button_id, 
     tabs_scroll_step = Math.abs(scroll_step);
 
     if (!tabs_scroll_step) {
-        tabs_scroll_step = 200;
+        tabs_scroll_step = DEFAULT_TAB_SCROLL_STEP;
         console.info(`The tabs_scroll_step variable set to the default value of ${tabs_scroll_step}`);
     }
 
@@ -1470,18 +2182,30 @@ function tabDrop(e) {
     const target_li_id = e.target.closest("li").id;
 
     if (data && target_li_id) {
-        const dropped_item = dataFindItemsById(data_tabs, data)[0];
-        const target_item = dataFindItemsById(data_tabs, target_li_id)[0];
+        const droppedTabItems = dataFindItemsById(data_tabs, data);
+        const targetTabItems = dataFindItemsById(data_tabs, target_li_id);
+        
+        if (!droppedTabItems || droppedTabItems.length === 0 || !targetTabItems || targetTabItems.length === 0) return;
+        
+        const dropped_item = droppedTabItems[0];
+        const target_item = targetTabItems[0];
 
         if (dropped_item && target_item) {
             console.info("tabDrop - Reorder")
-            const dropped_index = data_tabs.map(obj => obj.id).indexOf(dropped_item.id);
-            const target_index = data_tabs.map(obj => obj.id).indexOf(target_item.id);
+            const dropped_index = data_tabs.findIndex(obj => obj.id === dropped_item.id);
+            const target_index = data_tabs.findIndex(obj => obj.id === target_item.id);
 
             const move_item = data_tabs.splice(dropped_index, 1)[0];
             data_tabs.splice(target_index, 0, move_item);
 
-            localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+            try {
+                localStorage.setItem(DATA_TABS_KEY, JSON.stringify(data_tabs));
+            } catch (err) {
+                console.error("ERROR: tabDrop - Failed to save to localStorage:", err);
+                messageShow("Error: Failed to save tab order", MESSAGE_ERROR);
+                return;
+            }
+            
             dataLoad();
             uiUpdate();
         }
@@ -1539,7 +2263,7 @@ function tabsSelectedTabChanged() {
     // Update tab styles
     for (const tab of tab_items.getElementsByTagName("li")) {
         tab.classList.remove("selected");
-        if (tab_selected && tab.id == tab_selected.id) {
+        if (tab_selected && tab.id === tab_selected.id) {
             tab.classList.add("selected");
         }
     }
@@ -1562,7 +2286,7 @@ function tabsUpdateScrollButtonsDisabledState() {
     tabs_left_button.disabled = false;
     tabs_right_button.disabled = false;
 
-    if (tabs_container.scrollLeft == 0) {
+    if (tabs_container.scrollLeft === 0) {
         tabs_left_button.disabled = true;
     }
     if (tabs_container.offsetWidth + tabs_container.scrollLeft >= tabs_container.scrollWidth) {
@@ -1619,3 +2343,19 @@ clear_search_text.addEventListener("click", function (e) {
     search_text.value = '';
     searchBookmarks();
 });
+
+// Add event listeners for edit data screen buttons
+const editDataSaveBtn = document.getElementById("dialog_bookmark_edit_save");
+if (editDataSaveBtn) {
+    editDataSaveBtn.addEventListener("click", save_bookmark_data_edit);
+}
+
+const editDataReloadBtn = document.getElementById("dialog_bookmark_edit_reload");
+if (editDataReloadBtn) {
+    editDataReloadBtn.addEventListener("click", reload_bookmark_data_edit);
+}
+
+const editDataCloseBtn = document.getElementById("dialog_bookmark_edit_close");
+if (editDataCloseBtn) {
+    editDataCloseBtn.addEventListener("click", cancel_bookmark_data_edit);
+}
