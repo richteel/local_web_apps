@@ -77,6 +77,14 @@
 			background-color: #c82333;
 		}
 
+		.btn-download-all {
+			background-color: #17a2b8;
+		}
+
+		.btn-download-all:hover {
+			background-color: #138496;
+		}
+
 		.error-message {
 			color: #dc3545;
 			font-size: 14px;
@@ -131,6 +139,7 @@
 			align-items: center;
 			break-inside: avoid;
 			position: relative;
+			padding-bottom: 50px;
 		}
 
 		.content_box canvas {
@@ -173,6 +182,33 @@
 			z-index: 10;
 		}
 
+		.download-link {
+			position: absolute;
+			bottom: 10px;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: #28a745;
+			color: white;
+			padding: 6px 12px;
+			border-radius: 4px;
+			text-decoration: none;
+			font-size: 11px;
+			font-weight: 500;
+			white-space: nowrap;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+			z-index: 5;
+		}
+
+		.download-link:hover {
+			background-color: #218838;
+		}
+
+		.download-link.disabled {
+			background-color: #6c757d;
+			pointer-events: none;
+			opacity: 0.6;
+		}
+
 		@media (max-width: 768px) {
 			:root {
 				--thumbnail-size: 150px;
@@ -183,6 +219,15 @@
 			.form-group label {
 				display: block;
 				margin-bottom: 5px;
+			}
+
+			.content_box {
+				padding-bottom: 45px;
+			}
+
+			.download-link {
+				font-size: 10px;
+				padding: 5px 10px;
 			}
 		}
 
@@ -195,6 +240,7 @@
 				height: 125px;
 				width: 125px;
 				margin: 5px;
+				padding-bottom: 5px;
 			}
 
 			.content_box canvas {
@@ -209,6 +255,10 @@
 				top: 5px;
 				right: 5px;
 			}
+
+			.download-link {
+				display: none;
+			}
 		}
 	</style>
 </head>
@@ -216,17 +266,15 @@
 <body>
 	<div class="noprint" id="form1">
 		<h1>Toastmasters Magazine Archive</h1>
+		<p>Toastmasters was founded on 22 October 1924 by Dr. Ralph C. Smedley to help people improve their public speaking and leadership skills.</p>
+		<p>
+			The Gavel was the first magazine published for Toastmasters members starting in 1930, later renamed to <em>The Toastmaster</em> in April 1933.
+			In 2004, the magazine was rebranded as <em>Toastmasters Magazine</em> to better reflect its purpose and audience. More information about 
+			the history of the magazine can be found at <a href="https://www.toastmasters.org/magazine/magazine-issues/2024/apr/magazine-history" target="_blank" rel="noopener">toastmasters.org</a>.
+		</p>
 		<div class="form-group">
-			<label for="startYear">Start Year:</label>
-			<input type="number" id="startYear" name="startYear" min="1924" value="1965" />
-
-			<label for="endYear">End Year:</label>
-			<input type="number" id="endYear" name="endYear" min="1924" value="1975" />
-		</div>
-
-		<div class="form-group">
-			<label for="month">Month:</label>
-			<select id="month" name="month">
+			<label for="startMonth">Start Month:</label>
+			<select id="startMonth" name="startMonth">
 				<option value="january">January</option>
 				<option value="february">February</option>
 				<option value="march">March</option>
@@ -240,6 +288,30 @@
 				<option value="november">November</option>
 				<option value="december">December</option>
 			</select>
+
+			<label for="startYear">Start Year:</label>
+			<input type="number" id="startYear" name="startYear" min="1924" value="1965" />
+		</div>
+
+		<div class="form-group">
+			<label for="endMonth">End Month:</label>
+			<select id="endMonth" name="endMonth">
+				<option value="january">January</option>
+				<option value="february">February</option>
+				<option value="march">March</option>
+				<option value="april">April</option>
+				<option value="may">May</option>
+				<option value="june">June</option>
+				<option value="july">July</option>
+				<option value="august">August</option>
+				<option value="september">September</option>
+				<option value="october">October</option>
+				<option value="november">November</option>
+				<option value="december" selected>December</option>
+			</select>
+
+			<label for="endYear">End Year:</label>
+			<input type="number" id="endYear" name="endYear" min="1924" value="1975" />
 		</div>
 
 		<div class="form-group">
@@ -250,6 +322,7 @@
 		<div class="form-group">
 			<button type="button" class="btn" id="loadBtn">Load Magazines</button>
 			<button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;">Cancel</button>
+			<button type="button" class="btn btn-download-all" id="downloadAllBtn" style="display: none;">Download All</button>
 			<div id="errorMessage" class="error-message"></div>
 		</div>
 
@@ -272,12 +345,14 @@
 	const elements = {
 		picsContainer: document.getElementById("pics"),
 		exampleLink: document.getElementById("exampleLink"),
+		startMonthSelect: document.getElementById("startMonth"),
 		startYearInput: document.getElementById("startYear"),
+		endMonthSelect: document.getElementById("endMonth"),
 		endYearInput: document.getElementById("endYear"),
-		monthSelect: document.getElementById("month"),
 		searchTextInput: document.getElementById("searchText"),
 		loadBtn: document.getElementById("loadBtn"),
 		cancelBtn: document.getElementById("cancelBtn"),
+		downloadAllBtn: document.getElementById("downloadAllBtn"),
 		errorMessage: document.getElementById("errorMessage"),
 		progressBar: document.getElementById("progressBar"),
 		progressBarFill: document.getElementById("progressBarFill")
@@ -287,11 +362,15 @@
 	const THUMBNAIL_SIZE = 200;
 	const CONCURRENT_LOADS = 5;
 	const CURRENT_YEAR = new Date().getFullYear();
+	const CURRENT_MONTH = new Date().getMonth(); // 0-11
+	const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 
+	                'july', 'august', 'september', 'october', 'november', 'december'];
 
 	// State
 	let abortController = null;
 	let loadedCount = 0;
 	let totalCount = 0;
+	let loadedMagazines = []; // Store successfully loaded magazines
 
 	// Set dynamic max year
 	elements.startYearInput.max = CURRENT_YEAR;
@@ -302,10 +381,36 @@
 		return month.charAt(0).toUpperCase() + month.slice(1);
 	}
 
+	// Helper function to get month index
+	function getMonthIndex(monthName) {
+		return MONTHS.indexOf(monthName.toLowerCase());
+	}
+
+	// Helper function to generate date range
+	function getMonthYearRange(startMonth, startYear, endMonth, endYear) {
+		const range = [];
+		const startMonthIndex = getMonthIndex(startMonth);
+		const endMonthIndex = getMonthIndex(endMonth);
+		
+		for (let year = startYear; year <= endYear; year++) {
+			const firstMonth = (year === startYear) ? startMonthIndex : 0;
+			const lastMonth = (year === endYear) ? endMonthIndex : 11;
+			
+			for (let monthIndex = firstMonth; monthIndex <= lastMonth; monthIndex++) {
+				range.push({
+					month: MONTHS[monthIndex],
+					year: year
+				});
+			}
+		}
+		
+		return range;
+	}
+
 	// Update example URL
 	function updateExample() {
 		const year = elements.startYearInput.value;
-		const month = elements.monthSelect.value;
+		const month = elements.startMonthSelect.value;
 		const url = `https://content.toastmasters.org/image/upload/toastmaster-magazine-${month}-${year}.pdf`;
 		elements.exampleLink.textContent = url;
 	}
@@ -314,6 +419,8 @@
 	function validateInputs() {
 		const startYear = parseInt(elements.startYearInput.value);
 		const endYear = parseInt(elements.endYearInput.value);
+		const startMonth = elements.startMonthSelect.value;
+		const endMonth = elements.endMonthSelect.value;
 
 		elements.errorMessage.textContent = "";
 
@@ -332,14 +439,27 @@
 			return false;
 		}
 
+		// Check if end date is in the future
+		if (endYear === CURRENT_YEAR && getMonthIndex(endMonth) > CURRENT_MONTH) {
+			elements.errorMessage.textContent = `End month cannot exceed ${capitalizeMonth(MONTHS[CURRENT_MONTH])} ${CURRENT_YEAR}.`;
+			return false;
+		}
+
 		if (startYear > endYear) {
 			elements.errorMessage.textContent = "Start year must be less than or equal to end year.";
 			return false;
 		}
 
-		const yearRange = endYear - startYear + 1;
-		if (yearRange > 100) {
-			elements.errorMessage.textContent = "Please limit your selection to 100 years or less.";
+		// Check if start date is after end date
+		if (startYear === endYear && getMonthIndex(startMonth) > getMonthIndex(endMonth)) {
+			elements.errorMessage.textContent = "Start month must be before or equal to end month in the same year.";
+			return false;
+		}
+
+		// Calculate total months
+		const range = getMonthYearRange(startMonth, startYear, endMonth, endYear);
+		if (range.length > 1200) {
+			elements.errorMessage.textContent = "Please limit your selection to 1200 magazines or less (100 years).";
 			return false;
 		}
 
@@ -452,17 +572,134 @@
 		}
 	}
 
+	// Helper function to get month number with leading zero
+	function getMonthNumber(monthName) {
+		const monthIndex = getMonthIndex(monthName);
+		return String(monthIndex + 1).padStart(2, '0');
+	}
+
+	// Helper function to create download filename
+	function getDownloadFilename(month, year) {
+		const monthNum = getMonthNumber(month);
+		const originalName = `toastmaster-magazine-${month}-${year}.pdf`;
+		return `${year}-${monthNum} ${originalName}`;
+	}
+
+	// Download PDF with custom filename
+	async function downloadPDF(url, filename, downloadLink) {
+		try {
+			downloadLink.textContent = "Downloading...";
+			downloadLink.classList.add("disabled");
+
+			const response = await fetch(url);
+			if (!response.ok) throw new Error("Download failed");
+
+			const blob = await response.blob();
+			const blobUrl = URL.createObjectURL(blob);
+
+			const a = document.createElement('a');
+			a.href = blobUrl;
+			a.download = filename;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(blobUrl);
+
+			downloadLink.textContent = "Download";
+			downloadLink.classList.remove("disabled");
+		} catch (error) {
+			console.error('Download error:', error);
+			downloadLink.textContent = "Download Failed";
+			setTimeout(() => {
+				downloadLink.textContent = "Download";
+				downloadLink.classList.remove("disabled");
+			}, 2000);
+		}
+	}
+
+	// Download all magazines
+	async function downloadAllMagazines() {
+		if (loadedMagazines.length === 0) {
+			elements.errorMessage.textContent = "No magazines to download.";
+			setTimeout(() => {
+				elements.errorMessage.textContent = "";
+			}, 3000);
+			return;
+		}
+
+		elements.downloadAllBtn.disabled = true;
+		elements.downloadAllBtn.textContent = `Downloading 0/${loadedMagazines.length}...`;
+		elements.progressBar.style.display = "block";
+		elements.errorMessage.textContent = "";
+
+		let successCount = 0;
+		let failCount = 0;
+
+		for (let i = 0; i < loadedMagazines.length; i++) {
+			const { url, filename } = loadedMagazines[i];
+			
+			try {
+				const response = await fetch(url);
+				if (!response.ok) throw new Error("Download failed");
+
+				const blob = await response.blob();
+				const blobUrl = URL.createObjectURL(blob);
+
+				const a = document.createElement('a');
+				a.href = blobUrl;
+				a.download = filename;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				URL.revokeObjectURL(blobUrl);
+
+				successCount++;
+
+				// Update progress
+				const percentage = Math.round(((i + 1) / loadedMagazines.length) * 100);
+				elements.progressBarFill.style.width = `${percentage}%`;
+				elements.progressBarFill.textContent = `${i + 1} / ${loadedMagazines.length} (${percentage}%)`;
+				elements.downloadAllBtn.textContent = `Downloading ${i + 1}/${loadedMagazines.length}...`;
+
+				// Small delay between downloads to avoid browser blocking
+				await new Promise(resolve => setTimeout(resolve, 500));
+			} catch (error) {
+				console.error(`Failed to download ${filename}:`, error);
+				failCount++;
+			}
+		}
+
+		// Show completion message
+		elements.downloadAllBtn.disabled = false;
+		elements.downloadAllBtn.textContent = "Download All";
+		
+		if (failCount === 0) {
+			elements.errorMessage.style.color = "#28a745";
+			elements.errorMessage.textContent = `✓ All ${successCount} magazines downloaded successfully!`;
+		} else {
+			elements.errorMessage.style.color = "#ffc107";
+			elements.errorMessage.textContent = `⚠ Downloaded ${successCount} magazines. ${failCount} failed.`;
+		}
+
+		setTimeout(() => {
+			elements.progressBar.style.display = "none";
+			elements.errorMessage.textContent = "";
+			elements.errorMessage.style.color = "#dc3545"; // Reset to error color
+		}, 5000);
+	}
+
 	// Load PDFs with throttling
-	async function loadMagazinesThrottled(urls, month, searchQuery) {
+	async function loadMagazinesThrottled(urls, searchQuery) {
 		const queue = [...urls];
 		const results = [];
+		loadedMagazines = []; // Reset loaded magazines list
 
 		async function processNext() {
 			if (queue.length === 0 || abortController.signal.aborted) {
 				return;
 			}
 
-			const { url, year, box, canvas, para } = queue.shift();
+			const { url, year, month, box, canvas, para } = queue.shift();
 
 			try {
 				const success = await renderPDFThumbnail(url, canvas, abortController.signal);
@@ -470,6 +707,24 @@
 				if (success) {
 					para.textContent = `${capitalizeMonth(month)} ${year}`;
 					para.classList.remove("loading");
+
+					const filename = getDownloadFilename(month, year);
+
+					// Store successfully loaded magazine info
+					loadedMagazines.push({ url, filename, month, year });
+
+					// Add download link
+					const downloadLink = document.createElement("a");
+					downloadLink.href = "#";
+					downloadLink.classList.add("download-link");
+					downloadLink.textContent = "Download";
+					downloadLink.title = `Download as ${filename}`;
+					downloadLink.addEventListener("click", (e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						downloadPDF(url, filename, downloadLink);
+					});
+					box.appendChild(downloadLink);
 
 					// Search for text if query provided
 					if (searchQuery && searchQuery.trim() !== "") {
@@ -519,6 +774,10 @@
 			elements.picsContainer.removeChild(elements.picsContainer.firstChild);
 		}
 
+		// Hide download all button until loading completes
+		elements.downloadAllBtn.style.display = "none";
+		loadedMagazines = [];
+
 		// Setup abort controller
 		abortController = new AbortController();
 
@@ -529,16 +788,20 @@
 
 		const startYear = parseInt(elements.startYearInput.value);
 		const endYear = parseInt(elements.endYearInput.value);
-		const month = elements.monthSelect.value;
+		const startMonth = elements.startMonthSelect.value;
+		const endMonth = elements.endMonthSelect.value;
 		const searchQuery = elements.searchTextInput.value.trim();
 
+		// Get all months in range
+		const dateRange = getMonthYearRange(startMonth, startYear, endMonth, endYear);
+
 		loadedCount = 0;
-		totalCount = endYear - startYear + 1;
+		totalCount = dateRange.length;
 		updateProgress();
 
 		// Create boxes and prepare URLs
 		const urls = [];
-		for (let year = startYear; year <= endYear; year++) {
+		for (const { month, year } of dateRange) {
 			const url = `https://content.toastmasters.org/image/upload/toastmaster-magazine-${month}-${year}.pdf`;
 
 			const newBox = document.createElement("div");
@@ -561,12 +824,12 @@
 			newBox.appendChild(newLink);
 			elements.picsContainer.appendChild(newBox);
 
-			urls.push({ url, year, box: newBox, canvas, para: newPara });
+			urls.push({ url, year, month, box: newBox, canvas, para: newPara });
 		}
 
 		// Load PDFs with throttling
 		try {
-			await loadMagazinesThrottled(urls, month, searchQuery);
+			await loadMagazinesThrottled(urls, searchQuery);
 		} catch (error) {
 			console.error("Loading cancelled:", error);
 		}
@@ -574,6 +837,12 @@
 		// Reset UI
 		elements.loadBtn.disabled = false;
 		elements.cancelBtn.style.display = "none";
+		
+		// Show download all button if magazines were loaded
+		if (loadedMagazines.length > 0) {
+			elements.downloadAllBtn.style.display = "inline-block";
+		}
+		
 		setTimeout(() => {
 			elements.progressBar.style.display = "none";
 		}, 2000);
@@ -595,9 +864,11 @@
 	// Event listeners
 	elements.loadBtn.addEventListener("click", loadMagazines);
 	elements.cancelBtn.addEventListener("click", cancelLoading);
+	elements.downloadAllBtn.addEventListener("click", downloadAllMagazines);
+	elements.startMonthSelect.addEventListener("change", updateExample);
 	elements.startYearInput.addEventListener("input", updateExample);
+	elements.endMonthSelect.addEventListener("change", updateExample);
 	elements.endYearInput.addEventListener("input", updateExample);
-	elements.monthSelect.addEventListener("change", updateExample);
 
 	// Keyboard support - Enter key to load
 	elements.startYearInput.addEventListener("keypress", (e) => {
