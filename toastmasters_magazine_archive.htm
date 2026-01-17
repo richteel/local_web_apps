@@ -1,40 +1,141 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
-	<meta name="GENERATOR" content="Microsoft FrontPage 4.0">
-	<meta name="ProgId" content="FrontPage.Editor.Document">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Toastmasters Magazine Archive</title>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 	<style>
+		:root {
+			--thumbnail-size: 200px;
+			--box-size: 250px;
+			--box-padding: 25px;
+			--box-margin: 10px;
+			--border-radius: 20px;
+		}
+
+		body {
+			font-family: system-ui, -apple-system, sans-serif;
+			margin: 0;
+			padding: 20px;
+		}
+
+		.noprint {
+			max-width: 1200px;
+			margin: 0 auto 30px;
+		}
+
+		.form-group {
+			margin-bottom: 15px;
+		}
+
+		.form-group label {
+			display: inline-block;
+			min-width: 100px;
+			font-weight: 500;
+		}
+
+		.form-group input,
+		.form-group select {
+			padding: 8px;
+			font-size: 14px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+		}
+
+		.form-group input[type="number"] {
+			width: 100px;
+		}
+
+		.btn {
+			padding: 10px 20px;
+			font-size: 14px;
+			font-weight: 500;
+			background-color: #007bff;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+			margin-right: 10px;
+		}
+
+		.btn:hover {
+			background-color: #0056b3;
+		}
+
+		.btn:disabled {
+			background-color: #6c757d;
+			cursor: not-allowed;
+		}
+
+		.btn-cancel {
+			background-color: #dc3545;
+		}
+
+		.btn-cancel:hover {
+			background-color: #c82333;
+		}
+
+		.error-message {
+			color: #dc3545;
+			font-size: 14px;
+			margin-top: 5px;
+		}
+
+		.progress-bar {
+			display: none;
+			width: 100%;
+			height: 30px;
+			background-color: #f0f0f0;
+			border-radius: 4px;
+			overflow: hidden;
+			margin-top: 15px;
+		}
+
+		.progress-bar-fill {
+			height: 100%;
+			background-color: #007bff;
+			transition: width 0.3s ease;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: white;
+			font-size: 12px;
+			font-weight: 500;
+		}
+
 		.flex_container {
 			display: flex;
 			flex-wrap: wrap;
 			margin-right: -15px;
 			margin-left: -15px;
+			max-width: 1400px;
+			margin: 0 auto;
 		}
 
 		.content_box {
 			box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
 			background-color: white;
-			height: 250px;
-			width: 250px;
+			height: var(--box-size);
+			width: var(--box-size);
 			display: flex;
 			flex-direction: column;
-			border-radius: 20px;
-			padding: 25px;
-			margin: 10px;
+			border-radius: var(--border-radius);
+			padding: var(--box-padding);
+			margin: var(--box-margin);
 			cursor: pointer;
 			overflow: hidden;
 			text-align: center;
 			justify-content: center;
 			align-items: center;
 			break-inside: avoid;
+			position: relative;
 		}
 
 		.content_box canvas {
-			max-width: 200px;
-			max-height: 200px;
+			max-width: var(--thumbnail-size);
+			max-height: var(--thumbnail-size);
 			object-fit: scale-down;
 			margin: 0 auto;
 		}
@@ -54,8 +155,38 @@
 			color: #999;
 		}
 
-		@media print {
+		.search-badge {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			background-color: #ffd700;
+			color: #333;
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 24px;
+			font-weight: bold;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+			z-index: 10;
+		}
 
+		@media (max-width: 768px) {
+			:root {
+				--thumbnail-size: 150px;
+				--box-size: 180px;
+				--box-padding: 15px;
+			}
+
+			.form-group label {
+				display: block;
+				margin-bottom: 5px;
+			}
+		}
+
+		@media print {
 			.noprint {
 				display: none !important;
 			}
@@ -70,6 +201,14 @@
 				max-width: 100px;
 				max-height: 100px;
 			}
+
+			.search-badge {
+				width: 25px;
+				height: 25px;
+				font-size: 14px;
+				top: 5px;
+				right: 5px;
+			}
 		}
 	</style>
 </head>
@@ -77,13 +216,15 @@
 <body>
 	<div class="noprint" id="form1">
 		<h1>Toastmasters Magazine Archive</h1>
-		<p>
+		<div class="form-group">
 			<label for="startYear">Start Year:</label>
-			<input type="number" id="startYear" name="startYear" min="1924" max="2026" value="1924" />
-			
+			<input type="number" id="startYear" name="startYear" min="1924" value="1965" />
+
 			<label for="endYear">End Year:</label>
-			<input type="number" id="endYear" name="endYear" min="1924" max="2026" value="2026" />
-			
+			<input type="number" id="endYear" name="endYear" min="1924" value="1975" />
+		</div>
+
+		<div class="form-group">
 			<label for="month">Month:</label>
 			<select id="month" name="month">
 				<option value="january">January</option>
@@ -99,69 +240,307 @@
 				<option value="november">November</option>
 				<option value="december">December</option>
 			</select>
-		</p>
-		<p><INPUT type="button" value="Load Magazines" onclick="loadMagazines()" /></p>
-		<p>Example: <span id="exampleLink"></span></p>
+		</div>
+
+		<div class="form-group">
+			<label for="searchText">Search Text:</label>
+			<input type="text" id="searchText" name="searchText" placeholder="Enter text to search in magazines (optional)" style="width: 300px;" />
+		</div>
+
+		<div class="form-group">
+			<button type="button" class="btn" id="loadBtn">Load Magazines</button>
+			<button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;">Cancel</button>
+			<div id="errorMessage" class="error-message"></div>
+		</div>
+
+		<div class="progress-bar" id="progressBar">
+			<div class="progress-bar-fill" id="progressBarFill">0%</div>
+		</div>
+
+		<p><strong>Example URL:</strong> <span id="exampleLink"></span></p>
 	</div>
 
 	<div class="flex_container" id="pics"></div>
 
 </body>
 
-<script language="JavaScript">
+<script>
 	// Configure PDF.js worker
 	pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-	const picsContainer = document.getElementById("pics");
-	const exampleLink = document.getElementById("exampleLink");
+	// Cache DOM elements
+	const elements = {
+		picsContainer: document.getElementById("pics"),
+		exampleLink: document.getElementById("exampleLink"),
+		startYearInput: document.getElementById("startYear"),
+		endYearInput: document.getElementById("endYear"),
+		monthSelect: document.getElementById("month"),
+		searchTextInput: document.getElementById("searchText"),
+		loadBtn: document.getElementById("loadBtn"),
+		cancelBtn: document.getElementById("cancelBtn"),
+		errorMessage: document.getElementById("errorMessage"),
+		progressBar: document.getElementById("progressBar"),
+		progressBarFill: document.getElementById("progressBarFill")
+	};
 
-	function updateExample() {
-		const year = document.getElementById("startYear").value;
-		const month = document.getElementById("month").value;
-		const url = `https://content.toastmasters.org/image/upload/toastmaster-magazine-${month}-${year}.pdf`;
-		exampleLink.textContent = url;
+	// Constants
+	const THUMBNAIL_SIZE = 200;
+	const CONCURRENT_LOADS = 5;
+	const CURRENT_YEAR = new Date().getFullYear();
+
+	// State
+	let abortController = null;
+	let loadedCount = 0;
+	let totalCount = 0;
+
+	// Set dynamic max year
+	elements.startYearInput.max = CURRENT_YEAR;
+	elements.endYearInput.max = CURRENT_YEAR;
+
+	// Helper function to capitalize month name
+	function capitalizeMonth(month) {
+		return month.charAt(0).toUpperCase() + month.slice(1);
 	}
 
-	async function renderPDFThumbnail(url, canvas) {
+	// Update example URL
+	function updateExample() {
+		const year = elements.startYearInput.value;
+		const month = elements.monthSelect.value;
+		const url = `https://content.toastmasters.org/image/upload/toastmaster-magazine-${month}-${year}.pdf`;
+		elements.exampleLink.textContent = url;
+	}
+
+	// Validate form inputs
+	function validateInputs() {
+		const startYear = parseInt(elements.startYearInput.value);
+		const endYear = parseInt(elements.endYearInput.value);
+
+		elements.errorMessage.textContent = "";
+
+		if (isNaN(startYear) || isNaN(endYear)) {
+			elements.errorMessage.textContent = "Please enter valid years.";
+			return false;
+		}
+
+		if (startYear < 1924 || endYear < 1924) {
+			elements.errorMessage.textContent = "Years must be 1924 or later.";
+			return false;
+		}
+
+		if (startYear > CURRENT_YEAR || endYear > CURRENT_YEAR) {
+			elements.errorMessage.textContent = `Years cannot exceed ${CURRENT_YEAR}.`;
+			return false;
+		}
+
+		if (startYear > endYear) {
+			elements.errorMessage.textContent = "Start year must be less than or equal to end year.";
+			return false;
+		}
+
+		const yearRange = endYear - startYear + 1;
+		if (yearRange > 100) {
+			elements.errorMessage.textContent = "Please limit your selection to 100 years or less.";
+			return false;
+		}
+
+		return true;
+	}
+
+	// Update progress bar
+	function updateProgress() {
+		const percentage = Math.round((loadedCount / totalCount) * 100);
+		elements.progressBarFill.style.width = `${percentage}%`;
+		elements.progressBarFill.textContent = `${loadedCount} / ${totalCount} (${percentage}%)`;
+	}
+
+	// Render PDF thumbnail
+	async function renderPDFThumbnail(url, canvas, signal) {
 		try {
-			const loadingTask = pdfjsLib.getDocument(url);
+			const loadingTask = pdfjsLib.getDocument({
+				url: url,
+				stopAtErrors: false
+			});
+
+			if (signal.aborted) {
+				loadingTask.destroy();
+				throw new Error("Aborted");
+			}
+
 			const pdf = await loadingTask.promise;
 			const page = await pdf.getPage(1);
-			
+
+			if (signal.aborted) {
+				pdf.destroy();
+				throw new Error("Aborted");
+			}
+
 			const viewport = page.getViewport({ scale: 1 });
-			const scale = Math.min(200 / viewport.width, 200 / viewport.height);
+			const scale = Math.min(THUMBNAIL_SIZE / viewport.width, THUMBNAIL_SIZE / viewport.height);
 			const scaledViewport = page.getViewport({ scale: scale });
-			
+
 			const context = canvas.getContext('2d');
 			canvas.height = scaledViewport.height;
 			canvas.width = scaledViewport.width;
-			
+
 			await page.render({
 				canvasContext: context,
 				viewport: scaledViewport
 			}).promise;
-			
+
+			pdf.destroy();
 			return true;
 		} catch (error) {
+			if (error.message === "Aborted") {
+				throw error;
+			}
 			console.error('Error loading PDF:', error);
 			return false;
 		}
 	}
 
-	async function loadMagazines() {
-		// Clear all items
-		while (picsContainer.firstChild) {
-			picsContainer.removeChild(picsContainer.firstChild);
+	// Search text in PDF
+	async function searchInPDF(url, searchQuery, signal) {
+		if (!searchQuery || searchQuery.trim() === "") {
+			return false;
 		}
 
-		const startYear = parseInt(document.getElementById("startYear").value);
-		const endYear = parseInt(document.getElementById("endYear").value);
-		const month = document.getElementById("month").value;
+		try {
+			const loadingTask = pdfjsLib.getDocument({
+				url: url,
+				stopAtErrors: false
+			});
 
-		// Generate URLs for each year in the range
+			if (signal.aborted) {
+				loadingTask.destroy();
+				throw new Error("Aborted");
+			}
+
+			const pdf = await loadingTask.promise;
+			const numPages = pdf.numPages;
+			const searchLower = searchQuery.toLowerCase();
+
+			// Search through each page
+			for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+				if (signal.aborted) {
+					pdf.destroy();
+					throw new Error("Aborted");
+				}
+
+				const page = await pdf.getPage(pageNum);
+				const textContent = await page.getTextContent();
+
+				// Combine all text items into a single string
+				const pageText = textContent.items
+					.map(item => item.str)
+					.join(' ')
+					.toLowerCase();
+
+				if (pageText.includes(searchLower)) {
+					pdf.destroy();
+					return true;
+				}
+			}
+
+			pdf.destroy();
+			return false;
+		} catch (error) {
+			if (error.message === "Aborted") {
+				throw error;
+			}
+			console.error('Error searching PDF:', error);
+			return false;
+		}
+	}
+
+	// Load PDFs with throttling
+	async function loadMagazinesThrottled(urls, month, searchQuery) {
+		const queue = [...urls];
+		const results = [];
+
+		async function processNext() {
+			if (queue.length === 0 || abortController.signal.aborted) {
+				return;
+			}
+
+			const { url, year, box, canvas, para } = queue.shift();
+
+			try {
+				const success = await renderPDFThumbnail(url, canvas, abortController.signal);
+
+				if (success) {
+					para.textContent = `${capitalizeMonth(month)} ${year}`;
+					para.classList.remove("loading");
+
+					// Search for text if query provided
+					if (searchQuery && searchQuery.trim() !== "") {
+						const found = await searchInPDF(url, searchQuery, abortController.signal);
+						if (found) {
+							const badge = document.createElement("div");
+							badge.classList.add("search-badge");
+							badge.textContent = "★";
+							badge.title = `Contains: "${searchQuery}"`;
+							box.appendChild(badge);
+						}
+					}
+				} else {
+					para.textContent = `${capitalizeMonth(month)} ${year} - Not Available`;
+					para.classList.remove("loading");
+					para.classList.add("error");
+					canvas.style.display = "none";
+				}
+			} catch (error) {
+				if (error.message === "Aborted") {
+					box.remove();
+					return;
+				}
+			}
+
+			loadedCount++;
+			updateProgress();
+
+			return processNext();
+		}
+
+		const workers = Array(Math.min(CONCURRENT_LOADS, urls.length))
+			.fill(null)
+			.map(() => processNext());
+
+		await Promise.all(workers);
+	}
+
+	// Main load function
+	async function loadMagazines() {
+		if (!validateInputs()) {
+			return;
+		}
+
+		// Clear previous results
+		while (elements.picsContainer.firstChild) {
+			elements.picsContainer.removeChild(elements.picsContainer.firstChild);
+		}
+
+		// Setup abort controller
+		abortController = new AbortController();
+
+		// Update UI
+		elements.loadBtn.disabled = true;
+		elements.cancelBtn.style.display = "inline-block";
+		elements.progressBar.style.display = "block";
+
+		const startYear = parseInt(elements.startYearInput.value);
+		const endYear = parseInt(elements.endYearInput.value);
+		const month = elements.monthSelect.value;
+		const searchQuery = elements.searchTextInput.value.trim();
+
+		loadedCount = 0;
+		totalCount = endYear - startYear + 1;
+		updateProgress();
+
+		// Create boxes and prepare URLs
+		const urls = [];
 		for (let year = startYear; year <= endYear; year++) {
 			const url = `https://content.toastmasters.org/image/upload/toastmaster-magazine-${month}-${year}.pdf`;
-			
+
 			const newBox = document.createElement("div");
 			newBox.classList.add("content_box");
 
@@ -170,39 +549,69 @@
 			newLink.target = "_blank";
 
 			const canvas = document.createElement("canvas");
-			canvas.style.maxWidth = "200px";
-			canvas.style.maxHeight = "200px";
+			canvas.style.maxWidth = `${THUMBNAIL_SIZE}px`;
+			canvas.style.maxHeight = `${THUMBNAIL_SIZE}px`;
 
 			const newPara = document.createElement("p");
-			newPara.textContent = `Loading ${month} ${year}...`;
+			newPara.textContent = `Loading ${capitalizeMonth(month)} ${year}...`;
 			newPara.classList.add("loading");
 
 			newLink.appendChild(canvas);
 			newLink.appendChild(newPara);
 			newBox.appendChild(newLink);
-			picsContainer.appendChild(newBox);
+			elements.picsContainer.appendChild(newBox);
 
-			// Load PDF asynchronously
-			(async function(canvas, para, url, month, year) {
-				const success = await renderPDFThumbnail(url, canvas);
-				if (success) {
-					para.textContent = `${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
-					para.classList.remove("loading");
-				} else {
-					para.textContent = `${month.charAt(0).toUpperCase() + month.slice(1)} ${year} - Not Available`;
-					para.classList.remove("loading");
-					para.classList.add("error");
-					canvas.style.display = "none";
-				}
-			})(canvas, newPara, url, month, year);
+			urls.push({ url, year, box: newBox, canvas, para: newPara });
+		}
+
+		// Load PDFs with throttling
+		try {
+			await loadMagazinesThrottled(urls, month, searchQuery);
+		} catch (error) {
+			console.error("Loading cancelled:", error);
+		}
+
+		// Reset UI
+		elements.loadBtn.disabled = false;
+		elements.cancelBtn.style.display = "none";
+		setTimeout(() => {
+			elements.progressBar.style.display = "none";
+		}, 2000);
+	}
+
+	// Cancel loading
+	function cancelLoading() {
+		if (abortController) {
+			abortController.abort();
+			elements.loadBtn.disabled = false;
+			elements.cancelBtn.style.display = "none";
+			elements.errorMessage.textContent = "Loading cancelled.";
+			setTimeout(() => {
+				elements.errorMessage.textContent = "";
+			}, 3000);
 		}
 	}
 
-	// Initialize example on page load
+	// Event listeners
+	elements.loadBtn.addEventListener("click", loadMagazines);
+	elements.cancelBtn.addEventListener("click", cancelLoading);
+	elements.startYearInput.addEventListener("input", updateExample);
+	elements.endYearInput.addEventListener("input", updateExample);
+	elements.monthSelect.addEventListener("change", updateExample);
+
+	// Keyboard support - Enter key to load
+	elements.startYearInput.addEventListener("keypress", (e) => {
+		if (e.key === "Enter") loadMagazines();
+	});
+	elements.endYearInput.addEventListener("keypress", (e) => {
+		if (e.key === "Enter") loadMagazines();
+	});
+	elements.searchTextInput.addEventListener("keypress", (e) => {
+		if (e.key === "Enter") loadMagazines();
+	});
+
+	// Initialize
 	updateExample();
-	document.getElementById("startYear").addEventListener("input", updateExample);
-	document.getElementById("endYear").addEventListener("input", updateExample);
-	document.getElementById("month").addEventListener("change", updateExample);
 </script>
 
 </html>
