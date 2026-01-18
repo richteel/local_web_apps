@@ -106,27 +106,85 @@
 
     async function loadThumbnails() {
       const containers = document.querySelectorAll('.thumbnail-container');
+      let activeGenerations = 0;
+      let successCount = 0;
+      let errorCount = 0;
+      const MAX_CONCURRENT = 3;
+      const queue = Array.from(containers);
+      const totalCount = queue.length;
+      let isComplete = false;
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(async (entry) => {
-          if (entry.isIntersecting) {
-            const container = entry.target;
-            observer.unobserve(container);
-            try {
-              await renderThumbnail(container);
-            } catch (err) {
-              console.error('Thumbnail render error:', err);
+      async function processQueue() {
+        while (queue.length > 0 && activeGenerations < MAX_CONCURRENT) {
+          activeGenerations++;
+          const container = queue.shift();
+          
+          try {
+            const result = await renderThumbnail(container);
+            if (result.success) {
+              successCount++;
+            } else {
+              errorCount++;
+            }
+          } catch (err) {
+            console.error('Thumbnail render error:', err);
+            errorCount++;
+          } finally {
+            // Update status after each thumbnail
+            updateThumbnailStatus(successCount, errorCount, totalCount);
+            activeGenerations--;
+            
+            // Check if all done
+            if (queue.length === 0 && activeGenerations === 0 && !isComplete) {
+              isComplete = true;
+              // After 5 seconds, reset to normal status
+              setTimeout(() => {
+                elements.subtitle.textContent = `Browse and search ${magazines.length} magazines`;
+              }, 5000);
+            } else {
+              processQueue(); // Continue processing
             }
           }
-        });
-      }, { root: null, rootMargin: '200px', threshold: 0.1 });
+        }
+      }
 
-      containers.forEach(c => observer.observe(c));
+      function updateThumbnailStatus(success, errors, total) {
+        if (errors > 0) {
+          elements.subtitle.textContent = `Generating thumbnails... ${success}/${total} ✓ (${errors} errors)`;
+        } else {
+          elements.subtitle.textContent = `Generating thumbnails... ${success}/${total}`;
+        }
+      }
+
+      // Start processing immediately
+      processQueue();
+    }
+
+    // Helper to detect if canvas has actual content (not blank white)
+    function canvasHasContent(canvas) {
+      const ctx = canvas.getContext('2d');
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = imageData.data;
+      
+      // Check if canvas has any non-white pixels
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];
+        const g = data[i + 1];
+        const b = data[i + 2];
+        const a = data[i + 3];
+        
+        // If any pixel is not pure white (or transparent), canvas has content
+        if (!(r === 255 && g === 255 && b === 255) || a < 255) {
+          return true;
+        }
+      }
+      return false;
     }
 
     async function renderThumbnail(container) {
       const canvas = container.querySelector('canvas');
       const filename = canvas.dataset.pdf;
+      let pdf = null;
 
       // First try to use cached thumbnail
       const cached = await window.electronAPI.getThumbnailPath(filename);
@@ -141,23 +199,72 @@
         img.src = `file://${cached.path}`;
         container.replaceChild(img, canvas);
         container.querySelector('.thumbnail-placeholder').style.display = 'none';
-        return;
+        return { success: true };
       }
 
-      // Render first page to canvas, then cache
-      const pdfPath = await window.electronAPI.getPdfPath(filename);
-      const pdf = await pdfjsLib.getDocument(pdfPath).promise;
-      const page = await pdf.getPage(1);
-      const viewport = page.getViewport({ scale: 1.5 });
-      const ctx = canvas.getContext('2d');
-      canvas.width = Math.floor(viewport.width);
-      canvas.height = Math.floor(viewport.height);
-      await page.render({ canvasContext: ctx, viewport }).promise;
+      try {
+        // Render first page to canvas
+        const pdfPath = await window.electronAPI.getPdfPath(filename);
+        pdf = await pdfjsLib.getDocument(pdfPath).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 1.5 });
+        const ctx = canvas.getContext('2d');
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        await page.render({ canvasContext: ctx, viewport }).promise;
 
-      // Save thumbnail as JPEG
-      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-      await window.electronAPI.saveThumbnail({ filename, dataUrl });
-      container.querySelector('.thumbnail-placeholder').style.display = 'none';
+        // Check if canvas actually has content before saving
+        if (!canvasHasContent(canvas)) {
+          console.warn(`Canvas is blank/white for ${filename}, not saving`);
+          return { success: false };
+        }
+
+        // Save thumbnail as JPEG only if it has content
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        const result = await window.electronAPI.saveThumbnail({ filename, dataUrl });
+        
+        if (result.ok) {
+          // Replace canvas with img element to display the saved thumbnail
+          const img = document.createElement('img');
+          img.style.position = 'absolute';
+          img.style.top = '0';
+          img.style.left = '0';
+          img.style.width = '100%';
+          img.style.height = '100%';
+          img.style.objectFit = 'contain';
+          img.src = `file://${result.path}`;
+          container.replaceChild(img, canvas);
+          container.querySelector('.thumbnail-placeholder').style.display = 'none';
+          return { success: true };
+        } else {
+          console.error(`Failed to save thumbnail for ${filename}:`, result.error);
+          return { success: false };
+        }
+      } catch (err) {
+        console.error(`Error generating thumbnail for ${filename}:`, err);
+        return { success: false };
+      } finally {
+        // Clean up resources
+        try {
+          // Destroy the PDF document
+          if (pdf) {
+            await pdf.destroy();
+            pdf = null;
+          }
+          
+          // Clear canvas data if it still exists (not replaced with img)
+          if (canvas && canvas.parentNode) {
+            const ctx = canvas.getContext('2d');
+            if (ctx) {
+              ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            canvas.width = 0;
+            canvas.height = 0;
+          }
+        } catch (e) {
+          // Ignore cleanup errors
+        }
+      }
     }
 
     // Search functionality

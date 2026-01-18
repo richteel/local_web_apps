@@ -8,3 +8,4 @@ contextBridge.exposeInMainWorld('electronAPI', {
   saveThumbnail: (payload) => ipcRenderer.invoke('save-thumbnail', payload),
   generateThumbnail: (filename) => ipcRenderer.invoke('generate-thumbnail', filename)
 });
+

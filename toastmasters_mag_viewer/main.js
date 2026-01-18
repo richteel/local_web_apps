@@ -222,6 +222,7 @@ ipcMain.handle('save-thumbnail', async (_event, { filename, dataUrl }) => {
 
 // Generate thumbnail from PDF first page
 ipcMain.handle('generate-thumbnail', async (event, filename) => {
+  let hiddenWindow = null;
   try {
     const magazinesPath = path.join(process.cwd(), 'magazines');
     const thumbnailsDir = path.join(process.cwd(), 'thumbnails');
@@ -239,20 +240,22 @@ ipcMain.handle('generate-thumbnail', async (event, filename) => {
     // Check if thumbnail already exists
     try {
       await fs.access(thumbnailPath);
-      return { success: true, thumbnailPath: thumbnailPath };
+      return { success: true, thumbnailPath: thumbnailPath, cached: true };
     } catch {
       // Doesn't exist, will generate
     }
     
     // Create a hidden window to render the PDF
-    const hiddenWindow = new BrowserWindow({
+    hiddenWindow = new BrowserWindow({
       width: 400,
       height: 560,
       show: false,
       backgroundColor: '#ffffff',
       webPreferences: {
         nodeIntegration: false,
-        contextIsolation: false
+        contextIsolation: false,
+        offscreen: true,
+        sandbox: true
       }
     });
 
@@ -283,8 +286,10 @@ ipcMain.handle('generate-thumbnail', async (event, filename) => {
               canvas.height = viewport.height;
               await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
               window.thumbDataUrl = canvas.toDataURL('image/jpeg', 0.85);
+              window.renderSuccess = true;
             } catch (error) {
               window.thumbError = error.message;
+              window.renderSuccess = false;
             }
           })();
         </script>
@@ -296,17 +301,25 @@ ipcMain.handle('generate-thumbnail', async (event, filename) => {
 
     // Wait until the canvas is rendered and data URL is available (or error/timeout)
     let dataUrl = null;
+    let renderSuccess = false;
     await new Promise(resolve => {
       const started = Date.now();
       const check = async () => {
         try {
-          const result = await hiddenWindow.webContents.executeJavaScript('window.thumbDataUrl || window.thumbError || null');
-          if (result) {
-            dataUrl = result.startsWith('data:image') ? result : null;
+          const result = await hiddenWindow.webContents.executeJavaScript('({ dataUrl: window.thumbDataUrl, success: window.renderSuccess, error: window.thumbError })');
+          if (result.success === true && result.dataUrl) {
+            dataUrl = result.dataUrl;
+            renderSuccess = true;
+            resolve();
+            return;
+          }
+          if (result.success === false && result.error) {
+            console.error(`PDF render error for ${filename}: ${result.error}`);
             resolve();
             return;
           }
           if (Date.now() - started > 10000) { // 10s timeout
+            console.warn(`Timeout rendering ${filename}`);
             resolve();
             return;
           }
@@ -316,21 +329,29 @@ ipcMain.handle('generate-thumbnail', async (event, filename) => {
       check();
     });
 
-    // If we got a data URL, save it; otherwise fall back
-    if (dataUrl) {
+    // Only save if rendering was successful - don't save white/blank thumbnails
+    if (renderSuccess && dataUrl && dataUrl.startsWith('data:image')) {
       const base64 = dataUrl.split(',')[1];
-      await fs.writeFile(thumbnailPath, Buffer.from(base64, 'base64'));
-    } else {
-      // Fallback: capture the page (may include scrollbar, but avoids failure)
-      const image = await hiddenWindow.webContents.capturePage();
-      await fs.writeFile(thumbnailPath, image.toJPEG(85));
+      if (base64) {
+        await fs.writeFile(thumbnailPath, Buffer.from(base64, 'base64'));
+        return { success: true, thumbnailPath: thumbnailPath, cached: false };
+      }
     }
-
-    hiddenWindow.destroy();
     
-    return { success: true, thumbnailPath: thumbnailPath };
+    // If render failed, don't save anything - return error
+    return { success: false, error: 'Failed to render PDF' };
+    
   } catch (error) {
     console.error('Thumbnail generation error:', error);
     return { success: false, error: error.message };
+  } finally {
+    // Always destroy the window to clean up resources
+    if (hiddenWindow && !hiddenWindow.isDestroyed()) {
+      try {
+        hiddenWindow.destroy();
+      } catch (e) {
+        // Ignore errors during cleanup
+      }
+    }
   }
 });
