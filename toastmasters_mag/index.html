@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toastmasters Magazine Archive</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <div class="noprint" id="form1">
+    <h1>Toastmasters Magazine Archive</h1>
+    <p>Toastmasters was founded on 22 October 1924 by Dr. Ralph C. Smedley to help people improve their public speaking and leadership skills.</p>
+    <p>
+      The Gavel was the first magazine published for Toastmasters members starting in 1930, later renamed to <em>The Toastmaster</em> in April 1933.
+      In 2004, the magazine was rebranded as <em>Toastmasters Magazine</em> to better reflect its purpose and audience. More information about 
+      the history of the magazine can be found at <a href="https://www.toastmasters.org/magazine/magazine-issues/2024/apr/magazine-history" target="_blank" rel="noopener">toastmasters.org</a>.
+    </p>
+
+    <div class="form-group">
+      <label for="downloadFolder">Download Folder:</label>
+      <input type="text" id="downloadFolder" readonly placeholder="Select a folder..." style="width: 400px;" />
+      <button type="button" class="btn btn-folder" id="selectFolderBtn">Select Folder</button>
+    </div>
+
+    <div class="form-group">
+      <label for="startMonth">Start Month:</label>
+      <select id="startMonth" name="startMonth">
+        <option value="january" selected>January</option>
+        <option value="february">February</option>
+        <option value="march">March</option>
+        <option value="april">April</option>
+        <option value="may">May</option>
+        <option value="june">June</option>
+        <option value="july">July</option>
+        <option value="august">August</option>
+        <option value="september">September</option>
+        <option value="october">October</option>
+        <option value="november">November</option>
+        <option value="december">December</option>
+      </select>
+
+      <label for="startYear">Start Year:</label>
+      <input type="number" id="startYear" name="startYear" min="1924" value="1965" />
+    </div>
+
+    <div class="form-group">
+      <label for="endMonth">End Month:</label>
+      <select id="endMonth" name="endMonth">
+        <option value="january">January</option>
+        <option value="february">February</option>
+        <option value="march">March</option>
+        <option value="april">April</option>
+        <option value="may">May</option>
+        <option value="june">June</option>
+        <option value="july">July</option>
+        <option value="august">August</option>
+        <option value="september">September</option>
+        <option value="october">October</option>
+        <option value="november">November</option>
+        <option value="december" selected>December</option>
+      </select>
+
+      <label for="endYear">End Year:</label>
+      <input type="number" id="endYear" name="endYear" min="1924" value="1975" />
+    </div>
+
+    <div class="form-group">
+      <label for="searchText">Search Text:</label>
+      <input type="text" id="searchText" name="searchText" placeholder="Enter text to search in magazines (optional)" style="width: 300px;" />
+    </div>
+
+    <div class="form-group">
+      <button type="button" class="btn" id="loadBtn">Load Magazines</button>
+      <button type="button" class="btn btn-cancel" id="cancelBtn" style="display: none;">Cancel</button>
+      <button type="button" class="btn btn-download-all" id="downloadAllBtn" style="display: none;">Download All to Folder</button>
+      <button type="button" class="btn btn-secondary" id="generateIndexBtn" title="Generate index.html in download folder">Generate Index</button>
+      <div id="errorMessage" class="error-message"></div>
+    </div>
+
+    <div class="progress-bar" id="progressBar">
+      <div class="progress-bar-fill" id="progressBarFill">0%</div>
+    </div>
+  </div>
+
+  <div class="flex_container" id="pics"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

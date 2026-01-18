@@ -1,0 +1,36 @@
+{
+  "name": "toastmasters-magazine-viewer",
+  "version": "1.0.0",
+  "description": "Portable viewer for Toastmasters Magazine archives",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win portable"
+  },
+  "build": {
+    "appId": "com.toastmasters.magazineviewer",
+    "productName": "Toastmasters Magazine Viewer",
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "icon.ico"
+    },
+    "portable": {
+      "artifactName": "ToastmastersViewer.exe"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "index.html",
+      "styles.css"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^25.1.8"
+  }
+}
