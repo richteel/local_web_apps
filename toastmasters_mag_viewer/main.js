@@ -1,8 +1,109 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
 
 let mainWindow;
+
+function createMenu() {
+  const template = [
+    {
+      label: 'File',
+      submenu: [
+        {
+          label: 'Refresh Magazine List',
+          accelerator: 'F5',
+          click: () => {
+            if (mainWindow) {
+              mainWindow.webContents.send('refresh-magazines');
+            }
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Exit',
+          accelerator: 'Alt+F4',
+          click: () => {
+            app.quit();
+          }
+        }
+      ]
+    },
+    {
+      label: 'View',
+      submenu: [
+        { role: 'reload' },
+        { role: 'forceReload' },
+        { role: 'toggleDevTools' },
+        { type: 'separator' },
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { type: 'separator' },
+        { role: 'togglefullscreen' }
+      ]
+    },
+    {
+      label: 'Help',
+      submenu: [
+        {
+          label: 'About Toastmasters Magazine Viewer',
+          click: () => {
+            const { dialog } = require('electron');
+            dialog.showMessageBox(mainWindow, {
+              type: 'info',
+              title: 'About',
+              message: 'Toastmasters Magazine Viewer',
+              detail: 'Version 1.0.0\n\nA portable viewer for Toastmasters Magazine archives.\n\nPlace PDF files in the "magazines" folder with format YYYY-MM-Title.pdf'
+            });
+          }
+        },
+        {
+          label: 'How to Use',
+          click: () => {
+            const { dialog } = require('electron');
+            dialog.showMessageBox(mainWindow, {
+              type: 'info',
+              title: 'How to Use',
+              message: 'Using the Magazine Viewer',
+              detail: '1. Place PDF files in the "magazines" folder\n2. Use the format YYYY-MM-Title.pdf for automatic organization\n3. Use the search box to filter by year, month, or content\n4. Click any magazine to view it\n5. Press F5 to refresh the magazine list'
+            });
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Open Magazines Folder',
+          click: () => {
+            const magazinesPath = path.join(process.cwd(), 'magazines');
+            shell.openPath(magazinesPath);
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Toastmasters Magazine History',
+          click: () => {
+            shell.openExternal('https://www.toastmasters.org/magazine/magazine-issues/2024/apr/magazine-history');
+          }
+        },
+        {
+          label: 'Toastmasters Magazine Archive',
+          click: () => {
+            shell.openExternal('https://www.toastmasters.org/magazine/issues');
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Visit Toastmasters.org',
+          click: () => {
+            shell.openExternal('https://www.toastmasters.org');
+          }
+        }
+      ]
+    }
+  ];
+
+  const menu = Menu.buildFromTemplate(template);
+  Menu.setApplicationMenu(menu);
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -16,6 +117,7 @@ function createWindow() {
   });
 
   mainWindow.loadFile('index.html');
+  createMenu();
 }
 
 app.whenReady().then(createWindow);
