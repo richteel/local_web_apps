@@ -5,4 +5,5 @@ toastmasters_mag_viewer/magazines/
 toastmasters_mag_viewer/thumbnails/
 
 node_modules/
-
+dist/
+debug.log

@@ -3,24 +3,33 @@
   "version": "1.0.0",
   "description": "Portable viewer for Toastmasters Magazine archives",
   "main": "main.js",
+  "author": "Richard Teel",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder --win portable"
+    "build": "electron-builder --win nsis"
   },
   "build": {
     "appId": "com.toastmasters.magazineviewer",
     "productName": "Toastmasters Magazine Viewer",
+    "copyright": "Copyright © 2026 TeelSys LLC",
     "win": {
       "target": [
         {
-          "target": "portable",
-          "arch": ["x64"]
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
         }
       ],
-      "icon": "icon.ico"
+      "icon": "Toastmasters Magazine Viewer.ico"
     },
-    "portable": {
-      "artifactName": "ToastmastersViewer.exe"
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "artifactName": "ToastmastersViewer-Setup.exe"
     },
     "files": [
       "main.js",
@@ -31,6 +40,10 @@
   },
   "devDependencies": {
     "electron": "^40.0.0",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^23.0.6"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.6.2",
+    "pdf-parse": "^2.4.5"
   }
 }

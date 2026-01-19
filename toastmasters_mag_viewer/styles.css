@@ -11,7 +11,7 @@ body {
 }
 
 .header {
-  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  background: linear-gradient(135deg, #004165 0%, #006094 100%);
   color: white;
   padding: 2rem;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -26,6 +26,19 @@ body {
 .header p {
   opacity: 0.9;
   font-size: 1.1rem;
+}
+
+.status-stack {
+  margin-top: 0.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.status-line {
+  font-size: 0.95rem;
+  opacity: 0.95;
+  min-height: 1.1rem;
 }
 
 .search-bar {
@@ -51,7 +64,7 @@ body {
 
 .search-input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #004165;
 }
 
 .search-icon {
@@ -133,7 +146,7 @@ body {
   font-weight: 600;
   font-size: 1.1rem;
   margin-bottom: 0.25rem;
-  color: #1e3a8a;
+  color: #772432;
 }
 
 .magazine-filename {
@@ -147,11 +160,24 @@ body {
 .content-match {
   margin-top: 0.5rem;
   padding: 0.25rem 0.5rem;
-  background: #fef3c7;
+  background: #F2DF74;
   border-radius: 4px;
   font-size: 0.75rem;
-  color: #92400e;
+  color: #772432;
   font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: help;
+}
+
+.content-match mark {
+  background: #004165;
+  color: white;
+  padding: 0 0.2rem;
+  border-radius: 2px;
+  font-weight: 600;
 }
 
 .loading {

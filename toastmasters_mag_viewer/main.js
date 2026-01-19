@@ -1,8 +1,229 @@
-const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, shell, dialog } = require('electron');
 const path = require('path');
 const fs = require('fs').promises;
+const fsSync = require('fs');
+const Database = require('better-sqlite3');
+const pdfParseLib = require('pdf-parse');
+const { PDFParse } = pdfParseLib;
 
 let mainWindow;
+let db = null;
+let logFile = null;
+let debugEnabled = false;
+
+// Check for debug flag in command line arguments
+if (process.argv.includes('--debug') || process.argv.includes('-d')) {
+  debugEnabled = true;
+}
+
+// Log to file for debugging portable exe (only if --debug flag passed)
+function log(message) {
+  const timestamp = new Date().toISOString();
+  const logMessage = `${timestamp}: ${message}\n`;
+  console.log(message);
+  
+  if (!debugEnabled) return;
+  
+  try {
+    if (!logFile) {
+      const appDir = app.isPackaged ? path.dirname(process.execPath) : __dirname;
+      logFile = path.join(appDir, 'debug.log');
+    }
+    fsSync.appendFileSync(logFile, logMessage);
+  } catch (err) {
+    // Ignore log errors
+  }
+}
+
+// Get the app's base directory (works for both dev and packaged)
+function getAppDirectory() {
+  // In production, use the directory containing the executable
+  // In development, use __dirname
+  const appDir = app.isPackaged ? path.dirname(process.execPath) : __dirname;
+  log(`App directory: ${appDir}`);
+  log(`Is packaged: ${app.isPackaged}`);
+  log(`execPath: ${process.execPath}`);
+  return appDir;
+}
+
+// Initialize SQLite database with FTS5 in local data folder for portability
+async function initDatabase() {
+  try {
+    // Store database in local data folder (relative to app executable)
+    const appDir = getAppDirectory();
+    const dataDir = path.join(appDir, 'data');
+    
+    log(`Creating data directory: ${dataDir}`);
+    
+    // Create data folder if it doesn't exist
+    try {
+      await fs.mkdir(dataDir, { recursive: true });
+    } catch (err) {
+      log(`Failed to create data directory: ${err.message}`);
+    }
+    
+    const dbPath = path.join(dataDir, 'magazine-index.db');
+    log(`Database path: ${dbPath}`);
+    db = new Database(dbPath);
+    log('Database initialized successfully');
+  
+    // Create FTS5 table for full-text search
+    db.exec(`
+      CREATE TABLE IF NOT EXISTS magazines_fts (
+      filename TEXT PRIMARY KEY,
+      content TEXT,
+      year INTEGER,
+      month INTEGER,
+      file_mtime INTEGER
+    );
+    
+    CREATE VIRTUAL TABLE IF NOT EXISTS magazines_search USING fts5(
+      filename,
+      content,
+      year UNINDEXED,
+      month UNINDEXED,
+      content='magazines_fts',
+      content_rowid='rowid'
+    );
+    
+    CREATE TRIGGER IF NOT EXISTS magazines_fts_ai AFTER INSERT ON magazines_fts BEGIN
+      INSERT INTO magazines_search(rowid, filename, content, year, month)
+      VALUES (new.rowid, new.filename, new.content, new.year, new.month);
+    END;
+    
+    CREATE TRIGGER IF NOT EXISTS magazines_fts_ad AFTER DELETE ON magazines_fts BEGIN
+      DELETE FROM magazines_search WHERE rowid = old.rowid;
+    END;
+    
+    CREATE TRIGGER IF NOT EXISTS magazines_fts_au AFTER UPDATE ON magazines_fts BEGIN
+      UPDATE magazines_search SET filename = new.filename, content = new.content, 
+                                  year = new.year, month = new.month
+      WHERE rowid = old.rowid;
+    END;
+  `);
+  
+    log('Database initialized at: ' + dbPath);
+  } catch (error) {
+    log(`Database initialization error: ${error.message}`);
+    log(`Stack: ${error.stack}`);
+    dialog.showErrorBox('Database Error', `Failed to initialize database: ${error.message}`);
+    throw error;
+  }
+}
+
+// Extract text from PDF
+async function extractPdfText(pdfPath) {
+  try {
+    const dataBuffer = await fs.readFile(pdfPath);
+    const parser = new PDFParse({ data: dataBuffer });
+    const result = await parser.getText();
+    return result.text;
+  } catch (error) {
+    console.error(`Error extracting text from ${path.basename(pdfPath)}:`, error.message);
+    return null;
+  }
+}
+
+// Index a single PDF
+async function indexPdf(filename, year, month) {
+  const appDir = getAppDirectory();
+  const magazinesPath = path.join(appDir, 'magazines');
+  const pdfPath = path.join(magazinesPath, filename);
+  
+  try {
+    const stats = await fs.stat(pdfPath);
+    const fileMtime = Math.floor(stats.mtimeMs);
+    
+    // Check if already indexed and up to date
+    const existing = db.prepare('SELECT file_mtime FROM magazines_fts WHERE filename = ?').get(filename);
+    if (existing && existing.file_mtime === fileMtime) {
+      return { indexed: false, cached: true };
+    }
+    
+    // Extract text
+    const content = await extractPdfText(pdfPath);
+    if (!content) {
+      return { indexed: false, error: 'Failed to extract text' };
+    }
+    
+    // Insert or update
+    const stmt = db.prepare(`
+      INSERT OR REPLACE INTO magazines_fts (filename, content, year, month, file_mtime)
+      VALUES (?, ?, ?, ?, ?)
+    `);
+    stmt.run(filename, content, year, month, fileMtime);
+    
+    return { indexed: true };
+  } catch (error) {
+    console.error(`Error indexing ${filename}:`, error.message);
+    return { indexed: false, error: error.message };
+  }
+}
+
+// Index all PDFs with progress reporting
+async function indexAllPdfs(magazines) {
+  let indexed = 0;
+  let cached = 0;
+  let errors = 0;
+  
+  for (let i = 0; i < magazines.length; i++) {
+    const mag = magazines[i];
+    const result = await indexPdf(mag.filename, mag.year, mag.month);
+    
+    if (result.indexed) {
+      indexed++;
+    } else if (result.cached) {
+      cached++;
+    } else {
+      errors++;
+    }
+    
+    // Send progress update
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('indexing-progress', {
+        current: i + 1,
+        total: magazines.length,
+        indexed,
+        cached,
+        errors
+      });
+    }
+  }
+  
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('indexing-complete', { indexed, cached, errors });
+  }
+  
+  return { indexed, cached, errors };
+}
+
+// Search indexed content
+ipcMain.handle('search-indexed-content', async (event, searchQuery) => {
+  if (!db) return [];
+  
+  try {
+    const stmt = db.prepare(`
+      SELECT filename, 
+             snippet(magazines_search, 1, '<mark>', '</mark>', '...', 30) as snippet,
+             rank
+      FROM magazines_search
+      WHERE magazines_search MATCH ?
+      ORDER BY rank
+      LIMIT 100
+    `);
+    
+    const results = stmt.all(searchQuery);
+    return results;
+  } catch (error) {
+    console.error('Search error:', error);
+    return [];
+  }
+});
+
+// Start indexing process
+ipcMain.handle('start-indexing', async (event, magazines) => {
+  return await indexAllPdfs(magazines);
+});
 
 function createMenu() {
   const template = [
@@ -73,7 +294,8 @@ function createMenu() {
         {
           label: 'Open Magazines Folder',
           click: () => {
-            const magazinesPath = path.join(process.cwd(), 'magazines');
+            const appDir = getAppDirectory();
+            const magazinesPath = path.join(appDir, 'magazines');
             shell.openPath(magazinesPath);
           }
         },
@@ -120,7 +342,17 @@ function createWindow() {
   createMenu();
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(async () => {
+  try {
+    log('App starting...');
+    await initDatabase();
+    createWindow();
+  } catch (error) {
+    log(`Startup error: ${error.message}`);
+    dialog.showErrorBox('Startup Error', `Failed to start application: ${error.message}`);
+    app.quit();
+  }
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -137,8 +369,9 @@ app.on('activate', () => {
 // Scan magazines folder for PDFs
 ipcMain.handle('scan-magazines', async () => {
   try {
-    // Look for magazines folder relative to the executable
-    const magazinesPath = path.join(process.cwd(), 'magazines');
+    // Look for magazines folder relative to the app executable
+    const appDir = getAppDirectory();
+    const magazinesPath = path.join(appDir, 'magazines');
     
     // Check if folder exists
     try {
@@ -180,7 +413,8 @@ ipcMain.handle('scan-magazines', async () => {
 
 // Get PDF file path for loading
 ipcMain.handle('get-pdf-path', async (event, filename) => {
-  const magazinesPath = path.join(process.cwd(), 'magazines');
+  const appDir = getAppDirectory();
+  const magazinesPath = path.join(appDir, 'magazines');
   return path.join(magazinesPath, filename);
 });
 
@@ -193,7 +427,8 @@ ipcMain.handle('open-path', async (event, filePath) => {
 // Return cached thumbnail path if it exists
 ipcMain.handle('get-thumbnail-path', async (_event, filename) => {
   try {
-    const thumbsDir = path.join(process.cwd(), 'thumbnails');
+    const appDir = getAppDirectory();
+    const thumbsDir = path.join(appDir, 'thumbnails');
     const base = path.parse(filename).name;
     const thumbPath = path.join(thumbsDir, base + '.jpg');
     await fs.access(thumbPath);
@@ -206,7 +441,8 @@ ipcMain.handle('get-thumbnail-path', async (_event, filename) => {
 // Save a thumbnail provided as a data URL (from renderer canvas)
 ipcMain.handle('save-thumbnail', async (_event, { filename, dataUrl }) => {
   try {
-    const thumbsDir = path.join(process.cwd(), 'thumbnails');
+    const appDir = getAppDirectory();
+    const thumbsDir = path.join(appDir, 'thumbnails');
     await fs.mkdir(thumbsDir, { recursive: true });
     const base = path.parse(filename).name;
     const outPath = path.join(thumbsDir, base + '.jpg');
@@ -224,8 +460,9 @@ ipcMain.handle('save-thumbnail', async (_event, { filename, dataUrl }) => {
 ipcMain.handle('generate-thumbnail', async (event, filename) => {
   let hiddenWindow = null;
   try {
-    const magazinesPath = path.join(process.cwd(), 'magazines');
-    const thumbnailsDir = path.join(process.cwd(), 'thumbnails');
+    const appDir = getAppDirectory();
+    const magazinesPath = path.join(appDir, 'magazines');
+    const thumbnailsDir = path.join(appDir, 'thumbnails');
     const pdfPath = path.join(magazinesPath, filename);
     const basename = path.basename(filename, path.extname(filename));
     const thumbnailPath = path.join(thumbnailsDir, `${basename}.jpg`);

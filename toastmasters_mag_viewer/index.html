@@ -10,6 +10,10 @@
   <div class="header">
     <h1>📚 Toastmasters Magazine Archive</h1>
     <p id="subtitle">Loading magazines...</p>
+    <div class="status-stack">
+      <p id="thumbStatus" class="status-line"></p>
+      <p id="indexStatus" class="status-line"></p>
+    </div>
   </div>
 
   <div class="search-bar">
@@ -42,12 +46,38 @@
       searchInput: document.getElementById('searchInput'),
       content: document.getElementById('content'),
       totalCount: document.getElementById('totalCount'),
-      filteredCount: document.getElementById('filteredCount')
+      filteredCount: document.getElementById('filteredCount'),
+      thumbStatus: document.getElementById('thumbStatus'),
+      indexStatus: document.getElementById('indexStatus')
     };
 
     let magazines = [];
+    let isIndexingComplete = false;
     const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
                         'July', 'August', 'September', 'October', 'November', 'December'];
+    // Listen for indexing progress
+    window.electronAPI.onIndexingProgress((data) => {
+      updateIndexingStatus(data.current, data.total, data.indexed, data.cached, data.errors);
+    });
+
+    window.electronAPI.onIndexingComplete((data) => {
+      isIndexingComplete = true;
+      elements.indexStatus.textContent = `Indexing complete: ${data.indexed} indexed, ${data.cached} cached, ${data.errors} errors`;
+      setTimeout(() => {
+        elements.indexStatus.textContent = '';
+      }, 5000);
+    });
+
+    function updateIndexingStatus(current, total, indexed, cached, errors) {
+      if (errors > 0) {
+        elements.indexStatus.textContent = `Indexing PDFs... ${current}/${total} (${cached} cached, ${errors} errors)`;
+      } else if (cached > 0) {
+        elements.indexStatus.textContent = `Indexing PDFs... ${current}/${total} (${cached} cached)`;
+      } else {
+        elements.indexStatus.textContent = `Indexing PDFs... ${current}/${total}`;
+      }
+    }
+
 
     // Load magazines on startup
     async function loadMagazines() {
@@ -74,6 +104,9 @@
         
         renderMagazineCards(magazines);
         await loadThumbnails();
+        
+        // Start indexing PDFs
+        window.electronAPI.startIndexing(magazines);
       } catch (error) {
         console.error('Error loading magazines:', error);
         elements.content.innerHTML = `<div class="error">Error: ${error.message}</div>`;
@@ -137,9 +170,9 @@
             // Check if all done
             if (queue.length === 0 && activeGenerations === 0 && !isComplete) {
               isComplete = true;
-              // After 5 seconds, reset to normal status
+              // After 5 seconds, clear thumbnail status line
               setTimeout(() => {
-                elements.subtitle.textContent = `Browse and search ${magazines.length} magazines`;
+                elements.thumbStatus.textContent = '';
               }, 5000);
             } else {
               processQueue(); // Continue processing
@@ -150,9 +183,9 @@
 
       function updateThumbnailStatus(success, errors, total) {
         if (errors > 0) {
-          elements.subtitle.textContent = `Generating thumbnails... ${success}/${total} ✓ (${errors} errors)`;
+          elements.thumbStatus.textContent = `Generating thumbnails... ${success}/${total} ✓ (${errors} errors)`;
         } else {
-          elements.subtitle.textContent = `Generating thumbnails... ${success}/${total}`;
+          elements.thumbStatus.textContent = `Generating thumbnails... ${success}/${total}`;
         }
       }
 
@@ -283,10 +316,6 @@
     async function performSearch(query) {
       const searchLower = query.toLowerCase().trim();
       
-      // Create new abort controller for this search
-      searchAbortController = new AbortController();
-      const signal = searchAbortController.signal;
-      
       if (!searchLower) {
         // Show all magazines
         document.querySelectorAll('.magazine-card').forEach(card => {
@@ -298,10 +327,10 @@
         return;
       }
 
-      // First pass: Show metadata matches immediately
+      // First pass: Quick metadata matches (year, month, filename)
       let visibleCount = 0;
       const cards = document.querySelectorAll('.magazine-card');
-      const cardsToSearchContent = [];
+      const metadataMatches = new Set();
       
       for (const card of cards) {
         const filename = card.dataset.filename;
@@ -314,106 +343,52 @@
                        monthName.includes(searchLower);
         
         if (matches) {
+                    metadataMatches.add(filename);
           card.classList.remove('hidden');
           visibleCount++;
           // Remove content badge for metadata matches
           const badge = card.querySelector('.content-match');
           if (badge) badge.remove();
         } else {
-          // Hide initially, will search content
           card.classList.add('hidden');
-          cardsToSearchContent.push({ card, mag });
         }
       }
       
       elements.filteredCount.textContent = visibleCount;
       
-      // Second pass: Search PDF content progressively with delays
-      if (cardsToSearchContent.length > 0) {
-        let searchedCount = 0;
-        const totalToSearch = cardsToSearchContent.length;
-        
-        for (const { card, mag } of cardsToSearchContent) {
-          // Check if search was cancelled
-          if (signal.aborted) {
-            elements.subtitle.textContent = `Browse and search ${magazines.length} magazines`;
-            return;
-          }
-          
-          searchedCount++;
-          elements.subtitle.textContent = `Searching content... ${searchedCount}/${totalToSearch}`;
-          
-          try {
-            const contentMatch = await searchInPDF(mag.filename, searchLower);
-            
-            // Check again after async operation
-            if (signal.aborted) {
-              elements.subtitle.textContent = `Browse and search ${magazines.length} magazines`;
-              return;
-            }
-            
-            if (contentMatch) {
-              card.classList.remove('hidden');
-              visibleCount++;
-              // Add content match indicator
-              const info = card.querySelector('.magazine-info');
-              if (!info.querySelector('.content-match')) {
-                info.insertAdjacentHTML('beforeend', '<div class="content-match">★ Match in content</div>');
-              }
-              elements.filteredCount.textContent = visibleCount;
-            } else {
-              // Remove content match indicator if exists
-              const badge = card.querySelector('.content-match');
-              if (badge) badge.remove();
-            }
-          } catch (error) {
-            console.error(`Error searching ${mag.filename}:`, error);
-          }
-          
-          // Add small delay every 5 PDFs to let UI update
-          if (searchedCount % 5 === 0) {
-            await new Promise(resolve => setTimeout(resolve, 10));
-          }
-        }
-        
-        elements.subtitle.textContent = `Browse and search ${magazines.length} magazines`;
-      }
-    }
-
-    async function searchInPDF(filename, searchText) {
-      // Timeout wrapper to prevent hanging on problematic PDFs
-      const timeoutPromise = new Promise((_, reject) => 
-        setTimeout(() => reject(new Error('Search timeout')), 2000) // 2 second timeout per PDF
-      );
-      
-      const searchPromise = (async () => {
+      // Second pass: Search indexed content (instant!)
+      if (isIndexingComplete) {
         try {
-          const pdfPath = await window.electronAPI.getPdfPath(filename);
-          const pdf = await pdfjsLib.getDocument(pdfPath).promise;
-          const maxPages = Math.min(pdf.numPages, 5); // Search first 5 pages only (was 20)
+          // Use FTS5 query - supports phrases, AND/OR, wildcards
+          const searchResults = await window.electronAPI.searchIndexedContent(searchLower);
           
-          for (let i = 1; i <= maxPages; i++) {
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            const text = textContent.items.map(item => item.str).join(' ').toLowerCase();
-            
-            if (text.includes(searchText)) {
-              return true;
+          // Show cards that match content
+          for (const result of searchResults) {
+            if (!metadataMatches.has(result.filename)) {
+              const card = Array.from(cards).find(c => c.dataset.filename === result.filename);
+              if (card) {
+                card.classList.remove('hidden');
+                visibleCount++;
+                
+                // Add content match indicator with snippet
+                const info = card.querySelector('.magazine-info');
+                const existingBadge = info.querySelector('.content-match');
+                if (existingBadge) existingBadge.remove();
+                
+                const badge = document.createElement('div');
+                badge.className = 'content-match';
+                badge.innerHTML = `★ ${result.snippet}`;
+                badge.title = result.snippet.replace(/<\/?mark>/g, '');
+                info.appendChild(badge);
+              }
             }
           }
           
-          return false;
+          elements.filteredCount.textContent = visibleCount;
         } catch (error) {
-          console.error(`Error searching PDF ${filename}:`, error);
-          return false;
+          console.error('Search error:', error);
+          elements.subtitle.textContent = 'Search error occurred';
         }
-      })();
-      
-      try {
-        return await Promise.race([searchPromise, timeoutPromise]);
-      } catch (error) {
-        console.warn(`Skipping ${filename} due to timeout`);
-        return false;
       }
     }
 

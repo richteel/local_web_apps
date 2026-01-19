@@ -12,6 +12,9 @@ The Gavel was the first magazine published for Toastmasters members starting in 
 
 If the ToastmastersViewer.exe file is in the folder, double click the file to launch the viewer.
 
+If you need to generate a debug log file, run the executable with the debug flag.
+```ToastmastersViewer.exe --debug```
+
 ### Using the Viewer
 
 ![image-20260118144900241](.\resources\image-20260118144900241.png)
