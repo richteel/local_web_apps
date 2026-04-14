@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSV Graph Builder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="page">
+    <h1 id="pageTitle">TSV Graph Builder</h1>
+    <p class="intro">
+      Paste tab-delimited data where the first row contains labels and the first column contains X values.
+    </p>
+
+    <section class="controls" aria-labelledby="inputHeading">
+      <h2 id="inputHeading">Chart Inputs</h2>
+      <label for="dataInput">Paste tab-delimited data:</label>
+      <p id="dataHelp" class="help-text">The first row is headers. The first column is X values and remaining columns are Y series.</p>
+      <textarea id="dataInput" aria-describedby="dataHelp" spellcheck="false" placeholder="Example:
+Month	Sales	Cost
+Jan	120	95
+Feb	135	100
+Mar	150	110"></textarea>
+
+      <div class="control-row">
+        <label for="chartType">Chart type:</label>
+        <select id="chartType">
+          <option value="line">Line</option>
+          <option value="scatter">Scatter (X-Y)</option>
+          <option value="bar">Bar</option>
+        </select>
+        <label for="yAxisLabel">Y-Label:</label>
+        <input id="yAxisLabel" type="text" value="$ in thousands" />
+
+        <button id="drawBtn" type="button">Draw Graph</button>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="chart-panel" aria-labelledby="chartHeading">
+      <h2 id="chartHeading">Rendered Chart</h2>
+      <p id="chartInstructions" class="help-text">
+        The chart updates when you select Draw Graph. Use the generated accessibility text below when embedding this chart elsewhere.
+      </p>
+      <canvas
+        id="chartCanvas"
+        width="960"
+        height="560"
+        role="img"
+        aria-labelledby="chartTitle chartDesc"
+        tabindex="0"
+      >
+        Your browser does not support canvas. Use the generated chart summary below for equivalent text information.
+      </canvas>
+      <p id="chartTitle" class="sr-only">Generated data chart</p>
+      <p id="chartDesc" class="sr-only">Chart summary will appear in the accessibility guidance section.</p>
+    </section>
+
+    <section class="accessibility-panel" aria-labelledby="a11yHeading">
+      <h2 id="a11yHeading">Accessibility Guidance for Embedding</h2>
+      <p class="help-text">
+        Use this content when you embed the rendered chart on a web page or in a Word document.
+      </p>
+
+      <h3>Recommended Alt Text (short)</h3>
+      <textarea id="altTextOutput" class="output-box" readonly aria-label="Recommended short alt text"></textarea>
+
+      <h3>Detailed Description (long)</h3>
+      <textarea id="longDescOutput" class="output-box" readonly aria-label="Recommended long description text"></textarea>
+
+      <h3>Web Embedding Instructions</h3>
+      <div class="guidance" id="webGuidance" role="region" aria-label="Web embedding instructions"></div>
+
+      <h3>Word Embedding Instructions</h3>
+      <div class="guidance" id="wordGuidance" role="region" aria-label="Word embedding instructions"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
