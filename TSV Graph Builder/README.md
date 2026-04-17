@@ -52,6 +52,12 @@ No build tooling or package installation is required.
 - `script.js`  
   Parsing, chart rendering, axis/legend drawing, and accessibility text generation logic.
 
+- `test.html`  
+  Test runner page using Jasmine for unit tests.
+
+- `tests/script.test.js`  
+  Unit test cases for core functions.
+
 ## How To Run
 
 1. Open `index.html` in a modern browser.
@@ -68,16 +74,16 @@ Example:
 
 ```text
 Month	Revenue	Expense
-Jan	120	85
-Feb	145	95
-Mar	160	110
-Apr	180	130
+Jan	$120	$85
+Feb	$145	$95
+Mar	$160	$110
+Apr	$180	$130
 ```
 
 Rules:
 - Row 1: headers (`X label`, then one or more series labels).
 - Column 1: X values.
-- Columns 2..N: numeric Y values for each series.
+- Columns 2..N: numeric Y values for each series (thousand separators and currency symbols are automatically ignored).
 - Blank or non-numeric Y values are skipped for plotting.
 
 ## How The Code Works
@@ -92,6 +98,9 @@ Rules:
   - `xValues` (numeric values or index values)
   - `series` arrays for Y values
 - Detects whether X is numeric (`numericX`).
+
+`parseNumericValue()`:
+- Parses numeric values from strings, handling thousand separators (commas) and currency symbols by removing non-numeric characters except for digits, decimal points, and minus signs.
 
 ### 2) Render orchestration
 
@@ -133,6 +142,19 @@ Helper mapping functions (`mapX`, `mapY`) convert data values into canvas coordi
 - Creates long description including sample X values and per-series min/max.
 - Updates hidden canvas title/description content.
 - Renders copy-ready web and Word guidance sections.
+
+## Testing
+
+Unit tests are provided using Jasmine (a browser-based testing framework, no installation required).
+
+To run tests:
+1. Open `test.html` in a modern browser.
+2. View test results on the page (green for passes, red for failures).
+
+Tests cover:
+- Data parsing and number handling (including thousand separators and currency symbols).
+- TSV validation and series min/max calculations.
+- Core utility functions.
 
 ## Accessibility Embedding Guidance (Quick Summary)
 

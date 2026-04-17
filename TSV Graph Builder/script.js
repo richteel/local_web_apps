@@ -4,7 +4,7 @@ const yAxisLabelEl = document.getElementById("yAxisLabel");
 const drawBtn = document.getElementById("drawBtn");
 const statusEl = document.getElementById("status");
 const canvas = document.getElementById("chartCanvas");
-const ctx = canvas.getContext("2d");
+const ctx = canvas ? canvas.getContext("2d") : null;
 const chartTitleEl = document.getElementById("chartTitle");
 const chartDescEl = document.getElementById("chartDesc");
 const altTextOutputEl = document.getElementById("altTextOutput");
@@ -23,14 +23,21 @@ const palette = [
   "#455a64"
 ];
 
-drawBtn.addEventListener("click", renderChartFromInput);
+if (drawBtn) {
+  drawBtn.addEventListener("click", renderChartFromInput);
+}
 
 window.addEventListener("load", () => {
-  inputEl.value = "Month\tRevenue\tExpense\nJan\t120\t85\nFeb\t145\t95\nMar\t160\t110\nApr\t180\t130";
-  renderChartFromInput();
+  if (inputEl) {
+    inputEl.value = "Month\tRevenue\tExpense\nJan\t120\t85\nFeb\t145\t95\nMar\t160\t110\nApr\t180\t130";
+    if (drawBtn) {
+      renderChartFromInput();
+    }
+  }
 });
 
 function renderChartFromInput() {
+  if (!ctx) return;
   clearCanvas();
   setStatus("");
 
@@ -78,6 +85,13 @@ function renderChartFromInput() {
   updateAccessibilityContent(parsed, chartType, yAxisLabel, numericX);
 }
 
+function parseNumericValue(raw) {
+  const normalized = String(raw ?? "").trim().replace(/[^0-9.-]/g, "");
+  if (normalized === "") return null;
+  const num = Number(normalized);
+  return Number.isFinite(num) ? num : null;
+}
+
 function parseTsv(text) {
   const rawRows = text
     .split(/\r?\n/)
@@ -97,6 +111,7 @@ function parseTsv(text) {
 
   const series = headers.slice(1).map((name) => ({ name, values: [] }));
   const xRawValues = [];
+  const xNumericValues = [];
   const xValues = [];
   const xLabels = [];
 
@@ -108,12 +123,13 @@ function parseTsv(text) {
 
     const xRaw = (row[0] ?? "").trim();
     xRawValues.push(xRaw);
+    xNumericValues.push(parseNumericValue(xRaw));
     xLabels.push(xRaw || String(i));
 
     for (let s = 0; s < series.length; s += 1) {
       const raw = (row[s + 1] ?? "").trim();
-      const yNum = Number(raw);
-      series[s].values.push(Number.isFinite(yNum) ? yNum : null);
+      const yNum = parseNumericValue(raw);
+      series[s].values.push(yNum);
     }
   }
 
@@ -121,9 +137,9 @@ function parseTsv(text) {
     throw new Error("No data rows were found.");
   }
 
-  const numericX = xRawValues.every((value) => Number.isFinite(Number(value)));
+  const numericX = xNumericValues.every((value) => Number.isFinite(value));
   for (let i = 0; i < xRawValues.length; i += 1) {
-    xValues.push(numericX ? Number(xRawValues[i]) : i);
+    xValues.push(numericX ? xNumericValues[i] : i);
   }
 
   return { headers, series, xValues, xLabels, numericX };
