@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countdown Timer</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="page-wrapper" id="app-root">
+    <header>
+      <h1>Countdown Timer</h1>
+    </header>
+
+    <main id="timers-container">
+      <!-- Timer cards rendered by JS -->
+    </main>
+
+    <button class="fab" id="add-btn" title="Add new countdown" aria-label="Add new countdown">
+      <span class="fab-icon">+</span>
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-help">
+    <div class="modal" tabindex="-1">
+      <h2 id="modal-title">New Countdown</h2>
+      <p id="modal-help" class="sr-only">Enter an event name and a target date and time, then save.</p>
+      <form id="event-form" novalidate>
+        <input type="hidden" id="event-id" />
+
+        <label for="event-name">Event Name</label>
+        <input type="text" id="event-name" placeholder="e.g. Summer Holiday" maxlength="60" required aria-describedby="name-error" aria-invalid="false" />
+        <span class="field-error" id="name-error" role="alert" aria-live="polite"></span>
+
+        <label for="event-date">Date &amp; Time</label>
+        <input type="datetime-local" id="event-date" required aria-describedby="date-error" aria-invalid="false" />
+        <span class="field-error" id="date-error" role="alert" aria-live="polite"></span>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" id="cancel-btn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm delete dialog -->
+  <div class="modal-overlay" id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-msg">
+    <div class="modal modal-sm" tabindex="-1">
+      <h2 id="confirm-title">Delete Countdown?</h2>
+      <p id="confirm-msg">Are you sure you want to delete this countdown?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirm-delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
