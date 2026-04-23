@@ -103,10 +103,15 @@
         elements.filteredCount.textContent = magazines.length;
         
         renderMagazineCards(magazines);
-        await loadThumbnails();
         
-        // Start indexing PDFs
-        window.electronAPI.startIndexing(magazines);
+        // Pass existing thumbnails and indexed files to optimize loading
+        const existingThumbnails = new Set(result.existingThumbnails || []);
+        const indexedFilenames = new Set(result.indexedFilenames || []);
+        
+        await loadThumbnails(existingThumbnails);
+        
+        // Start indexing PDFs - only those not already indexed
+        window.electronAPI.startIndexing(magazines, result.indexedFilenames || []);
       } catch (error) {
         console.error('Error loading magazines:', error);
         elements.content.innerHTML = `<div class="error">Error: ${error.message}</div>`;
@@ -114,18 +119,33 @@
     }
 
     function renderMagazineCards(magazinesToShow) {
-      elements.content.innerHTML = magazinesToShow.map(mag => `
+      elements.content.innerHTML = magazinesToShow.map(mag => {
+        const hasDate = Boolean(mag.year && mag.month && mag.startsWithNumber);
+
+        let dateLabel = '';
+        if (hasDate) {
+          const options = { year: 'numeric', month: 'long' };
+          if (mag.day) {
+            options.day = 'numeric';
+          }
+          const safeDay = mag.day || 1; // fallback to keep Date valid
+          const d = new Date(mag.year, (mag.month || 1) - 1, safeDay);
+          dateLabel = d.toLocaleDateString(undefined, options);
+        }
+
+        return `
         <div class="magazine-card" data-filename="${mag.filename}">
           <div class="thumbnail-container">
             <div class="thumbnail-placeholder">📄</div>
             <canvas class="thumbnail-canvas" data-pdf="${mag.filename}"></canvas>
           </div>
           <div class="magazine-info">
-            <div class="magazine-date">${monthNames[mag.month - 1]} ${mag.year}</div>
+            ${hasDate ? `<div class="magazine-date">${dateLabel}</div>` : ''}
             <div class="magazine-filename">${mag.filename}</div>
           </div>
         </div>
-      `).join('');
+        `;
+      }).join('');
 
       // Add click handlers to open PDFs
       document.querySelectorAll('.magazine-card').forEach(card => {
@@ -137,7 +157,7 @@
       });
     }
 
-    async function loadThumbnails() {
+    async function loadThumbnails(existingThumbnails = new Set()) {
       const containers = document.querySelectorAll('.thumbnail-container');
       let activeGenerations = 0;
       let successCount = 0;
@@ -146,11 +166,55 @@
       const queue = Array.from(containers);
       const totalCount = queue.length;
       let isComplete = false;
+      let skippedCount = 0;
 
       async function processQueue() {
         while (queue.length > 0 && activeGenerations < MAX_CONCURRENT) {
-          activeGenerations++;
           const container = queue.shift();
+          const canvas = container.querySelector('canvas');
+          const filename = canvas.dataset.pdf;
+          const thumbnailName = filename.replace(/\.[^/.]+$/, ''); // Remove extension
+          
+          // Skip if thumbnail already exists
+          if (existingThumbnails.has(thumbnailName)) {
+            skippedCount++;
+            // Just load the existing thumbnail from cache
+            try {
+              const cached = await window.electronAPI.getThumbnailPath(filename);
+              if (cached && cached.exists && cached.path) {
+                const img = document.createElement('img');
+                img.style.position = 'absolute';
+                img.style.top = '0';
+                img.style.left = '0';
+                img.style.width = '100%';
+                img.style.height = '100%';
+                img.style.objectFit = 'contain';
+                img.src = `file://${cached.path}`;
+                container.replaceChild(img, canvas);
+                container.querySelector('.thumbnail-placeholder').style.display = 'none';
+                successCount++;
+              }
+            } catch (err) {
+              console.error('Error loading cached thumbnail:', err);
+            }
+            
+            // Update status after each thumbnail
+            updateThumbnailStatus(successCount, errorCount, totalCount, skippedCount);
+            
+            // Check if all done
+            if (queue.length === 0 && activeGenerations === 0 && !isComplete) {
+              isComplete = true;
+              // After 5 seconds, clear thumbnail status line
+              setTimeout(() => {
+                elements.thumbStatus.textContent = '';
+              }, 5000);
+            } else {
+              processQueue(); // Continue processing
+            }
+            continue;
+          }
+          
+          activeGenerations++;
           
           try {
             const result = await renderThumbnail(container);
@@ -164,7 +228,7 @@
             errorCount++;
           } finally {
             // Update status after each thumbnail
-            updateThumbnailStatus(successCount, errorCount, totalCount);
+            updateThumbnailStatus(successCount, errorCount, totalCount, skippedCount);
             activeGenerations--;
             
             // Check if all done
@@ -181,12 +245,15 @@
         }
       }
 
-      function updateThumbnailStatus(success, errors, total) {
-        if (errors > 0) {
-          elements.thumbStatus.textContent = `Generating thumbnails... ${success}/${total} ✓ (${errors} errors)`;
-        } else {
-          elements.thumbStatus.textContent = `Generating thumbnails... ${success}/${total}`;
+      function updateThumbnailStatus(success, errors, total, skipped) {
+        let statusText = `Generating thumbnails... ${success}/${total}`;
+        if (skipped > 0) {
+          statusText += ` (${skipped} cached)`;
         }
+        if (errors > 0) {
+          statusText += ` (${errors} errors)`;
+        }
+        elements.thumbStatus.textContent = statusText;
       }
 
       // Start processing immediately
@@ -336,14 +403,26 @@
         const filename = card.dataset.filename;
         const mag = magazines.find(m => m.filename === filename);
         
-        // Check filename, year, month
-        const monthName = monthNames[mag.month - 1].toLowerCase();
-        const matches = filename.toLowerCase().includes(searchLower) ||
-                       mag.year.toString().includes(searchLower) ||
-                       monthName.includes(searchLower);
+        // Check filename, year, month (only if present and valid)
+        let matches = filename.toLowerCase().includes(searchLower);
+        
+        if (mag) {
+          if (mag.year) {
+            matches = matches || String(mag.year).includes(searchLower);
+          }
+          if (mag.month && mag.year) {
+            const monthName = monthNames[mag.month - 1];
+            if (monthName) {
+              matches = matches || monthName.toLowerCase().includes(searchLower);
+            }
+          }
+          if (mag.day) {
+            matches = matches || String(mag.day).includes(searchLower);
+          }
+        }
         
         if (matches) {
-                    metadataMatches.add(filename);
+          metadataMatches.add(filename);
           card.classList.remove('hidden');
           visibleCount++;
           // Remove content badge for metadata matches

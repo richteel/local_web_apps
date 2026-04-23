@@ -52,7 +52,41 @@ If the ToastmastersViewer.exe file is not present, follow these steps to build i
 
 ### Building/Editing/Debugging
 
-**Prerequisite:** Node.js must be installed on the machine.
+**Prerequisites:**
+
+Before you can build, edit, or debug this project, you need to install the following:
+
+1. **Node.js** (version 14.x or higher recommended)
+   
+   **Installation Steps:**
+   
+   - **Windows:**
+     - Visit [nodejs.org](https://nodejs.org/)
+     - Download the LTS (Long Term Support) version installer
+     - Run the installer and follow the installation wizard
+     - Accept the default settings (this will also install npm - Node Package Manager)
+     - Restart your command prompt/terminal after installation
+   
+   - **Verify Installation:**
+     Open a command prompt and run:
+     ```shell
+     node --version
+     npm --version
+     ```
+     You should see version numbers displayed for both commands.
+
+2. **Project Dependencies**
+   
+   After Node.js is installed, navigate to the project folder and install the required dependencies:
+   ```shell
+   cd <Path to Viewer Folder>\toastmasters_mag_viewer
+   npm install
+   ```
+   
+   This will install all packages defined in the `package.json` file, including:
+   - Electron (for building desktop applications)
+   - Electron Builder (for packaging the application)
+   - Any other project dependencies
 
 **Run the code:**
 

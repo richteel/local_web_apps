@@ -161,13 +161,33 @@ async function indexPdf(filename, year, month) {
 }
 
 // Index all PDFs with progress reporting
-async function indexAllPdfs(magazines) {
+async function indexAllPdfs(magazines, alreadyIndexed = []) {
   let indexed = 0;
   let cached = 0;
   let errors = 0;
   
+  // Convert to Set for O(1) lookups
+  const indexedSet = new Set(alreadyIndexed);
+  
   for (let i = 0; i < magazines.length; i++) {
     const mag = magazines[i];
+    
+    // Skip if already indexed
+    if (indexedSet.has(mag.filename)) {
+      cached++;
+      // Send progress update
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('indexing-progress', {
+          current: i + 1,
+          total: magazines.length,
+          indexed,
+          cached,
+          errors
+        });
+      }
+      continue;
+    }
+    
     const result = await indexPdf(mag.filename, mag.year, mag.month);
     
     if (result.indexed) {
@@ -221,8 +241,8 @@ ipcMain.handle('search-indexed-content', async (event, searchQuery) => {
 });
 
 // Start indexing process
-ipcMain.handle('start-indexing', async (event, magazines) => {
-  return await indexAllPdfs(magazines);
+ipcMain.handle('start-indexing', async (event, magazines, alreadyIndexed) => {
+  return await indexAllPdfs(magazines, alreadyIndexed);
 });
 
 function createMenu() {
@@ -366,6 +386,40 @@ app.on('activate', () => {
   }
 });
 
+// Get all existing thumbnail filenames (without extensions) in bulk
+async function getExistingThumbnails() {
+  try {
+    const appDir = getAppDirectory();
+    const thumbsDir = path.join(appDir, 'thumbnails');
+    
+    try {
+      const files = await fs.readdir(thumbsDir);
+      // Return set of filenames without .jpg extension for fast lookup
+      return new Set(files.map(f => path.basename(f, path.extname(f))));
+    } catch {
+      // Directory doesn't exist yet
+      return new Set();
+    }
+  } catch (error) {
+    log(`Error reading thumbnails: ${error.message}`);
+    return new Set();
+  }
+}
+
+// Get all already-indexed filenames in bulk from database
+function getIndexedFilenames() {
+  try {
+    if (!db) return new Set();
+    
+    const stmt = db.prepare(`SELECT filename FROM magazines_fts`);
+    const results = stmt.all();
+    return new Set(results.map(row => row.filename));
+  } catch (error) {
+    log(`Error querying indexed files: ${error.message}`);
+    return new Set();
+  }
+}
+
 // Scan magazines folder for PDFs
 ipcMain.handle('scan-magazines', async () => {
   try {
@@ -383,29 +437,95 @@ ipcMain.handle('scan-magazines', async () => {
     const files = await fs.readdir(magazinesPath);
     const magazines = [];
 
-    // Filter for PDF files matching YYYY-MM pattern
-    const pdfPattern = /^(\d{4})-(\d{2}).*\.pdf$/i;
-    
+    // Parse each PDF file to extract metadata for robust sorting
     for (const file of files) {
-      const match = file.match(pdfPattern);
-      if (match) {
-        const [, year, month] = match;
-        magazines.push({
-          filename: file,
-          year: parseInt(year),
-          month: parseInt(month),
-          path: path.join(magazinesPath, file)
-        });
+      if (!file.toLowerCase().endsWith('.pdf')) continue;
+      
+      // Split filename on dashes and spaces to identify numeric prefix
+      const words = file.split(/[-\s]+/);
+      let startsWithNumber = false;
+      let sortKey = '';
+      let year = null;
+      let month = null;
+      let day = null;
+      
+      // Extract numeric prefix (up to first 3 numeric "words")
+      for (let i = 0; i < words.length && i < 3; i++) {
+        const word = words[i];
+        const isNumber = !Number.isNaN(Number(word));
+        
+        if (isNumber) {
+          startsWithNumber = true;
+          // Pad numbers to 4 digits for proper numeric sorting
+          sortKey += String(word).padStart(4, '0');
+          
+          // Try to extract year/month from first two numbers
+          if (i === 0) year = parseInt(word, 10);
+          if (i === 1) month = parseInt(word, 10);
+          if (i === 2) day = parseInt(word, 10);
+        } else {
+          // Non-numeric word found, append rest of filename
+          if (sortKey.length > 0) {
+            sortKey += ' ';
+          }
+          sortKey += words.slice(i).join(' ');
+          break;
+        }
       }
+      
+      // If we went through 3 numbers with no break, append nothing more
+      if (sortKey.length > 0 && !sortKey.includes(' ')) {
+        // Check if there are more words after the numbers
+        let numberCount = 0;
+        for (let i = 0; i < words.length && i < 3; i++) {
+          if (!Number.isNaN(Number(words[i]))) {
+            numberCount++;
+          } else {
+            break;
+          }
+        }
+        if (numberCount > 0 && numberCount < words.length) {
+          sortKey += ' ' + words.slice(numberCount).join(' ');
+        }
+      }
+      
+      magazines.push({
+        filename: file,
+        year,
+        month,
+        day,
+        startsWithNumber,
+        sortKey,
+        path: path.join(magazinesPath, file)
+      });
     }
 
-    // Sort by year and month descending
+    // Sort with robust algorithm:
+    // 1. Files starting with numbers first (descending by sortKey)
+    // 2. Files starting with letters (ascending alphabetically)
     magazines.sort((a, b) => {
-      if (a.year !== b.year) return b.year - a.year;
-      return b.month - a.month;
+      if (a.startsWithNumber && !b.startsWithNumber) return -1;
+      if (!a.startsWithNumber && b.startsWithNumber) return 1;
+      
+      if (a.startsWithNumber && b.startsWithNumber) {
+        // Both start with numbers: sort descending (newest first)
+        return b.sortKey.localeCompare(a.sortKey, undefined, { sensitivity: 'base' });
+      }
+      
+      // Neither starts with numbers: sort ascending (alphabetically)
+      return a.sortKey.localeCompare(b.sortKey, undefined, { sensitivity: 'base' });
     });
 
-    return { success: true, magazines };
+    // Get bulk lists of existing thumbnails and indexed files for faster startup
+    const existingThumbnails = await getExistingThumbnails();
+    const indexedFilenames = getIndexedFilenames();
+
+    return { 
+      success: true, 
+      magazines,
+      existingThumbnails: Array.from(existingThumbnails),
+      indexedFilenames: Array.from(indexedFilenames)
+    };
   } catch (error) {
     return { success: false, error: error.message };
   }
