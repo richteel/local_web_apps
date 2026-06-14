@@ -1,0 +1,289 @@
+:root {
+  color-scheme: dark;
+  --bg: #0c1118;
+  --bg-soft: #111824;
+  --panel: rgba(15, 21, 31, 0.88);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --text: #e8edf5;
+  --muted: #9eabbc;
+  --accent: #8bd3ff;
+  --accent-strong: #4ab3ff;
+  --danger: #ff8c8c;
+  --shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(74, 179, 255, 0.18), transparent 35%),
+    radial-gradient(circle at right 20%, rgba(139, 211, 255, 0.12), transparent 28%),
+    linear-gradient(180deg, #081019 0%, var(--bg) 100%);
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 0.85rem;
+  padding: 0.9rem 1.1rem;
+  color: #07111b;
+  background: linear-gradient(180deg, #b6e8ff 0%, var(--accent) 100%);
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease, opacity 140ms ease;
+  box-shadow: 0 12px 30px rgba(74, 179, 255, 0.18);
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled,
+input:disabled,
+select:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+button.secondary {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  border: 1px solid var(--panel-border);
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+.app-shell {
+  width: min(1200px, calc(100vw - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.hero {
+  padding: 1rem 0 0.5rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  font-size: 0.78rem;
+  color: var(--accent);
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  font-size: clamp(2rem, 4vw, 3.8rem);
+  line-height: 1.02;
+  margin-bottom: 0.75rem;
+  max-width: 14ch;
+}
+
+.lead {
+  color: var(--muted);
+  font-size: 1.02rem;
+  max-width: 64ch;
+  line-height: 1.6;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 1.35rem;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(14px);
+}
+
+.controls {
+  padding: 1.2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.field-group {
+  display: grid;
+  gap: 0.45rem;
+}
+
+label,
+.hint,
+.status,
+.metadata {
+  color: var(--muted);
+}
+
+.inline-controls {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+}
+
+input[type="file"],
+input[type="url"],
+input[type="number"],
+select {
+  width: 100%;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  padding: 0.85rem 0.95rem;
+}
+
+input[type="file"] {
+  padding: 0.7rem 0.85rem;
+}
+
+select {
+  appearance: none;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.checkbox-field {
+  align-self: end;
+}
+
+.checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text);
+  user-select: none;
+}
+
+.checkbox-label input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.status {
+  min-height: 1.5em;
+  margin-bottom: 0;
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+.preview-panel {
+  padding: 1.2rem;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.preview-header h2 {
+  margin-bottom: 0.35rem;
+}
+
+.metadata {
+  margin-bottom: 0;
+}
+
+.canvas-wrap {
+  width: 100%;
+  min-height: 400px;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background:
+    linear-gradient(45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.03) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.03) 75%);
+  background-size: 28px 28px;
+  background-position: 0 0, 0 14px, 14px -14px, -14px 0;
+  border-radius: 1rem;
+  overflow: auto;
+}
+
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #fff;
+}
+
+@media (max-width: 860px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .inline-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    width: min(100vw - 1rem, 1200px);
+    padding-top: 1rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .canvas-wrap {
+    min-height: 280px;
+  }
+}

@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Raw Image Viewer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">Raw bitmap viewer</p>
+        <h1>Inspect pixel bytes without a header</h1>
+        <p class="lead">
+          Upload a raw image buffer or fetch one from a URL, then tell the viewer how to interpret the bytes.
+        </p>
+      </div>
+    </section>
+
+    <section class="panel controls" aria-label="Image inputs">
+      <div class="field-group">
+        <label for="fileInput">Raw file</label>
+        <input id="fileInput" type="file" accept="*/*">
+      </div>
+
+      <div class="field-group url-group">
+        <label for="urlInput">URL</label>
+        <div class="inline-controls">
+          <input id="urlInput" type="url" placeholder="https://example.com/image.raw">
+          <button id="loadUrlButton" type="button">Load URL</button>
+        </div>
+        <p class="hint" id="urlHint">This uses fetch() and will only work if the target server allows browser access.</p>
+      </div>
+
+      <div class="grid">
+        <div class="field-group">
+          <label for="widthInput">Width</label>
+          <input id="widthInput" type="number" min="1" step="1" value="800">
+        </div>
+        <div class="field-group">
+          <label for="heightInput">Height</label>
+          <input id="heightInput" type="number" min="1" step="1" value="480">
+        </div>
+        <div class="field-group">
+          <label for="formatInput">Pixel format</label>
+          <select id="formatInput">
+            <option value="mono1" selected>Monochrome 1-bit packed</option>
+            <option value="gray8">Grayscale 8-bit</option>
+            <option value="rgb24">RGB 24-bit</option>
+            <option value="rgba32">RGBA 32-bit</option>
+          </select>
+        </div>
+        <div class="field-group checkbox-field">
+          <label class="checkbox-label" for="invertInput">
+            <input id="invertInput" type="checkbox">
+            Invert grayscale / channels
+          </label>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="renderButton" type="button">Render image</button>
+        <button id="clearButton" type="button" class="secondary">Clear</button>
+      </div>
+
+      <p id="status" class="status" role="status" aria-live="polite">Choose a file or URL, then render it.</p>
+    </section>
+
+    <section class="panel preview-panel" aria-label="Image preview">
+      <div class="preview-header">
+        <div>
+          <h2>Preview</h2>
+          <p id="metadata" class="metadata">No image loaded.</p>
+        </div>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="canvas" width="1" height="1"></canvas>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
