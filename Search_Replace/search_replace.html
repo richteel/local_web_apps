@@ -23,15 +23,15 @@
 	<h2>References</h2>
 	<ul>
 		<li>
-			<a href="https://regex101.com/" target="_blank">regex101: build, test, and debug regex</a>
+			<a href="https://regex101.com/" target="_blank" rel="noopener noreferrer">regex101: build, test, and debug regex</a>
 		</li>
 		<li>
-			<a href="https://www.w3schools.com/js/js_regexp.asp" target="_blank">JavaScript RegExp Object - Regular
+			<a href="https://www.w3schools.com/js/js_regexp.asp" target="_blank" rel="noopener noreferrer">JavaScript RegExp Object - Regular
 				Expressions - W3Schools</a>
 		</li>
 		<li>
 			<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions"
-				target="_blank">Regular expressions - JavaScript - MDN Web Docs</a>
+				target="_blank" rel="noopener noreferrer">Regular expressions - JavaScript - MDN Web Docs</a>
 		</li>
 	</ul>
 
@@ -97,7 +97,7 @@
 				return;
 			}
 
-			for (i = 0; i < searchOption.length; i++) {
+			for (let i = 0; i < searchOption.length; i++) {
 				if (searchOption[i].checked)
 					return searchOption[i].value;
 			}
@@ -109,7 +109,7 @@
 				return;
 			}
 
-			for (i = 0; i < searchOption.length; i++) {
+			for (let i = 0; i < searchOption.length; i++) {
 				if (searchOption[i].value == optionValue)
 					searchOption[i].checked = true;
 				else

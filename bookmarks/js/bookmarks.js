@@ -524,7 +524,7 @@ function commandButtonClicked(e) {
 const CONTEXT_MENUS = [];
 
 function contextMenusHide() {
-    for (menu of CONTEXT_MENUS) {
+    for (const menu of CONTEXT_MENUS) {
         menu.style.display = "none";
     }
 }
